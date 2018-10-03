@@ -1,0 +1,5 @@
+1- Submeter o diagrama correto 
+2- resumo dos requesitos
+	2.1-funcionais
+	2.2-não - funcionais
+3-inicar o relatorio final
