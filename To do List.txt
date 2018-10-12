@@ -1,5 +1,8 @@
-1- Submeter o diagrama correto 
-2- resumo dos requesitos
+//1- Submeter o diagrama correto 
+/*2- resumo dos requesitos (brainstroming)
 	2.1-funcionais
-	2.2-n„o - funcionais
-3-inicar o relatorio final
+	2.2-n√£o - funcionais
+*/
+ALERT: Make a prototype (photshop/paint/atc.)
+3-Start final paper	
+4-Make an AMAZING powerpoint 
