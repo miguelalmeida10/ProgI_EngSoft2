@@ -5,31 +5,6 @@ body {
     padding-bottom: 20px;
 }
 
-.main-div {
-    height: 75px;
-    width: 100%;
-    margin: 0 auto;
-    background-color: lightblue;
-    border-radius: 25px;
-    
-}
-.left-div {
-    height: 200px;
-    width: 48%;
-    margin: 0 auto;
-    background-color: lightblue;
-    border-radius: 25px;
-    float:left;
-}
-.right-div {
-    height: 200px;
-    width: 48%;
-    margin: 0 auto;
-    background-color: lightblue;
-    border-radius: 25px;
-    float:right;
-}
-
 /* Wrapping element */
 /* Set some basic padding to keep content from hitting the edges */
 .body-content {
@@ -60,5 +35,3 @@ body {
         display: none;
     }
 }
-
-
