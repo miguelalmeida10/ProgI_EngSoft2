@@ -1,15 +1,20 @@
-﻿@model IEnumerable<Nurse>
+﻿@model NurseListViewModel
 
 @{
-    ViewData["Title"] = "Employes List";
+    ViewData["Title"] = "Nurse List";
 }
 
 <h2>ViewData[Title]</h2>
+
+<p>
+    <a asp_action="Create">Create New</a>
+</p>
 
 <table class="table">
     <thead>
         <tr>
             <th>Name</th>
         </tr>
+
     </thead>
 </table>

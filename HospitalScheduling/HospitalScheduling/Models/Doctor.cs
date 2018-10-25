@@ -5,6 +5,7 @@ namespace HospitalScheduling.Models
 {
     public class Doctor : Employee
     {
+        [Key]
         public int EmployeeID { get; set; }
 
         //name
