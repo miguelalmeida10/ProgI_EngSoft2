@@ -1,20 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Data;
 using System.Linq;
+using System.Reflection.Emit;
 using System.Threading.Tasks;
 
 namespace HospitalScheduling.Models
 {
-    public class Employee
+    public interface Employee
     {
-        public int EmployeeID { get; set; }
-        public string Name { get; set; }
-        public string Job { get; set; } //subestituir por tabela
-        public string Email { get; set; }
-        public string Phone { get; set; }
+        int EmployeeID { get; set; }
+
+
+        //[Required(ErrorMessage = "Please enter the name of the worker")]
+        //[RegularExpression(@"[A-Z][a-z]+(\s[A-Z][a-z]+)?")]
+        string Name { get; set; }
+
+       
+
+        //[Required(ErrorMessage = "Please enter your email")]
+        //[EmailAddress]
+        string Email { get; set; }
+
+
+        //[Required(ErrorMessage = "Please enter the phone number")]
+        //[RegularExpression(@"(9[1236]|2\d)\d{7}")]
+        string Phone { get; set; }
+
         //data de nascimento 
+        //[Required(ErrorMessage = "Please enter your email")]
+        DateTime Birthday { get; set; }
         //morada
-        //Campos obrigatorios
+        string Adress { get; set; }
+
 
         
     }
