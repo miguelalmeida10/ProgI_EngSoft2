@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
+using HospitalScheduling.Models;
 
 namespace HospitalScheduling.Data
 {
@@ -12,5 +13,7 @@ namespace HospitalScheduling.Data
             : base(options)
         {
         }
+        public DbSet<HospitalScheduling.Models.Doctor> Doctor { get; set; }
+        public DbSet<HospitalScheduling.Models.Nurse> Nurse { get; set; }
     }
 }
