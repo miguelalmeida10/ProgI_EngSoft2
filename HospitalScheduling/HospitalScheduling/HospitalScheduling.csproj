@@ -6,6 +6,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Data\Migrations\20181025143818_bd1teste.cs" />
+    <Compile Remove="Data\Migrations\20181025143818_bd1teste.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Include="wwwroot\images\fundoimage.jpg" />
   </ItemGroup>
 

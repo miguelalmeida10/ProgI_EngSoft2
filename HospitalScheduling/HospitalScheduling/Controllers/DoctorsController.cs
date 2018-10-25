@@ -12,6 +12,7 @@ namespace HospitalScheduling.Controllers
 {
     public class DoctorsController : Controller
     {
+        private const int PAGE_SIZE = 10;
         private readonly ApplicationDbContext _context;
 
         public DoctorsController(ApplicationDbContext context)
@@ -19,11 +20,33 @@ namespace HospitalScheduling.Controllers
             _context = context;
         }
 
-        // GET: Doctors
-        public async Task<IActionResult> Index()
+        //GET: Doctors 
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Doctor.ToListAsync());
+            int numDoctors = await _context.Doctor.CountAsync();
+
+            var products = await
+                _context.Doctor
+                .OrderBy(a => a.Name)
+                .Skip(PAGE_SIZE * (page - 1))
+                .Take(PAGE_SIZE)
+                .ToListAsync();
+
+            return View(
+                new DoctorsListViewModel
+                {
+                    Doctor = doctor,
+                    Pagination = new PagingViewModel
+                    {
+                        CurrentPage = page,
+                        PageSize = PAGE_SIZE,
+                        TotalItens numProducts
+                        
+                    }
+                }
+            );   
         }
+
 
         // GET: Doctors/Details/5
         public async Task<IActionResult> Details(int? id)
