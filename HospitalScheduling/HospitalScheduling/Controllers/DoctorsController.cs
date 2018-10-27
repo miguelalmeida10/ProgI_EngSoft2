@@ -25,7 +25,7 @@ namespace HospitalScheduling.Controllers
         {
             int numDoctors = await _context.Doctor.CountAsync();
 
-            var products = await
+            var doctor = await
                 _context.Doctor
                 .OrderBy(a => a.Name)
                 .Skip(PAGE_SIZE * (page - 1))
@@ -40,7 +40,7 @@ namespace HospitalScheduling.Controllers
                     {
                         CurrentPage = page,
                         PageSize = PAGE_SIZE,
-                        TotalItens numProducts
+                        TotalItems= numDoctors
                         
                     }
                 }
