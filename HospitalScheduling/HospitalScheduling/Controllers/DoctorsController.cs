@@ -53,24 +53,21 @@ namespace HospitalScheduling.Controllers
         {
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction("Index");
+                // return NotFound();
             }
 
             var doctor = await _context.Doctor
                 .FirstOrDefaultAsync(m => m.EmployeeID == id);
+
             if (doctor == null)
             {
-                return NotFound();
+                return NotFound(); //view with page
             }
 
             return View(doctor);
         }
 
-        // GET: Doctors/Create
-        public IActionResult Create()
-        {
-            return View();
-        }
 
         // POST: Doctors/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
@@ -79,13 +76,16 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("EmployeeID,Name,Email,Phone,Birthday,Adress")] Doctor doctor)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                _context.Add(doctor);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                return View(doctor);
+                           
             }
-            return View(doctor);
+
+            _context.Add(doctor);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
+            
         }
 
         // GET: Doctors/Edit/5
