@@ -27,10 +27,10 @@ namespace HospitalScheduling.Controllers
 
             var doctor = await
                 _context.Doctor
-                .OrderBy(a => a.Name)
-                .Skip(PAGE_SIZE * (page - 1))
-                .Take(PAGE_SIZE)
-                .ToListAsync();
+                    .OrderBy(a => a.Name)
+                    .Skip(PAGE_SIZE * (page - 1))
+                    .Take(PAGE_SIZE)
+                    .ToListAsync();
 
             return View(
                 new DoctorsListViewModel

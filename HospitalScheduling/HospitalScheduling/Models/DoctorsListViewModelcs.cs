@@ -7,7 +7,7 @@ namespace HospitalScheduling.Models
 {
     public class DoctorsListViewModel
     {
-        public IEnumerable<Nurse> Doctor { get; set; }
+        public IEnumerable<Doctor> Doctor { get; set; }
         public PagingViewModel Pagination { get; set; }
     }
 }
