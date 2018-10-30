@@ -62,7 +62,7 @@ namespace HospitalScheduling.Controllers
 
             if (doctor == null)
             {
-                return NotFound(); //view with page
+                return NotFound(); //view with page 'now workıng on thıs'
             }
 
             return View(doctor);
