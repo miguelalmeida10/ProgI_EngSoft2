@@ -28,9 +28,15 @@ namespace HospitalScheduling.Models
         public string Phone { get; set; }
 
         //birthday
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = true)]
         public DateTime Birthday { get; set; }
 
         //adress
         public string Adress { get; set; }
+
+
+        //status
+        public EmpStatus Status { get; set; }
     }
 }

@@ -1,3 +1,9 @@
 ﻿@using HospitalScheduling
 @using HospitalScheduling.Models
 @addTagHelper *, Microsoft.AspNetCore.Mvc.TagHelpers
+@using Microsoft.AspNetCore.Identity
+@using HospitalScheduling.Data
+@namespace HospitalScheduling.Pages
+@using HospitalScheduling.Authorization;
+@using Microsoft.AspNetCore.Authorization
+@inject IAuthorizationService AuthorizationService

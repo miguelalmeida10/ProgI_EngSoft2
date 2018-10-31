@@ -37,7 +37,17 @@ namespace HospitalScheduling.Models
         //morada
         string Adress { get; set; }
 
-
-        
+         EmpStatus Status { get; set; }
     }
+
+    public enum EmpStatus
+    {
+        Submitted,
+        Approved,
+        Rejected
+    }
+
+
+
 }
+
