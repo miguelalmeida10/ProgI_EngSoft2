@@ -8,6 +8,9 @@ namespace HospitalScheduling.Models
         [Key]
         public int EmployeeID { get; set; }
 
+        //user identifier
+        public string OwnerID { get; set; }
+
         //name
         [Required(ErrorMessage = "Please enter the name of the Nurse")]
         [StringLength(50,MinimumLength=3)]

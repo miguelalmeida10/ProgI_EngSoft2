@@ -6,11 +6,14 @@ using System.Linq;
 using System.Reflection.Emit;
 using System.Threading.Tasks;
 
+
 namespace HospitalScheduling.Models
 {
     public interface Employee
     {
         int EmployeeID { get; set; }
+
+        string OwnerID { get; set; }
 
 
         //[Required(ErrorMessage = "Please enter the name of the worker")]
