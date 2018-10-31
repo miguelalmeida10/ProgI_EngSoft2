@@ -46,9 +46,10 @@ namespace HospitalScheduling
                 options.Password.RequireLowercase = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireUppercase = false;
-                options.Password.RequiredLength = 4;
+                options.Password.RequiredLength = 6;
                 options.Password.RequiredUniqueChars = 0;
             });
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
