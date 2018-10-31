@@ -1,42 +1,47 @@
-﻿@model HospitalScheduling.Models.Nurse
-
-@{
-    ViewData["Title"] = "Edit";
-}
-
-<h2>Edit</h2>
+﻿@page
+@model HospitalScheduling.Views.Nurses.EditModel
 
 <h4>Nurse</h4>
 <hr />
 <div class="row">
     <div class="col-md-4">
-        <form asp-action="Edit">
+        <form method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeID" />
+            <input type="hidden" asp-for="Nurse.EmployeeID" />
             <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+                <label asp-for="Nurse.OwnerID" class="control-label"></label>
+                <input asp-for="Nurse.OwnerID" class="form-control" />
+                <span asp-validation-for="Nurse.OwnerID" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
+                <label asp-for="Nurse.Name" class="control-label"></label>
+                <input asp-for="Nurse.Name" class="form-control" />
+                <span asp-validation-for="Nurse.Name" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
+                <label asp-for="Nurse.Email" class="control-label"></label>
+                <input asp-for="Nurse.Email" class="form-control" />
+                <span asp-validation-for="Nurse.Email" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Birthday" class="control-label"></label>
-                <input asp-for="Birthday" class="form-control" />
-                <span asp-validation-for="Birthday" class="text-danger"></span>
+                <label asp-for="Nurse.Phone" class="control-label"></label>
+                <input asp-for="Nurse.Phone" class="form-control" />
+                <span asp-validation-for="Nurse.Phone" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Adress" class="control-label"></label>
-                <input asp-for="Adress" class="form-control" />
-                <span asp-validation-for="Adress" class="text-danger"></span>
+                <label asp-for="Nurse.Birthday" class="control-label"></label>
+                <input asp-for="Nurse.Birthday" class="form-control" />
+                <span asp-validation-for="Nurse.Birthday" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nurse.Adress" class="control-label"></label>
+                <input asp-for="Nurse.Adress" class="form-control" />
+                <span asp-validation-for="Nurse.Adress" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Nurse.Status" class="control-label"></label>
+                <select asp-for="Nurse.Status" class="form-control"></select>
+                <span asp-validation-for="Nurse.Status" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <input type="submit" value="Save" class="btn btn-default" />
@@ -46,7 +51,7 @@
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-page="./Index">Back to List</a>
 </div>
 
 @section Scripts {

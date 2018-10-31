@@ -1,10 +1,5 @@
-﻿@model HospitalScheduling.Models.Nurse
-
-@{
-    ViewData["Title"] = "Delete";
-}
-
-<h2>Delete</h2>
+﻿@page
+@model HospitalScheduling.Views.Nurses.DeleteModel
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
@@ -12,40 +7,52 @@
     <hr />
     <dl class="dl-horizontal">
         <dt>
-            @Html.DisplayNameFor(model => model.Name)
+            @Html.DisplayNameFor(model => model.Nurse.OwnerID)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Name)
+            @Html.DisplayFor(model => model.Nurse.OwnerID)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Email)
+            @Html.DisplayNameFor(model => model.Nurse.Name)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Email)
+            @Html.DisplayFor(model => model.Nurse.Name)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Phone)
+            @Html.DisplayNameFor(model => model.Nurse.Email)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Phone)
+            @Html.DisplayFor(model => model.Nurse.Email)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Birthday)
+            @Html.DisplayNameFor(model => model.Nurse.Phone)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Birthday)
+            @Html.DisplayFor(model => model.Nurse.Phone)
         </dd>
         <dt>
-            @Html.DisplayNameFor(model => model.Adress)
+            @Html.DisplayNameFor(model => model.Nurse.Birthday)
         </dt>
         <dd>
-            @Html.DisplayFor(model => model.Adress)
+            @Html.DisplayFor(model => model.Nurse.Birthday)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nurse.Adress)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nurse.Adress)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Nurse.Status)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Nurse.Status)
         </dd>
     </dl>
     
-    <form asp-action="Delete">
-        <input type="hidden" asp-for="EmployeeID" />
+    <form method="post">
+        <input type="hidden" asp-for="Nurse.EmployeeID" />
         <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <a asp-page="./Index">Back to List</a>
     </form>
 </div>

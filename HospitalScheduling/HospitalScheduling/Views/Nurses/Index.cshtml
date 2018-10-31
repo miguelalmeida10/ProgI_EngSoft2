@@ -1,38 +1,42 @@
-﻿@model IEnumerable<HospitalScheduling.Models.Nurse>
-
-@{
-    ViewData["Title"] = "Index";
-}
-
-<h2>Index</h2>
+﻿@page
+@model HospitalScheduling.Views.Nurses.IndexModel
 
 <p>
-    <a asp-action="Create">Create New</a>
+    <a asp-page="Create">Create New</a>
 </p>
 <table class="table">
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Nurse[0].OwnerID)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Nurse[0].Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Phone)
+                @Html.DisplayNameFor(model => model.Nurse[0].Email)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Birthday)
+                @Html.DisplayNameFor(model => model.Nurse[0].Phone)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Adress)
+                @Html.DisplayNameFor(model => model.Nurse[0].Birthday)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nurse[0].Adress)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Nurse[0].Status)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-@foreach (var item in Model) {
+@foreach (var item in Model.Nurse) {
         <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.OwnerID)
+            </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Name)
             </td>
@@ -49,9 +53,26 @@
                 @Html.DisplayFor(modelItem => item.Adress)
             </td>
             <td>
-                <a asp-action="Edit" asp-route-id="@item.EmployeeID">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.EmployeeID">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.EmployeeID">Delete</a>
+                @Html.DisplayFor(modelItem => item.Status)
+            </td>
+            <td>
+                @if ((await AuthorizationService.AuthorizeAsync(
+                   User, item,
+                   NurseOperations.Update)).Succeeded)
+                {
+                    <a asp-page="./Edit" asp-route-id="@item.EmployeeID">Edit</a>
+                    <text> | </text>
+                }
+
+                <a asp-page="./Details" asp-route-id="@item.EmployeeID">Details</a>
+
+                @if ((await AuthorizationService.AuthorizeAsync(
+                User, item,
+                NurseOperations.Delete)).Succeeded)
+                {
+                    <text> | </text>
+                    <a asp-page="./Delete" asp-route-id="@item.EmployeeID">Delete</a>
+                }
             </td>
         </tr>
 }

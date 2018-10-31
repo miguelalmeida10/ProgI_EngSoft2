@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalScheduling.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181025145508_teste2")]
-    partial class teste2
+    [Migration("20181031134644_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,64 @@ namespace HospitalScheduling.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("HospitalScheduling.Models.Doctor", b =>
+                {
+                    b.Property<int>("EmployeeID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adress");
+
+                    b.Property<DateTime>("Birthday");
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("OwnerID");
+
+                    b.Property<string>("Phone")
+                        .IsRequired();
+
+                    b.Property<int>("Status");
+
+                    b.HasKey("EmployeeID");
+
+                    b.ToTable("Doctor");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.Nurse", b =>
+                {
+                    b.Property<int>("EmployeeID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Adress");
+
+                    b.Property<DateTime>("Birthday");
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("OwnerID");
+
+                    b.Property<string>("Phone")
+                        .IsRequired();
+
+                    b.Property<int>("Status");
+
+                    b.HasKey("EmployeeID");
+
+                    b.ToTable("Nurse");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
