@@ -40,11 +40,11 @@ namespace HospitalScheduling.Controllers
                     {
                         CurrentPage = page,
                         PageSize = PAGE_SIZE,
-                        TotalItems= numDoctors
-                        
+                        TotalItems = numDoctors
+
                     }
                 }
-            );   
+            );
         }
 
 
@@ -79,13 +79,13 @@ namespace HospitalScheduling.Controllers
             if (!ModelState.IsValid)
             {
                 return View(doctor);
-                           
+
             }
 
             _context.Add(doctor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-            
+
         }
 
         // GET: Doctors/Edit/5
