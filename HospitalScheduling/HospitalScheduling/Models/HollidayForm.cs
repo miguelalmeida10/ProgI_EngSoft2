@@ -8,11 +8,16 @@ namespace HospitalScheduling.Models
 {
     public class HollidayForm
     {
+        [Key]
+        public int VacationID { get; set; }
+
         [Required(ErrorMessage = "Please, enter the starting date of your vacation")]
         [StringLength(50, MinimumLength = 3)]
-        public string Datestart { get; set; }
+        public string DateStart { get; set; }
 
         [Required(ErrorMessage = "Please, enter the ending date of your vacation")]
-        public string Dateend { get; set; }
+        public string DateEnd { get; set; }
+
+        
     }
 }
