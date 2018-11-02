@@ -10,11 +10,10 @@ namespace HospitalScheduling.Controllers
     {
         public IActionResult age()
         {
-            int today = DateTime.Today;
-            int age;
+            int ageDoc;
             int days;
 
-            if(age < 39)
+            if(ageDoc < 39)
             {
                 days = 25; 
             } else if (age < 49)
