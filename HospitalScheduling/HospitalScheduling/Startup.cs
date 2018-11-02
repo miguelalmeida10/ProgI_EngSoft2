@@ -69,6 +69,11 @@ namespace HospitalScheduling
                     name: "default",
                     template: "{controller=Home}/{action=Index}/{id?}");
             });
+
+
+            SeedDataNurses.Populate(app.ApplicationServices);
+            SeedDataDoctors.Populate(app.ApplicationServices);
+
         }
     }
 }
