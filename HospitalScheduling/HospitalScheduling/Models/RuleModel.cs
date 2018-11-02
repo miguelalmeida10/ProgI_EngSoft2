@@ -11,9 +11,8 @@ namespace HospitalScheduling.Models
         [Required]
         public int Birthday { get; set; }
 
-        public int age { get; set; }
-
-
+        [Required]
+        public int age{ get; set; }
 
 
 
