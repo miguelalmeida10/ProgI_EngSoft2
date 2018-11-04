@@ -9,7 +9,7 @@ namespace HospitalScheduling.Models
         public int EmployeeID { get; set; }
 
         //name
-        [Required(ErrorMessage = "Please enter the name of the Nurse")]
+        [Required(ErrorMessage = "Please enter the name of the Doctor")]
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
 

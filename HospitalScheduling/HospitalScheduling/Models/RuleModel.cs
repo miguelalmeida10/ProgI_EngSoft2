@@ -8,12 +8,19 @@ namespace HospitalScheduling.Models
 {
     public class RuleModel
     {
-        [Required]
-        public int Birthday { get; set; }
+        //rule name
+        [Required(ErrorMessage = "Please enter the rule name")]
+        [StringLength(50, MinimumLength = 3)]
+        public string Name { get; set; }
 
-        [Required]
-        public int age{ get; set; }
+        //age
+        public int age { get; set; }
 
+        //person that we aply the rule
+        public bool? category { get; set; }
+
+        //date of the rule
+        public DateTime today { get; set; }
 
 
 
