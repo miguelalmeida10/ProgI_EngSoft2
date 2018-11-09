@@ -9,23 +9,20 @@ namespace HospitalScheduling.Models
     public class RuleModel
     {
         //rule name
-        [Required(ErrorMessage = "Please enter the Employ name")]
+        [Required(ErrorMessage = "Please enter the rule name")]
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
 
-        //Categori
-        [Required]
-        public string category { get; set; }
-
         //age
-        [Required]
         public int age { get; set; }
 
-        //date of the begin schedule
-        public DateTime begin { get; set; }
+        //person that we aply the rule
+        public bool? category { get; set; }
 
-        //date of the end of schedule 
-        public DateTime end { get; set; }
+        //date of the rule
+        public DateTime today { get; set; }
+
+
 
     }
 }
