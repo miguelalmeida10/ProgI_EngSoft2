@@ -21,9 +21,30 @@ namespace HospitalScheduling.Controllers
         }
 
         //GET: Doctors 
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(int page = 1)
         {
-            return View(await _context.Doctor.ToListAsync());
+            int numDoctors = await _context.Doctor.CountAsync();
+
+            var doctor = await
+                _context.Doctor
+                    .OrderBy(a => a.Name)
+                    .Skip(PAGE_SIZE * (page - 1))
+                    .Take(PAGE_SIZE)
+                    .ToListAsync();
+
+            return View(
+                new DoctorsListViewModel
+                {
+                    Doctor = doctor,
+                    Pagination = new PagingViewModel
+                    {
+                        CurrentPage = page,
+                        PageSize = PAGE_SIZE,
+                        TotalItems = numDoctors
+
+                    }
+                }
+            );
         }
 
 
@@ -58,13 +79,13 @@ namespace HospitalScheduling.Controllers
             if (!ModelState.IsValid)
             {
                 return View(doctor);
-                           
+
             }
 
             _context.Add(doctor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
-            
+
         }
 
         // GET: Doctors/Edit/5
