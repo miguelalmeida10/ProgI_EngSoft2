@@ -8,8 +8,17 @@ namespace HospitalScheduling.Models
 {
     public class RuleModel
     {
+<<<<<<< HEAD
         //rule name
         [Required(ErrorMessage = "Please enter the rule name")]
+=======
+
+        [Key]
+        public int ValidationID { get; set; }
+
+        //employ name
+        [Required(ErrorMessage = "Please enter the Employ name")]
+>>>>>>> parent of d1c263b... Revert "Missed seed data"
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
 
