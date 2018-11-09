@@ -8,7 +8,11 @@ namespace HospitalScheduling.Models
 {
     public class RuleModel
     {
-        //rule name
+
+        [Key]
+        public int ValidationID { get; set; }
+
+        //employ name
         [Required(ErrorMessage = "Please enter the Employ name")]
         [StringLength(50, MinimumLength = 3)]
         public string Name { get; set; }
