@@ -30,8 +30,6 @@ namespace HospitalScheduling.Models
 
         //date of the rule
         public DateTime today { get; set; }
-
-
-
+        public int ValidationID { get; internal set; }
     }
 }
