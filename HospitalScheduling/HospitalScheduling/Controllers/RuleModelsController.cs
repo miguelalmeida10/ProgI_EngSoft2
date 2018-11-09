@@ -8,8 +8,6 @@ using Microsoft.EntityFrameworkCore;
 using HospitalScheduling.Data;
 using HospitalScheduling.Models;
 
-//https://docs.microsoft.com/en-us/aspnet/core/mvc/models/validation?view=aspnetcore-2.1
-
 namespace HospitalScheduling.Controllers
 {
     public class RuleModelsController : Controller
