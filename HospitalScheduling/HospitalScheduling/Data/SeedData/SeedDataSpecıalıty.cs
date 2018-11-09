@@ -22,7 +22,7 @@ namespace HospitalScheduling.Data
                     new SpecialityforDocs {  Name = "Surgery-General" },
                     new SpecialityforDocs {  Name = "Pediatrics" },
                     new SpecialityforDocs {  Name = "Biochemical Genetics" },
-                    new SpecialityforDocs { Name = "Psychiatry" }
+                    new SpecialityforDocs {  Name = "Psychiatry" }
 
                  );
                 db.SaveChanges();
