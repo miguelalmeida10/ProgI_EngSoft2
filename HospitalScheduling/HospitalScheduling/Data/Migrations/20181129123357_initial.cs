@@ -2,9 +2,9 @@
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 
-namespace HospitalScheduling.Data.Migrations
+namespace HospitalScheduling.Migrations
 {
-    public partial class CreateIdentitySchema : Migration
+    public partial class initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -45,6 +45,77 @@ namespace HospitalScheduling.Data.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_AspNetUsers", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Doctor",
+                columns: table => new
+                {
+                    DoctorID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DoctorNumber = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    CC = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: false),
+                    Birthday = table.Column<DateTime>(nullable: false),
+                    Address = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctor", x => x.DoctorID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "HollidayForm",
+                columns: table => new
+                {
+                    VacationID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DateStart = table.Column<string>(maxLength: 50, nullable: false),
+                    DateEnd = table.Column<string>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_HollidayForm", x => x.VacationID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Nurse",
+                columns: table => new
+                {
+                    NurseID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    NurseNumber = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    Email = table.Column<string>(nullable: false),
+                    Phone = table.Column<string>(nullable: false),
+                    Birthday = table.Column<DateTime>(nullable: false),
+                    BirthdaySon = table.Column<DateTime>(nullable: true),
+                    Address = table.Column<string>(nullable: true),
+                    Sons = table.Column<bool>(nullable: false),
+                    CC = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Nurse", x => x.NurseID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "RuleModel",
+                columns: table => new
+                {
+                    ValidationID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(maxLength: 50, nullable: false),
+                    category = table.Column<string>(nullable: false),
+                    age = table.Column<int>(nullable: false),
+                    begin = table.Column<DateTime>(nullable: false),
+                    end = table.Column<DateTime>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_RuleModel", x => x.ValidationID);
                 });
 
             migrationBuilder.CreateTable(
@@ -153,6 +224,26 @@ namespace HospitalScheduling.Data.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "SpecialityforDocs",
+                columns: table => new
+                {
+                    SpecialityforDocsID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: false),
+                    DoctorID = table.Column<int>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_SpecialityforDocs", x => x.SpecialityforDocsID);
+                    table.ForeignKey(
+                        name: "FK_SpecialityforDocs_Doctor_DoctorID",
+                        column: x => x.DoctorID,
+                        principalTable: "Doctor",
+                        principalColumn: "DoctorID",
+                        onDelete: ReferentialAction.Restrict);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -191,6 +282,11 @@ namespace HospitalScheduling.Data.Migrations
                 column: "NormalizedUserName",
                 unique: true,
                 filter: "[NormalizedUserName] IS NOT NULL");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_SpecialityforDocs_DoctorID",
+                table: "SpecialityforDocs",
+                column: "DoctorID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -211,10 +307,25 @@ namespace HospitalScheduling.Data.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "HollidayForm");
+
+            migrationBuilder.DropTable(
+                name: "Nurse");
+
+            migrationBuilder.DropTable(
+                name: "RuleModel");
+
+            migrationBuilder.DropTable(
+                name: "SpecialityforDocs");
+
+            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Doctor");
         }
     }
 }

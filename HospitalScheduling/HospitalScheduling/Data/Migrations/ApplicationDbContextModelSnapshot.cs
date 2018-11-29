@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace HospitalScheduling.Data.Migrations
+namespace HospitalScheduling.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -21,25 +21,26 @@ namespace HospitalScheduling.Data.Migrations
 
             modelBuilder.Entity("HospitalScheduling.Models.Doctor", b =>
                 {
-                    b.Property<int>("EmployeeID")
+                    b.Property<int>("DoctorID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Adress");
+                    b.Property<string>("Address");
 
                     b.Property<DateTime>("Birthday");
 
-                    b.Property<string>("Email")
-                        .IsRequired();
+                    b.Property<string>("CC");
 
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
+                    b.Property<string>("DoctorNumber");
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("Name");
 
                     b.Property<string>("Phone")
                         .IsRequired();
 
-                    b.HasKey("EmployeeID");
+                    b.HasKey("DoctorID");
 
                     b.ToTable("Doctor");
                 });
@@ -64,25 +65,34 @@ namespace HospitalScheduling.Data.Migrations
 
             modelBuilder.Entity("HospitalScheduling.Models.Nurse", b =>
                 {
-                    b.Property<int>("EmployeeID")
+                    b.Property<int>("NurseID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
-                    b.Property<string>("Adress");
+                    b.Property<string>("Address");
 
                     b.Property<DateTime>("Birthday");
 
+                    b.Property<DateTime?>("BirthdaySon");
+
+                    b.Property<string>("CC");
+
                     b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<bool?>("Sons")
                         .IsRequired();
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<string>("NurseNumber");
+
                     b.Property<string>("Phone")
                         .IsRequired();
 
-                    b.HasKey("EmployeeID");
+                    b.HasKey("NurseID");
 
                     b.ToTable("Nurse");
                 });
@@ -111,16 +121,20 @@ namespace HospitalScheduling.Data.Migrations
                     b.ToTable("RuleModel");
                 });
 
-            modelBuilder.Entity("HospitalScheduling.Models.SpecialityforDocs", b =>
+            modelBuilder.Entity("HospitalScheduling.Models.SpecialityDocs", b =>
                 {
                     b.Property<int>("SpecialityforDocsID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<int?>("DoctorID");
+
                     b.Property<string>("Name")
                         .IsRequired();
 
                     b.HasKey("SpecialityforDocsID");
+
+                    b.HasIndex("DoctorID");
 
                     b.ToTable("SpecialityforDocs");
                 });
@@ -288,6 +302,13 @@ namespace HospitalScheduling.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.SpecialityDocs", b =>
+                {
+                    b.HasOne("HospitalScheduling.Models.Doctor")
+                        .WithMany("SpecialityDocs")
+                        .HasForeignKey("DoctorID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

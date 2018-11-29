@@ -18,11 +18,11 @@ namespace HospitalScheduling.Data
                 if (db.SpecialityforDocs.Any()) return;
 
                 db.SpecialityforDocs.AddRange(
-                    new SpecialityforDocs {  Name = "Emergency Medicine" },
-                    new SpecialityforDocs {  Name = "Surgery-General" },
-                    new SpecialityforDocs {  Name = "Pediatrics" },
-                    new SpecialityforDocs {  Name = "Biochemical Genetics" },
-                    new SpecialityforDocs { Name = "Psychiatry" }
+                    new SpecialityDocs {  Name = "Emergency Medicine" },
+                    new SpecialityDocs {  Name = "Surgery-General" },
+                    new SpecialityDocs {  Name = "Pediatrics" },
+                    new SpecialityDocs {  Name = "Biochemical Genetics" },
+                    new SpecialityDocs { Name = "Psychiatry" }
 
                  );
                 db.SaveChanges();

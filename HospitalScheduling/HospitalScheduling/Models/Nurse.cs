@@ -3,10 +3,14 @@ using System.ComponentModel.DataAnnotations;
 
 namespace HospitalScheduling.Models
 {
-    public class Nurse : Employee
+    public class Nurse
     {
         [Key]
-        public int EmployeeID { get; set; }
+        public int NurseID { get; set; }
+
+        [RegularExpression(@"[E]\d+", ErrorMessage = "Invalid Number")]
+        //Numero da Ordem
+        public string NurseNumber { get; set; }
 
         //name
         [Required(ErrorMessage = "Please enter the name of the Nurse")]
@@ -23,12 +27,24 @@ namespace HospitalScheduling.Models
         [RegularExpression(@"(9[1236]|2\d)\d{7}")]
         public string Phone { get; set; }
 
-        //birthday
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        //abc
+        [DataType(DataType.Date, ErrorMessage = "Please enter a Birthday")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime Birthday { get; set; }
 
-        //adress
+        [DataType(DataType.Date, ErrorMessage = "Please enter a Birthday")]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
+        public DateTime? BirthdaySon { get; set; }
+
+        //Address
         [Display(Name="Address")]
-        public string Adress { get; set; }
+        public string Address { get; set; }
+
+        [Required]
+        public bool? Sons { get; set; }
+
+
+        [RegularExpression(@"\d{8}(\s\d{1})?", ErrorMessage = "Invalid Citizen Card")]
+        public string CC { get; set; }
     }
 }

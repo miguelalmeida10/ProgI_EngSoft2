@@ -34,7 +34,7 @@ namespace HospitalScheduling.Controllers
             }
 
             var nurse = await _context.Nurse
-                .FirstOrDefaultAsync(m => m.EmployeeID == id);
+                .FirstOrDefaultAsync(m => m.NurseID == id);
             if (nurse == null)
             {
                 return NotFound();
@@ -54,7 +54,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeID,Name,Email,Phone,Birthday,Adress")] Nurse nurse)
+        public async Task<IActionResult> Create([Bind("NurseID,NurseNumber,Name,Email,Phone,Birthday,Address,Sons,BirthdaySon,CC")] Nurse nurse)
         {
             if (ModelState.IsValid)
             {
@@ -86,9 +86,9 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeID,Name,Email,Phone,Birthday,Adress")] Nurse nurse)
+        public async Task<IActionResult> Edit(int id, [Bind("NurseID,NurseNumber,Name,Email,Phone,Birthday,BirthdaySon,Address,Sons,CC")] Nurse nurse)
         {
-            if (id != nurse.EmployeeID)
+            if (id != nurse.NurseID)
             {
                 return NotFound();
             }
@@ -102,7 +102,7 @@ namespace HospitalScheduling.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!NurseExists(nurse.EmployeeID))
+                    if (!NurseExists(nurse.NurseID))
                     {
                         return NotFound();
                     }
@@ -125,7 +125,7 @@ namespace HospitalScheduling.Controllers
             }
 
             var nurse = await _context.Nurse
-                .FirstOrDefaultAsync(m => m.EmployeeID == id);
+                .FirstOrDefaultAsync(m => m.NurseID == id);
             if (nurse == null)
             {
                 return NotFound();
@@ -147,7 +147,7 @@ namespace HospitalScheduling.Controllers
 
         private bool NurseExists(int id)
         {
-            return _context.Nurse.Any(e => e.EmployeeID == id);
+            return _context.Nurse.Any(e => e.NurseID == id);
         }
     }
 }

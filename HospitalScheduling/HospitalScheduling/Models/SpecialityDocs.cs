@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 namespace HospitalScheduling.Models
 
 {
-    public class SpecialityforDocs
+    public class SpecialityDocs
     {
-        
+        [Key]
         public int SpecialityforDocsID { get; set; }
 
         [Required]

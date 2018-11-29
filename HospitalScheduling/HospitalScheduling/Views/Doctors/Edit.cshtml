@@ -23,7 +23,7 @@
         <div class="col-md-4">
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-                <input type="hidden" asp-for="EmployeeID" />
+                <input type="hidden" asp-for="DoctorID" />
                 <table class="table-borderless">
                     <tr>
                         <td style="min-width:5em;text-align:justify">
@@ -76,14 +76,14 @@
                     </tr>
                     <tr>
                         <td style="min-width:5em;text-align:justify">
-                            <label asp-for="Adress" class="control-label" style="margin-top:10px">
+                            <label asp-for="Address" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Adress" class="form-control" placeholder="Insert an address" style="text-align:center;" />
+                            <input asp-for="Address" class="form-control" placeholder="Insert an address" style="text-align:center;" />
                         </td>
                         <td>
-                            <span asp-validation-for="Adress" class="text-danger"></span>
+                            <span asp-validation-for="Address" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>

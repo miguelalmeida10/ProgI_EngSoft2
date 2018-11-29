@@ -1,34 +1,44 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 
 namespace HospitalScheduling.Models
 {
-    public class Doctor : Employee
+    public class Doctor
     {
-        [Key]
-        public int EmployeeID { get; set; }
+        public int DoctorID { get; set; }
 
-        //name
-        [Required(ErrorMessage = "Please enter the name of the Doctor")]
-        [StringLength(50, MinimumLength = 3)]
+
+        [RegularExpression(@"\d{7}(\s\d{1})?", ErrorMessage = "Invalid Number")]
+        //Numero da Ordem
+        public string DoctorNumber { get; set; }
+
+        [RegularExpression(@"([A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\s]+)", ErrorMessage = "Invalid Name")]
         public string Name { get; set; }
 
-        //email
-        [Required(ErrorMessage = "Please enter your email")]
-        [EmailAddress]
+        [RegularExpression(@"(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})", ErrorMessage = "Invalid Email ")]
         public string Email { get; set; }
+
+        [RegularExpression(@"\d{8}(\s\d{1})?", ErrorMessage = "Invalid Citizen Card")]
+
+
+        public string CC { get; set; }
 
         //phone
         [Required(ErrorMessage = "Please enter the phone number")]
         [RegularExpression(@"(9[1236]|2\d)\d{7}")]
         public string Phone { get; set; }
 
-        //birthday
-        [DisplayFormat(DataFormatString = "{0:dd-MM-yyyy}")]
+        //abc
+        [Required(ErrorMessage = "Please enter a Birthday")]
+        [DataType(DataType.Date)]
+        [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime Birthday { get; set; }
 
-        //adress
         [Display(Name="Address")]
-        public string Adress { get; set; }
+        public string Address { get; set; }
+
+        public ICollection<SpecialityDocs> SpecialityDocs { get; set; }
+
     }
 }

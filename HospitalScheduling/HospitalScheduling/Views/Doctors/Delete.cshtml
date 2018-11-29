@@ -48,9 +48,9 @@
             </tr>
             <tr>
                 <td style="min-width:5em;text-align:justify">
-                    <b>@Html.DisplayNameFor(model => model.Adress): </b>
+                    <b>@Html.DisplayNameFor(model => model.Address): </b>
                 </td>
-                <td>@Html.DisplayFor(model => model.Adress)</td>
+                <td>@Html.DisplayFor(model => model.Address)</td>
             </tr>
         </table>
     </div>
@@ -58,7 +58,7 @@
 
 
     <form asp-action="Delete">
-        <input type="hidden" asp-for="EmployeeID" />
+        <input type="hidden" asp-for="DoctorID" />
         <input type="submit" value="Delete" class="btn btn-danger" /> 
         <a asp-action="Index" class="btn btn-info" >Back to List</a>
     </form>

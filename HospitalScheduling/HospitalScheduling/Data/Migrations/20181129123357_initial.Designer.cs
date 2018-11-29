@@ -7,11 +7,11 @@ using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
-namespace HospitalScheduling.Data.Migrations
+namespace HospitalScheduling.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181025145508_teste2")]
-    partial class teste2
+    [Migration("20181129123357_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,126 @@ namespace HospitalScheduling.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("HospitalScheduling.Models.Doctor", b =>
+                {
+                    b.Property<int>("DoctorID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address");
+
+                    b.Property<DateTime>("Birthday");
+
+                    b.Property<string>("CC");
+
+                    b.Property<string>("DoctorNumber");
+
+                    b.Property<string>("Email");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Phone")
+                        .IsRequired();
+
+                    b.HasKey("DoctorID");
+
+                    b.ToTable("Doctor");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.HollidayForm", b =>
+                {
+                    b.Property<int>("VacationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("DateEnd")
+                        .IsRequired();
+
+                    b.Property<string>("DateStart")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.HasKey("VacationID");
+
+                    b.ToTable("HollidayForm");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.Nurse", b =>
+                {
+                    b.Property<int>("NurseID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Address");
+
+                    b.Property<DateTime>("Birthday");
+
+                    b.Property<DateTime?>("BirthdaySon");
+
+                    b.Property<string>("CC");
+
+                    b.Property<string>("Email")
+                        .IsRequired();
+
+                    b.Property<bool?>("Sons")
+                        .IsRequired();
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<string>("NurseNumber");
+
+                    b.Property<string>("Phone")
+                        .IsRequired();
+
+                    b.HasKey("NurseID");
+
+                    b.ToTable("Nurse");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.RuleModel", b =>
+                {
+                    b.Property<int>("ValidationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasMaxLength(50);
+
+                    b.Property<int>("age");
+
+                    b.Property<DateTime>("begin");
+
+                    b.Property<string>("category")
+                        .IsRequired();
+
+                    b.Property<DateTime>("end");
+
+                    b.HasKey("ValidationID");
+
+                    b.ToTable("RuleModel");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.SpecialityDocs", b =>
+                {
+                    b.Property<int>("SpecialityforDocsID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int?>("DoctorID");
+
+                    b.Property<string>("Name")
+                        .IsRequired();
+
+                    b.HasKey("SpecialityforDocsID");
+
+                    b.HasIndex("DoctorID");
+
+                    b.ToTable("SpecialityforDocs");
+                });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
@@ -184,6 +304,13 @@ namespace HospitalScheduling.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.SpecialityDocs", b =>
+                {
+                    b.HasOne("HospitalScheduling.Models.Doctor")
+                        .WithMany("SpecialityDocs")
+                        .HasForeignKey("DoctorID");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

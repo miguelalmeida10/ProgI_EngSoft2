@@ -12,7 +12,6 @@ namespace HospitalScheduling.Controllers
 {
     public class DoctorsController : Controller
     {
-        private const int PAGE_SIZE = 10;
         private readonly ApplicationDbContext _context;
 
         public DoctorsController(ApplicationDbContext context)
@@ -20,57 +19,50 @@ namespace HospitalScheduling.Controllers
             _context = context;
         }
 
-        //GET: Doctors 
+        // GET: Doctors
         public async Task<IActionResult> Index()
         {
             return View(await _context.Doctor.ToListAsync());
         }
-
 
         // GET: Doctors/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
             {
-                return RedirectToAction("Index");
-                // return NotFound();
+                return NotFound();
             }
 
             var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.EmployeeID == id);
-
+                .FirstOrDefaultAsync(m => m.DoctorID == id);
             if (doctor == null)
             {
-                return NotFound(); //view with page 'now workıng on thıs'
+                return NotFound();
             }
 
             return View(doctor);
         }
 
-        // GET: Doctors/Create/5
+        // GET: Doctors/Create
         public IActionResult Create()
         {
             return View();
         }
-
 
         // POST: Doctors/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("EmployeeID,Name,Email,Phone,Birthday,Adress")] Doctor doctor)
+        public async Task<IActionResult> Create([Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,Address")] Doctor doctor)
         {
-            if (!ModelState.IsValid)
+            if (ModelState.IsValid)
             {
-                return View(doctor);
-
+                _context.Add(doctor);
+                await _context.SaveChangesAsync();
+                return RedirectToAction(nameof(Index));
             }
-
-            _context.Add(doctor);
-            await _context.SaveChangesAsync();
-            return RedirectToAction(nameof(Index));
-
+            return View(doctor);
         }
 
         // GET: Doctors/Edit/5
@@ -94,9 +86,9 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("EmployeeID,Name,Email,Phone,Birthday,Adress")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,Address")] Doctor doctor)
         {
-            if (id != doctor.EmployeeID)
+            if (id != doctor.DoctorID)
             {
                 return NotFound();
             }
@@ -110,7 +102,7 @@ namespace HospitalScheduling.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorExists(doctor.EmployeeID))
+                    if (!DoctorExists(doctor.DoctorID))
                     {
                         return NotFound();
                     }
@@ -133,7 +125,7 @@ namespace HospitalScheduling.Controllers
             }
 
             var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.EmployeeID == id);
+                .FirstOrDefaultAsync(m => m.DoctorID == id);
             if (doctor == null)
             {
                 return NotFound();
@@ -155,7 +147,7 @@ namespace HospitalScheduling.Controllers
 
         private bool DoctorExists(int id)
         {
-            return _context.Doctor.Any(e => e.EmployeeID == id);
+            return _context.Doctor.Any(e => e.DoctorID == id);
         }
     }
 }
