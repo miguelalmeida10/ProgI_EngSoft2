@@ -114,6 +114,23 @@ namespace HospitalScheduling.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Shift",
+                columns: table => new
+                {
+                    ShiftID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true),
+                    StartDate = table.Column<DateTime>(nullable: false),
+                    DurationMinutes = table.Column<int>(nullable: false),
+                    DurationSeconds = table.Column<int>(nullable: false),
+                    DurationHours = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Shift", x => x.ShiftID);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "AspNetRoleClaims",
                 columns: table => new
                 {
@@ -245,6 +262,32 @@ namespace HospitalScheduling.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "DoctorShifts",
+                columns: table => new
+                {
+                    DoctorShiftID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    DoctorID = table.Column<int>(nullable: false),
+                    ShiftID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_DoctorShifts", x => x.DoctorShiftID);
+                    table.ForeignKey(
+                        name: "FK_DoctorShifts_Doctor_DoctorID",
+                        column: x => x.DoctorID,
+                        principalTable: "Doctor",
+                        principalColumn: "DoctorID",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_DoctorShifts_Shift_ShiftID",
+                        column: x => x.ShiftID,
+                        principalTable: "Shift",
+                        principalColumn: "ShiftID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -288,6 +331,16 @@ namespace HospitalScheduling.Migrations
                 name: "IX_Doctor_SpecialityID",
                 table: "Doctor",
                 column: "SpecialityID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorShifts_DoctorID",
+                table: "DoctorShifts",
+                column: "DoctorID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_DoctorShifts_ShiftID",
+                table: "DoctorShifts",
+                column: "ShiftID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -308,7 +361,7 @@ namespace HospitalScheduling.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
-                name: "Doctor");
+                name: "DoctorShifts");
 
             migrationBuilder.DropTable(
                 name: "HollidayForm");
@@ -324,6 +377,12 @@ namespace HospitalScheduling.Migrations
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
+
+            migrationBuilder.DropTable(
+                name: "Doctor");
+
+            migrationBuilder.DropTable(
+                name: "Shift");
 
             migrationBuilder.DropTable(
                 name: "DoctorsBySpeciality");

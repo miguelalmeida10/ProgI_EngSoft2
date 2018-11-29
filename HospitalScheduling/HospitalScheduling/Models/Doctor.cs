@@ -44,5 +44,7 @@ namespace HospitalScheduling.Models
         public int SpecialityID { get; set; }
         public Speciality Speciality { get; set; }
 
+        [Display(Name = "Shifts of the doctor")]
+        public IEnumerable<DoctorShifts> Shifts { get; set; }
     }
 }

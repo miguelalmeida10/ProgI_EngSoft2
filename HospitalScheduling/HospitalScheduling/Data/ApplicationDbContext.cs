@@ -24,6 +24,18 @@ namespace HospitalScheduling.Data
                     .HasConstraintName("FK_SpecialityID");
             #endregion
 
+            #region N:M
+            builder.Entity<DoctorShifts>()
+                    .HasOne(ds => ds.Doctor)
+                    .WithMany(d => d.Shifts)
+                    .HasForeignKey(ds => ds.DoctorID);
+
+            builder.Entity<DoctorShifts>()
+                    .HasOne(ds => ds.Shift)
+                    .WithMany(d => d.Doctors)
+                    .HasForeignKey(ds => ds.ShiftID);
+            #endregion
+
             base.OnModelCreating(builder);
         }
 
@@ -34,6 +46,10 @@ namespace HospitalScheduling.Data
         public DbSet<HospitalScheduling.Models.Speciality> DoctorsBySpeciality  { get; set; }
 
         public DbSet<HospitalScheduling.Models.RuleModel> RuleModel { get; set; }
+
+        public DbSet<HospitalScheduling.Models.Shift> Shift { get; set; }
+
+        public DbSet<HospitalScheduling.Models.DoctorShifts> DoctorShifts { get; set; }
         
     }
 }

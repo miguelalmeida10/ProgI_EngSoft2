@@ -31,7 +31,24 @@ namespace HospitalScheduling.Data
                 {
                     EnsureDoctorsPopulated(db);
                 }
+
+                if (!db.Shift.Any())
+                {
+                    EnsureShiftPopulated(db);
+                }
             }
+        }
+
+        private static void EnsureShiftPopulated(ApplicationDbContext db)
+        {
+            db.Shift.AddRange(
+                 new Shift { Name = "Morning Nurses Shift", StartDate = new DateTime(2018, 4, 1, 9, 0, 0), DurationHours = 5, DurationMinutes = 30, DurationSeconds = 0 },
+                 new Shift { Name = "Afternoon Doctors Shift", StartDate = new DateTime(2018, 4, 1, 14, 30, 0), DurationHours = 5, DurationMinutes = 15, DurationSeconds = 50 },
+                 new Shift { Name = "Night Nurses Shift", StartDate = new DateTime(2018, 4, 1, 19, 45, 50), DurationHours = 5, DurationMinutes = 30, DurationSeconds = 0 }
+
+              );
+
+            db.SaveChanges();
         }
 
         private static void EnsureNursesPopulated(ApplicationDbContext db)

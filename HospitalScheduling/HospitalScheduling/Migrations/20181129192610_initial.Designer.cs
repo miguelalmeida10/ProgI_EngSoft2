@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalScheduling.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181129162017_initial")]
+    [Migration("20181129192610_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -49,6 +49,25 @@ namespace HospitalScheduling.Migrations
                     b.HasIndex("SpecialityID");
 
                     b.ToTable("Doctor");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.DoctorShifts", b =>
+                {
+                    b.Property<int>("DoctorShiftID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DoctorID");
+
+                    b.Property<int>("ShiftID");
+
+                    b.HasKey("DoctorShiftID");
+
+                    b.HasIndex("DoctorID");
+
+                    b.HasIndex("ShiftID");
+
+                    b.ToTable("DoctorShifts");
                 });
 
             modelBuilder.Entity("HospitalScheduling.Models.HollidayForm", b =>
@@ -125,6 +144,27 @@ namespace HospitalScheduling.Migrations
                     b.HasKey("ValidationID");
 
                     b.ToTable("RuleModel");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.Shift", b =>
+                {
+                    b.Property<int>("ShiftID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DurationHours");
+
+                    b.Property<int>("DurationMinutes");
+
+                    b.Property<int>("DurationSeconds");
+
+                    b.Property<string>("Name");
+
+                    b.Property<DateTime>("StartDate");
+
+                    b.HasKey("ShiftID");
+
+                    b.ToTable("Shift");
                 });
 
             modelBuilder.Entity("HospitalScheduling.Models.Speciality", b =>
@@ -314,6 +354,19 @@ namespace HospitalScheduling.Migrations
                         .WithMany("Doctors")
                         .HasForeignKey("SpecialityID")
                         .HasConstraintName("FK_SpecialityID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.DoctorShifts", b =>
+                {
+                    b.HasOne("HospitalScheduling.Models.Doctor", "Doctor")
+                        .WithMany("Shifts")
+                        .HasForeignKey("DoctorID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HospitalScheduling.Models.Shift", "Shift")
+                        .WithMany("Doctors")
+                        .HasForeignKey("ShiftID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

@@ -1,0 +1,48 @@
+﻿@model HospitalScheduling.Models.Shift
+
+@{
+    ViewData["Title"] = "Details";
+}
+
+<h2>Details</h2>
+
+<div>
+    <h4>Shift</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.StartDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.StartDate)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DurationMinutes)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DurationMinutes)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DurationSeconds)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DurationSeconds)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.DurationHours)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.DurationHours)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.ShiftID">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
