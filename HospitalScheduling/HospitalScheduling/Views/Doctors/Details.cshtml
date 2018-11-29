@@ -4,45 +4,57 @@
     ViewData["Title"] = "Details";
 }
 
-<h2>Details</h2>
-
-<div>
-    <h4>Doctor</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Email)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Email)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Phone)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Phone)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Birthday)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Birthday)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Adress)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Adress)
-        </dd>
-    </dl>
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Doctors - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">Doctors - @ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
 </div>
-<div>
-    <a asp-action="Edit" asp-route-id="@Model.EmployeeID">Edit</a> |
-    <a asp-action="Index">Back to List</a>
-</div>
+<br />
+<center>
+    <div>
+        <table>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Name): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Name)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Email): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Email)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Phone): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Phone)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Birthday): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Birthday)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Adress): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Adress)</td>
+            </tr>
+        </table>
+    </div>
+    <br />
+    <div>
+        <a asp-action="Edit" asp-route-id="@Model.EmployeeID" class="btn btn-success">Edit</a>
+        <a asp-action="Index" class="btn btn-info">Back to List</a>
+    </div>
+    <br />
+</center>

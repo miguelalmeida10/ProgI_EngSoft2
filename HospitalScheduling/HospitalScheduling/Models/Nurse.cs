@@ -28,6 +28,7 @@ namespace HospitalScheduling.Models
         public DateTime Birthday { get; set; }
 
         //adress
+        [Display(Name="Address")]
         public string Adress { get; set; }
     }
 }
