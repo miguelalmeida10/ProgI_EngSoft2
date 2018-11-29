@@ -4,7 +4,19 @@
     ViewData["Title"] = "Delete";
 }
 
-<h2>Delete</h2>
+
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated" style="margin-top:-420px">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Nurses - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">Nurses - @ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
 
 <h3>Are you sure you want to delete this?</h3>
 <div>
@@ -42,7 +54,7 @@
             @Html.DisplayFor(model => model.Adress)
         </dd>
     </dl>
-    
+
     <form asp-action="Delete">
         <input type="hidden" asp-for="EmployeeID" />
         <input type="submit" value="Delete" class="btn btn-default" /> |

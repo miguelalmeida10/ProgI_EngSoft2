@@ -47,6 +47,12 @@ namespace HospitalScheduling.Controllers
             return View(doctor);
         }
 
+        // GET: Doctors/Create/5
+        public IActionResult Create()
+        {
+            return View();
+        }
+
 
         // POST: Doctors/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
