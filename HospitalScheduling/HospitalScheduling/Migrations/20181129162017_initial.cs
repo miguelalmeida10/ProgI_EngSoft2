@@ -48,22 +48,17 @@ namespace HospitalScheduling.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctor",
+                name: "DoctorsBySpeciality",
                 columns: table => new
                 {
-                    DoctorID = table.Column<int>(nullable: false)
+                    SpecialityID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DoctorNumber = table.Column<string>(nullable: true),
-                    Name = table.Column<string>(nullable: true),
-                    Email = table.Column<string>(nullable: true),
-                    CC = table.Column<string>(nullable: true),
-                    Phone = table.Column<string>(nullable: false),
-                    Birthday = table.Column<DateTime>(nullable: false),
-                    Address = table.Column<string>(nullable: true)
+                    Name = table.Column<string>(nullable: false),
+                    RegisterDate = table.Column<DateTime>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctor", x => x.DoctorID);
+                    table.PrimaryKey("PK_DoctorsBySpeciality", x => x.SpecialityID);
                 });
 
             migrationBuilder.CreateTable(
@@ -225,23 +220,29 @@ namespace HospitalScheduling.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "SpecialityforDocs",
+                name: "Doctor",
                 columns: table => new
                 {
-                    SpecialityforDocsID = table.Column<int>(nullable: false)
+                    DoctorID = table.Column<int>(nullable: false)
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: false),
-                    DoctorID = table.Column<int>(nullable: true)
+                    DoctorNumber = table.Column<string>(nullable: true),
+                    Name = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
+                    CC = table.Column<string>(nullable: true),
+                    Phone = table.Column<string>(nullable: false),
+                    Birthday = table.Column<DateTime>(nullable: false),
+                    Address = table.Column<string>(nullable: true),
+                    SpecialityID = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_SpecialityforDocs", x => x.SpecialityforDocsID);
+                    table.PrimaryKey("PK_Doctor", x => x.DoctorID);
                     table.ForeignKey(
-                        name: "FK_SpecialityforDocs_Doctor_DoctorID",
-                        column: x => x.DoctorID,
-                        principalTable: "Doctor",
-                        principalColumn: "DoctorID",
-                        onDelete: ReferentialAction.Restrict);
+                        name: "FK_SpecialityID",
+                        column: x => x.SpecialityID,
+                        principalTable: "DoctorsBySpeciality",
+                        principalColumn: "SpecialityID",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -284,9 +285,9 @@ namespace HospitalScheduling.Migrations
                 filter: "[NormalizedUserName] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_SpecialityforDocs_DoctorID",
-                table: "SpecialityforDocs",
-                column: "DoctorID");
+                name: "IX_Doctor_SpecialityID",
+                table: "Doctor",
+                column: "SpecialityID");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -307,6 +308,9 @@ namespace HospitalScheduling.Migrations
                 name: "AspNetUserTokens");
 
             migrationBuilder.DropTable(
+                name: "Doctor");
+
+            migrationBuilder.DropTable(
                 name: "HollidayForm");
 
             migrationBuilder.DropTable(
@@ -316,16 +320,13 @@ namespace HospitalScheduling.Migrations
                 name: "RuleModel");
 
             migrationBuilder.DropTable(
-                name: "SpecialityforDocs");
-
-            migrationBuilder.DropTable(
                 name: "AspNetRoles");
 
             migrationBuilder.DropTable(
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Doctor");
+                name: "DoctorsBySpeciality");
         }
     }
 }

@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HospitalScheduling.Models
 {
     public class Doctor
     {
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int DoctorID { get; set; }
 
 
@@ -37,8 +39,10 @@ namespace HospitalScheduling.Models
 
         [Display(Name="Address")]
         public string Address { get; set; }
-
-        public ICollection<SpecialityDocs> SpecialityDocs { get; set; }
+        
+        [ForeignKey("FK_SpecialityID")]
+        public int SpecialityID { get; set; }
+        public Speciality Speciality { get; set; }
 
     }
 }

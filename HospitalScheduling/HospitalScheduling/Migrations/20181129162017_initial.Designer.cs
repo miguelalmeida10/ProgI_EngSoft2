@@ -4,14 +4,16 @@ using HospitalScheduling.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace HospitalScheduling.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181129162017_initial")]
+    partial class initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -40,7 +42,11 @@ namespace HospitalScheduling.Migrations
                     b.Property<string>("Phone")
                         .IsRequired();
 
+                    b.Property<int>("SpecialityID");
+
                     b.HasKey("DoctorID");
+
+                    b.HasIndex("SpecialityID");
 
                     b.ToTable("Doctor");
                 });
@@ -80,9 +86,6 @@ namespace HospitalScheduling.Migrations
                     b.Property<string>("Email")
                         .IsRequired();
 
-                    b.Property<bool?>("Sons")
-                        .IsRequired();
-
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(50);
@@ -90,6 +93,9 @@ namespace HospitalScheduling.Migrations
                     b.Property<string>("NurseNumber");
 
                     b.Property<string>("Phone")
+                        .IsRequired();
+
+                    b.Property<bool?>("Sons")
                         .IsRequired();
 
                     b.HasKey("NurseID");
@@ -121,22 +127,20 @@ namespace HospitalScheduling.Migrations
                     b.ToTable("RuleModel");
                 });
 
-            modelBuilder.Entity("HospitalScheduling.Models.SpecialityDocs", b =>
+            modelBuilder.Entity("HospitalScheduling.Models.Speciality", b =>
                 {
-                    b.Property<int>("SpecialityforDocsID")
+                    b.Property<int>("SpecialityID")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<int?>("DoctorID");
 
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.HasKey("SpecialityforDocsID");
+                    b.Property<DateTime>("RegisterDate");
 
-                    b.HasIndex("DoctorID");
+                    b.HasKey("SpecialityID");
 
-                    b.ToTable("SpecialityforDocs");
+                    b.ToTable("DoctorsBySpeciality");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -304,11 +308,13 @@ namespace HospitalScheduling.Migrations
                     b.ToTable("AspNetUserTokens");
                 });
 
-            modelBuilder.Entity("HospitalScheduling.Models.SpecialityDocs", b =>
+            modelBuilder.Entity("HospitalScheduling.Models.Doctor", b =>
                 {
-                    b.HasOne("HospitalScheduling.Models.Doctor")
-                        .WithMany("SpecialityDocs")
-                        .HasForeignKey("DoctorID");
+                    b.HasOne("HospitalScheduling.Models.Speciality", "Speciality")
+                        .WithMany("Doctors")
+                        .HasForeignKey("SpecialityID")
+                        .HasConstraintName("FK_SpecialityID")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

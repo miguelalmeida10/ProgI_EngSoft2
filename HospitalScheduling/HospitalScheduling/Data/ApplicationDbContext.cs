@@ -13,11 +13,25 @@ namespace HospitalScheduling.Data
             : base(options)
         {
         }
+
+        protected override void OnModelCreating(ModelBuilder builder)
+        {
+            #region 1:N
+            builder.Entity<Doctor>()
+                    .HasOne(d => d.Speciality)
+                    .WithMany(s => s.Doctors)
+                    .HasForeignKey(d => d.SpecialityID)
+                    .HasConstraintName("FK_SpecialityID");
+            #endregion
+
+            base.OnModelCreating(builder);
+        }
+
         public DbSet<HospitalScheduling.Models.Doctor> Doctor { get; set; }
         public DbSet<HospitalScheduling.Models.Nurse> Nurse { get; set; }
         public DbSet<HospitalScheduling.Models.HollidayForm> HollidayForm { get; set; }
 
-        public DbSet<HospitalScheduling.Models.SpecialityDocs> SpecialityforDocs  { get; set; }
+        public DbSet<HospitalScheduling.Models.Speciality> DoctorsBySpeciality  { get; set; }
 
         public DbSet<HospitalScheduling.Models.RuleModel> RuleModel { get; set; }
         

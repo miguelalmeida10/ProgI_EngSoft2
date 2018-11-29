@@ -15,14 +15,14 @@ namespace HospitalScheduling.Data
             {
                 var db = serviceScope.ServiceProvider.GetService<ApplicationDbContext>();
 
-                if (db.SpecialityforDocs.Any()) return;
+                if (db.DoctorsBySpeciality.Any()) return;
 
-                db.SpecialityforDocs.AddRange(
-                    new SpecialityDocs {  Name = "Emergency Medicine" },
-                    new SpecialityDocs {  Name = "Surgery-General" },
-                    new SpecialityDocs {  Name = "Pediatrics" },
-                    new SpecialityDocs {  Name = "Biochemical Genetics" },
-                    new SpecialityDocs { Name = "Psychiatry" }
+                db.DoctorsBySpeciality.AddRange(
+                    new Speciality {  Name = "Emergency Medicine" },
+                    new Speciality {  Name = "Surgery-General" },
+                    new Speciality {  Name = "Pediatrics" },
+                    new Speciality {  Name = "Biochemical Genetics" },
+                    new Speciality { Name = "Psychiatry" }
 
                  );
                 db.SaveChanges();

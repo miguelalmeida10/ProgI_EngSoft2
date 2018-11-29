@@ -42,10 +42,27 @@
                 </tr>
                 <tr>
                     <td style="min-width:5em;text-align:justify">
+                        <b>@Html.DisplayNameFor(model => model.Sons): </b>
+                    </td>
+                    <td>@Html.DisplayFor(model => model.Sons)</td>
+                </tr>
+                <tr>
+                    <td style="min-width:5em;text-align:justify">
                         <b>@Html.DisplayNameFor(model => model.Birthday): </b>
                     </td>
                     <td>@Html.DisplayFor(model => model.Birthday)</td>
                 </tr>
+                @{
+                    if (Model.Sons.Value == true)
+                    {
+                        <tr>
+                            <td style="min-width:5em;text-align:justify">
+                                <b>@Html.DisplayNameFor(model => model.BirthdaySon): </b>
+                            </td>
+                            <td>@Html.DisplayFor(model => model.BirthdaySon)</td>
+                        </tr>
+                    }
+                }              
                 <tr>
                     <td style="min-width:5em;text-align:justify">
                         <b>@Html.DisplayNameFor(model => model.Address): </b>

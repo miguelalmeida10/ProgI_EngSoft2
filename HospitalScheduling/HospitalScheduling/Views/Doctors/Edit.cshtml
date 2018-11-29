@@ -76,6 +76,18 @@
                     </tr>
                     <tr>
                         <td style="min-width:5em;text-align:justify">
+                            <label asp-for="Speciality" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td>
+                            <input asp-for="Speciality" class="form-control" placeholder="Insert a birth date" style="text-align:center" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="Speciality" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:5em;text-align:justify">
                             <label asp-for="Address" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>

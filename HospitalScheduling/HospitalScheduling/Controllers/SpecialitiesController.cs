@@ -10,22 +10,22 @@ using HospitalScheduling.Models;
 
 namespace HospitalScheduling.Controllers
 {
-    public class DoctorsController : Controller
+    public class SpecialitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public DoctorsController(ApplicationDbContext context)
+        public SpecialitiesController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Doctors
+        // GET: Specialities
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Doctor.ToListAsync());
+            return View(await _context.DoctorsBySpeciality.ToListAsync());
         }
 
-        // GET: Doctors/Details/5
+        // GET: Specialities/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -33,39 +33,39 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.DoctorID == id);
-            if (doctor == null)
+            var speciality = await _context.DoctorsBySpeciality
+                .FirstOrDefaultAsync(m => m.SpecialityID == id);
+            if (speciality == null)
             {
                 return NotFound();
             }
 
-            return View(doctor);
+            return View(speciality);
         }
 
-        // GET: Doctors/Create
+        // GET: Specialities/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Doctors/Create
+        // POST: Specialities/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,Address,SpecialityID")] Doctor doctor)
+        public async Task<IActionResult> Create([Bind("SpecialityID,Name,RegisterDate")] Speciality speciality)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(doctor);
+                _context.Add(speciality);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+            return View(speciality);
         }
 
-        // GET: Doctors/Edit/5
+        // GET: Specialities/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -73,22 +73,22 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor.FindAsync(id);
-            if (doctor == null)
+            var speciality = await _context.DoctorsBySpeciality.FindAsync(id);
+            if (speciality == null)
             {
                 return NotFound();
             }
-            return View(doctor);
+            return View(speciality);
         }
 
-        // POST: Doctors/Edit/5
+        // POST: Specialities/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,Address,SpecialityID")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("SpecialityID,Name,RegisterDate")] Speciality speciality)
         {
-            if (id != doctor.DoctorID)
+            if (id != speciality.SpecialityID)
             {
                 return NotFound();
             }
@@ -97,12 +97,12 @@ namespace HospitalScheduling.Controllers
             {
                 try
                 {
-                    _context.Update(doctor);
+                    _context.Update(speciality);
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!DoctorExists(doctor.DoctorID))
+                    if (!SpecialityExists(speciality.SpecialityID))
                     {
                         return NotFound();
                     }
@@ -113,10 +113,10 @@ namespace HospitalScheduling.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            return View(doctor);
+            return View(speciality);
         }
 
-        // GET: Doctors/Delete/5
+        // GET: Specialities/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -124,30 +124,30 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
-                .FirstOrDefaultAsync(m => m.DoctorID == id);
-            if (doctor == null)
+            var speciality = await _context.DoctorsBySpeciality
+                .FirstOrDefaultAsync(m => m.SpecialityID == id);
+            if (speciality == null)
             {
                 return NotFound();
             }
 
-            return View(doctor);
+            return View(speciality);
         }
 
-        // POST: Doctors/Delete/5
+        // POST: Specialities/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var doctor = await _context.Doctor.FindAsync(id);
-            _context.Doctor.Remove(doctor);
+            var speciality = await _context.DoctorsBySpeciality.FindAsync(id);
+            _context.DoctorsBySpeciality.Remove(speciality);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
-        private bool DoctorExists(int id)
+        private bool SpecialityExists(int id)
         {
-            return _context.Doctor.Any(e => e.DoctorID == id);
+            return _context.DoctorsBySpeciality.Any(e => e.SpecialityID == id);
         }
     }
 }
