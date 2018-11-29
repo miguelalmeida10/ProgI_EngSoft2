@@ -4,6 +4,19 @@
  * Copyright 2011-2018 Twitter, Inc.
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
+.circle {
+    height: 100px;
+    width: 100px;
+    border-radius: 50%;
+}
+
+.text-circle {
+    height: 100px;
+    width: 100px;
+    -webkit-clip-path: circle(50% at 50% 50%);
+    clip-path: circle(50% at 50% 50%);
+}
+
 :root {
   --blue: #007bff;
   --indigo: #6610f2;

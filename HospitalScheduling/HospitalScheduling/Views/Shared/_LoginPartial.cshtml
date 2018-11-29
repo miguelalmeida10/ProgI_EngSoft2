@@ -8,10 +8,10 @@
     <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li>
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @UserManager.GetUserName(User)!</a>
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><img class="circle text-circle" style=" background-position: center;background-size: 100%;width: 50px;height: 50px;border: solid 2px black;background-image:url('/images/@(UserManager.GetUserName(User).ToString().ToString().Split("@")[0])_profile.jpg')" /></a>
             </li>
-            <li>
-                <button type="submit"  class="nav-link">Logout</button>
+            <li style="margin-left:5px;margin-top:8px">
+                <button type="submit" class="btn btn-dark">Logout</button>
             </li>
         </ul>
     </form>
