@@ -15,41 +15,93 @@
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/animate.css">
+
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/css/aos.css">
+    <link rel="stylesheet" href="~/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="~/css/flaticon.css">
+    <link rel="stylesheet" href="~/css/icomoon.css">
+    <link rel="stylesheet" href="~/css/style.css">
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+<body data-aos-easing="slide" data-aos-duration="800" data-aos-delay="0">
+    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
         <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">HospitalScheduling</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Doctors" asp-action="Index">Doctors</a></li>
-                    <li><a asp-area="" asp-controller="Nurses" asp-action="Index">Nurses</a></li>
-                    <li><a asp-area="" asp-controller="HollidayForms" asp-action="Index">Holliday Form</a></li>
-                    <li><a asp-area="" asp-controller="RuleModels" asp-action="Index">Rules</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><i class="flaticon-pharmacy"></i><span>Hospital</span>Scheduling</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span> Menu
+            </button>
+            <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active"><a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
+                    <li class="nav-item"><a asp-area="" asp-controller="Doctors" asp-action="Index" class="nav-link">Doctors</a></li>
+                    <li class="nav-item"><a asp-area="" asp-controller="Nurses" asp-action="Index" class="nav-link">Nurses</a></li>
+                    <li class="nav-item"><a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="nav-link">Holiday Form</a></li>
+                    <partial name="_LoginPartial" />
                 </ul>
-                <partial name="_LoginPartial" />
             </div>
         </div>
     </nav>
-
     <partial name="_CookieConsentPartial" />
 
-    <div class="container body-content">
+    <div>
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - HospitalScheduling</p>
+        <footer class="ftco-footer ftco-bg-dark ftco-section img" style="background-image: url(images/bg_5.jpg); background-color:turquoise">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <h2 class="ftco-heading-2">HospitalScheduling</h2>
+                            <p>Um site de escaloneamento hospitalar feito com recurso a tecnologia c# asp.net core para a disciplina de Programação para Internet</p>
+                            <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <h2 class="ftco-heading-2" style="margin-left:100px">Site Links</h2>
+                            <ul class="list-unstyled" style="margin-top:-8px;margin-left:100px">
+                                <a asp-area="" asp-controller="Home" asp-action="Index" class="py-2 d-block">Home</a>
+                                <a asp-area="" asp-controller="Doctors" asp-action="Index" class="py-2 d-block">Doctors</a>
+                                <a asp-area="" asp-controller="Nurses" asp-action="Index" class="py-2 d-block">Nurses</a>
+                                <a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="py-2 d-block">Holiday Form</a>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <h2 class="ftco-heading-2">Tem Questões?</h2>
+                            <div class="block-23 mb-3">
+                                <ul>
+                                    <li><span class="icon icon-map-marker"></span><span class="text">Av. Dr. Francisco Sá Carneiro, 50</span></li>
+                                    <li><a href="#"><span class="icon icon-phone"></span><span class="text">+351 271 220 164</span></a></li>
+                                    <li style="margin-top:-20px;"><a href="mailto:estg-geral@ipg.pt?Subject=Questoes"><span class="icon icon-envelope"></span><span class="text">estg-geral@ipg.pt</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <p>
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> Todos direitos reservados | Este template foi adaptado com <i class="icon-heart" aria-hidden="true"></i> por Diogo Sá
+                        </p>
+                    </div>
+                </div>
+            </div>
         </footer>
     </div>
 
