@@ -9,6 +9,7 @@ namespace HospitalScheduling.Models
     public class Shift
     {
         public int ShiftID { get; set; }
+        [Display(Name="Shifts Name")]
         public string Name { get; set; }
         public DateTime StartDate { get; set; }
         public int DurationMinutes { get; set; }

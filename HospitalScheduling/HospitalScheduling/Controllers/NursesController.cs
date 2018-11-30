@@ -25,6 +25,19 @@ namespace HospitalScheduling.Controllers
             return View(await _context.Nurse.ToListAsync());
         }
 
+        // Post: Nurses
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                return View(await _context.Nurse.Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search)).ToListAsync());
+            }
+
+            return View(await _context.Nurse.ToListAsync());
+        }
+
         // GET: Nurses/Details/5
         public async Task<IActionResult> Details(int? id)
         {

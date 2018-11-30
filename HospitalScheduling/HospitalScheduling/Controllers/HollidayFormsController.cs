@@ -25,6 +25,19 @@ namespace HospitalScheduling.Controllers
             return View(await _context.HollidayForm.ToListAsync());
         }
 
+        // Post: HollidayForms
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                return View(await _context.HollidayForm.Where(ds => ds.VacationID.ToString().Contains(search)).ToListAsync());
+            }
+
+            return View(await _context.HollidayForm.ToListAsync());
+        }
+
         // GET: HollidayForms/Details/5
         public async Task<IActionResult> Details(int? id)
         {

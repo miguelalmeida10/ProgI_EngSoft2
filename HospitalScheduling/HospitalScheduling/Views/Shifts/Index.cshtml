@@ -1,59 +1,95 @@
 ﻿@model IEnumerable<HospitalScheduling.Models.Shift>
 
 @{
-    ViewData["Title"] = "Index";
+    ViewData["Title"] = "List";
+    ViewData["Active"] = "Shifts";
 }
 
-<h2>Index</h2>
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Shifts - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">Shifts - @ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<form asp-action="Index">
+    <div style="min-width:100%">
+        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
 
-<p>
-    <a asp-action="Create">Create New</a>
-</p>
-<table class="table">
-    <thead>
-        <tr>
-            <th>
-                @Html.DisplayNameFor(model => model.Name)
-            </th>
-            <th>
-                @Html.DisplayNameFor(model => model.StartDate)
-            </th>
-            <th>
-                Time Left
-            </th>
-            <th>
-                End Date
-            </th>
-            <th></th>
-        </tr>
-    </thead>
-    <tbody>
-        @foreach (var item in Model)
-        {
-            <tr>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.StartDate)
-                </td>
-                <td>
-                    <meta http-equiv="Refresh" content="60" />
-                    @{
-                        var milis = item.StartDate.AddHours(item.DurationHours).AddMinutes(item.DurationMinutes).AddSeconds(item.DurationSeconds).Subtract(DateTime.Now);
-                        var date = (milis.Ticks < 0) ? new DateTime() : new DateTime(milis.Ticks);
-                        @date.ToLongTimeString()
-                    }
-                </td>
-                <td>
-                    @(new DateTime(item.StartDate.AddHours(item.DurationHours).AddMinutes(item.DurationMinutes).AddSeconds(item.DurationSeconds).Ticks).ToString())
-                </td>
-                <td>
-                    <a asp-action="Edit" asp-route-id="@item.ShiftID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.ShiftID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.ShiftID">Delete</a>
-                </td>
-            </tr>
+        @{
+            string search = "";
+            try
+            {
+                search = string.IsNullOrEmpty(Context.Request.Form["search"]) ? string.Empty : Context.Request.Form["search"].ToString();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+
+                <input type="search" id="searchbox" autofocus oninput="this.form.submit();" onfocus="this.value = '@(search)'" onchange="this.form.submit()" name="search" style="position:absolute;right:0; margin-right:50px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;background-color:transparent;" />
+            }
         }
-    </tbody>
-</table>
+        <input type="submit" class="icon-search fa-7x" value="&#xf002;" style="font-family: FontAwesome;height:35px;width:35px; position:absolute;right:0;background-color:transparent;margin-right:5px;margin-top:1px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;" />
+    </div>
+</form>
+<br />
+<center>
+    <table class="table" style="margin-left:15px;max-width:98.5% !important;">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Name)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.StartDate)
+                </th>
+                <th>
+                    Time Left
+                </th>
+                <th>
+                    End Date
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.StartDate)
+                    </td>
+                    <td>
+                        <meta http-equiv="Refresh" content="60" />
+                        @{
+                            var milis = item.StartDate.AddHours(item.DurationHours).AddMinutes(item.DurationMinutes).AddSeconds(item.DurationSeconds).Subtract(DateTime.Now);
+                            var date = (milis.Ticks < 0) ? new DateTime() : new DateTime(milis.Ticks);
+                            @date.ToLongTimeString()
+                        }
+                    </td>
+                    <td>
+                        @(new DateTime(item.StartDate.AddHours(item.DurationHours).AddMinutes(item.DurationMinutes).AddSeconds(item.DurationSeconds).Ticks).ToString())
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.ShiftID">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.ShiftID">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.ShiftID">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    <br />
+</center>

@@ -2,50 +2,53 @@
 
 @{
     ViewData["Title"] = "Delete";
+    ViewData["Active"] = "Shifts";
 }
 
-<h2>Delete</h2>
+<
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Shifts - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">Shifts - @ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<center>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <hr />
+        <table>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Name): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Name)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.StartDate): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.StartDate)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>EndDate: </b>
+                </td>
+                <td>@Model.StartDate.AddHours(Model.DurationHours).AddMinutes(Model.DurationMinutes).AddSeconds(Model.DurationSeconds).ToString()</td>
+            </tr>
+        </table>
+    </div>
+    <br />
 
-<h3>Are you sure you want to delete this?</h3>
-<div>
-    <h4>Shift</h4>
-    <hr />
-    <dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Name)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Name)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.StartDate)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.StartDate)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DurationMinutes)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DurationMinutes)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DurationSeconds)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DurationSeconds)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.DurationHours)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.DurationHours)
-        </dd>
-    </dl>
-    
     <form asp-action="Delete">
         <input type="hidden" asp-for="ShiftID" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="Index" class="btn btn-info">Back to List</a>
     </form>
-</div>
+    <br />
+</center>

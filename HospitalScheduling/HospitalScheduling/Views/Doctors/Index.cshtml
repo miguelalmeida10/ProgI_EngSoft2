@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "List";
+    ViewData["Active"] = "Doctors";
 }
 
 <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
@@ -16,9 +17,30 @@
     </div>
 </div>
 <br />
-<p>
-    <a asp-action="Create" asp-controller="Doctors" class="btn btn-primary" style="margin-left:15px">Create New</a>
-</p>
+<form asp-action="Index">
+    <div style="min-width:100%">
+        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
+
+        @{
+            string search = "";
+            try
+            {
+                search = string.IsNullOrEmpty(Context.Request.Form["search"]) ? string.Empty : Context.Request.Form["search"].ToString();
+
+            }
+            catch (Exception ex)
+            {
+
+            }
+            finally
+            {
+                <input type="search" id="searchbox" autofocus oninput="this.form.submit();" onfocus="this.value = '@(search)'" onchange="this.form.submit()" name="search" style="position:absolute;right:0; margin-right:50px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;background-color:transparent;" />
+            }
+        }
+        <input type="submit" class="icon-search fa-7x" value="&#xf002;" style="font-family: FontAwesome;height:35px;width:35px; position:absolute;right:0;background-color:transparent;margin-right:5px;margin-top:1px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;" />
+    </div>
+</form>
+<br />
 <table class="table" style="margin-left:15px;max-width:98.5% !important;">
     <thead>
         <tr>

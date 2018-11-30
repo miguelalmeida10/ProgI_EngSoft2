@@ -26,6 +26,19 @@ namespace HospitalScheduling.Controllers
             return View(await applicationDbContext.ToListAsync());
         }
 
+        // Post: DoctorShifts
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                return View(await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).ToListAsync());
+            }
+
+            return View(await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).ToListAsync());
+        }
+
         // GET: DoctorShifts/Details/5
         public async Task<IActionResult> Details(int? id)
         {

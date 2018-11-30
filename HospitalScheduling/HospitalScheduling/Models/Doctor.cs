@@ -16,6 +16,7 @@ namespace HospitalScheduling.Models
         public string DoctorNumber { get; set; }
 
         [RegularExpression(@"([A-Za-záàâãéèêíïóôõöúçñÁÀÂÃÉÈÍÏÓÔÕÖÚÇÑ\s]+)", ErrorMessage = "Invalid Name")]
+        [Display(Name = "Doctors Name")]
         public string Name { get; set; }
 
         [RegularExpression(@"(\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,6})", ErrorMessage = "Invalid Email ")]

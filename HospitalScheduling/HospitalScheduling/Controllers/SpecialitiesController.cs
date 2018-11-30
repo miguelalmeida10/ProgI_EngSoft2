@@ -25,6 +25,19 @@ namespace HospitalScheduling.Controllers
             return View(await _context.DoctorsBySpeciality.ToListAsync());
         }
 
+        // Post: Specialities
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Index(string search)
+        {
+            if (!string.IsNullOrEmpty(search))
+            {
+                return View(await _context.DoctorsBySpeciality.Where(ds => ds.Name.Contains(search)|| ds.SpecialityID.ToString().Contains(search)).ToListAsync());
+            }
+
+            return View(await _context.DoctorsBySpeciality.ToListAsync());
+        }
+
         // GET: Specialities/Details/5
         public async Task<IActionResult> Details(int? id)
         {

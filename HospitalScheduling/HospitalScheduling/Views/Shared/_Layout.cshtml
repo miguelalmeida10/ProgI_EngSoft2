@@ -19,6 +19,7 @@
     <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
     <link rel="stylesheet" href="~/css/open-iconic-bootstrap.min.css">
     <link rel="stylesheet" href="~/css/animate.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
 
     <link rel="stylesheet" href="~/css/owl.carousel.min.css">
     <link rel="stylesheet" href="~/css/owl.theme.default.min.css">
@@ -43,20 +44,55 @@
     </script>
 </head>
 <body data-aos-easing="slide" data-aos-duration="800" data-aos-delay="0" onload="displaySons()">
-    <nav class="navbar navbar-expand-lg navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
-        <div class="container">
+    <nav class="navbar navbar-expand navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+        <div class="container" style="margin:0;min-width:100%">
             <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand"><i class="flaticon-pharmacy"></i><span>Hospital</span>Scheduling</a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="oi oi-menu"></span> Menu
             </button>
             <div class="collapse navbar-collapse" id="ftco-nav">
-                <ul class="navbar-nav ml-auto">
-                    <li class="nav-item active"><a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">Home</a></li>
-                    <li class="nav-item"><a asp-area="" asp-controller="Doctors" asp-action="Index" class="nav-link">Doctors</a></li>
-                    <li class="nav-item"><a asp-area="" asp-controller="Nurses" asp-action="Index" class="nav-link">Nurses</a></li>
-                    <li class="nav-item"><a asp-area="" asp-controller="Specialities" asp-action="Index" class="nav-link">Specialities</a></li>
-                    <li class="nav-item"><a asp-area="" asp-controller="Shifts" asp-action="Index" class="nav-link">Shifts</a></li>
-                    <li class="nav-item"><a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="nav-link">Holiday Form</a></li>
+                <ul class="navbar-nav ml-xl-auto">
+                    <li @{ if ((ViewData["Active"] == "Home")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
+                    </li>
+
+                    <li @{ if ((ViewData["Active"] == "Doctors")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="Doctors" asp-action="Index" class="nav-link">Doctors</a>
+                    </li>
+
+                    <li @{ if ((ViewData["Active"] == "Nurses")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="Nurses" asp-action="Index" class="nav-link">Nurses</a>
+                    </li>
+
+                    <li @{ if ((ViewData["Active"] == "Specialities")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="Specialities" asp-action="Index" class="nav-link">Specialities</a>
+                    </li>
+
+                    <li @{ if ((ViewData["Active"] == "Shifts")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="Shifts" asp-action="Index" class="nav-link">Shifts</a>
+                    </li>
+
+                    <li @{ if ((ViewData["Active"] == "DoctorShifts")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="DoctorShifts" asp-action="Index" class="nav-link">Assigned Shifts</a>
+                    </li>
+
+                    <li @{ if ((ViewData["Active"] == "HolidayForms")) { @: class="nav-item active"
+                        } else { @: class="nav-item"
+                        }}>
+                        <a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="nav-link">Holiday Form</a>
+                    </li>
                     <partial name="_LoginPartial" />
                 </ul>
             </div>
@@ -82,11 +118,20 @@
                     </div>
                     <div class="col-md">
                         <div class="ftco-footer-widget mb-4">
-                            <h2 class="ftco-heading-2" style="margin-left:100px">Site Links</h2>
+                            <h2 class="ftco-heading-2" style="margin-left:170px">Site Links</h2>
                             <ul class="list-unstyled" style="margin-top:-8px;margin-left:100px">
                                 <a asp-area="" asp-controller="Home" asp-action="Index" class="py-2 d-block">Home</a>
                                 <a asp-area="" asp-controller="Doctors" asp-action="Index" class="py-2 d-block">Doctors</a>
                                 <a asp-area="" asp-controller="Nurses" asp-action="Index" class="py-2 d-block">Nurses</a>
+                                <a asp-area="" asp-controller="Specialities" asp-action="Index" class="py-2 d-block">Specialities</a>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <ul class="list-unstyled" style="margin-top:60px;">
+                                <a asp-area="" asp-controller="Shifts" asp-action="Index" class="py-2 d-block">Shifts</a>
+                                <a asp-area="" asp-controller="DoctorShifts" asp-action="Index" class="py-2 d-block">Assigned Shifts</a>
                                 <a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="py-2 d-block">Holiday Form</a>
                             </ul>
                         </div>
