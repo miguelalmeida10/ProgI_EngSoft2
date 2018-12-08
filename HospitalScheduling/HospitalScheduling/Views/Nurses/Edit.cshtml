@@ -33,7 +33,7 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Name" class="form-control" placeholder="Insert a name" style="text-align:center;width:30em;" />
+                            <input asp-for="Name" class="form-control" placeholder="Insert a name" style="text-align:justify;width:30em;" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Name" class="text-danger"></span>
@@ -45,7 +45,7 @@
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Email" class="form-control" placeholder="Insert an email" style="text-align:center" />
+                            <input asp-for="Email" class="form-control" placeholder="Insert an email" style="text-align:justify" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Email" class="text-danger"></span>
@@ -57,7 +57,7 @@
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Phone" class="form-control" placeholder="Insert a phone number" style="text-align:center" />
+                            <input asp-for="Phone" class="form-control" placeholder="Insert a phone number" style="text-align:justify" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Phone" class="text-danger"></span>
@@ -69,7 +69,7 @@
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            @Html.DropDownListFor(m => m.Sons, new List<SelectListItem>() { new SelectListItem("True", "true"), new SelectListItem("False", "false") }, null, new { @id = "sonsbox", @class = "form-control", placeholder = "Does the nurse have children", @style = "text-align:center;text-indent:42%", @onchange = "displaySons()"})
+                            @Html.DropDownListFor(m => m.Sons, new List<SelectListItem>() { new SelectListItem("True", "true"), new SelectListItem("False", "false") }, null, new { @id = "sonsbox", @class = "form-control", placeholder = "Does the nurse have children", @style = "text-align:justify;", @onchange = "displaySons()" })
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Sons" class="text-danger"></span>
@@ -81,7 +81,7 @@
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Birthday" class="form-control" placeholder="Insert a birth date" style="text-align:center" />
+                            <input asp-for="Birthday" class="form-control" placeholder="Insert a birth date" style="text-align:justify" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Birthday" class="text-danger"></span>
@@ -93,7 +93,7 @@
                             </label> <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="BirthdaySon" class="form-control" placeholder="Insert son`s birth date" style="text-align:center" />
+                            <input asp-for="BirthdaySon" class="form-control" placeholder="Insert son`s birth date" style="text-align:justify" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="BirthdaySon" class="text-danger"></span>
@@ -106,10 +106,22 @@
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Address" class="form-control" placeholder="Insert an address" style="text-align:center;" />
+                            <input asp-for="Address" class="form-control" placeholder="Insert an address" style="text-align:justify;" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Address" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Speciality" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <select asp-for="SpecialityID" asp-items="ViewBag.Speciality" class="form-control" placeholder="Insert a speciality" style="text-align:justify;"></select>
+                        </td>
+                        <td>
+                            <span asp-validation-for="SpecialityID" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>

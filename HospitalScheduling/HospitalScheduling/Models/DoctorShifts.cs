@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HospitalScheduling.ModelAttributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -14,6 +15,7 @@ namespace HospitalScheduling.Models
 
         [ForeignKey("FK_DoctorID")]
         public int DoctorID { get; set; }
+        [ValidShift]
         public Doctor Doctor { get; set; }
 
         [ForeignKey("FK_ShiftID")]

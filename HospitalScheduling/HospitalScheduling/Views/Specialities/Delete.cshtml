@@ -24,16 +24,10 @@
         <hr />
         <table>
             <tr>
-                <td style="min-width:5em;text-align:justify">
+                <td style="min-width:8em;text-align:justify">
                     <b>@Html.DisplayNameFor(model => model.Name): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Name)</td>
-            </tr>
-            <tr>
-                <td style="min-width:5em;text-align:justify">
-                    <b>@Html.DisplayNameFor(model => model.RegisterDate): </b>
-                </td>
-                <td>@Html.DisplayFor(model => model.RegisterDate)</td>
             </tr>
         </table>
     </div>
@@ -41,7 +35,7 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="SpecialityID" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="DeleteConfirmation" asp-route-id="@Model.SpecialityID" class="btn btn-danger">Delete</a>
         <a asp-action="Index" class="btn btn-info">Back to List</a>
     </form>
     <br />

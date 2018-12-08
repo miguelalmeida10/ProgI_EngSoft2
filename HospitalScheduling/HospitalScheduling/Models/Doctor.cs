@@ -1,4 +1,5 @@
-﻿using System;
+﻿using HospitalScheduling.ModelAttributes;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -38,6 +39,14 @@ namespace HospitalScheduling.Models
         [DisplayFormat(DataFormatString = "{0:dd/MM/yyyy}", ApplyFormatInEditMode = false)]
         public DateTime Birthday { get; set; }
 
+        public int WeeklyHours { get; set; }
+
+        public int WorkingDays { get; set; }
+
+        public bool DoesNightShifts { get; set; }
+
+        public DateTime LastWorkDay { get; set; }
+
         [Display(Name="Address")]
         public string Address { get; set; }
         
@@ -47,5 +56,8 @@ namespace HospitalScheduling.Models
 
         [Display(Name = "Shifts of the doctor")]
         public IEnumerable<DoctorShifts> Shifts { get; set; }
+
+        [Display(Name = "Past Shifts of the doctor")]
+        public IEnumerable<PastShifts> PreviousShifts { get; set; }
     }
 }

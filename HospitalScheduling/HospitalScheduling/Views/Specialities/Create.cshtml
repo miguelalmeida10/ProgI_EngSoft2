@@ -25,29 +25,16 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <table class="table-borderless">
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Name" class="control-label" style="margin-top:10px">
                             </label>
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="Name" class="form-control" style="text-align:center;width:30em;" />
+                            <input asp-for="Name" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="Name" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="min-width:7em;text-align:justify">
-                            <label asp-for="RegisterDate" class="control-label" style="margin-top:10px">
-                            </label>
-                            <label style="margin-top:10px">: </label>
-                        </td>
-                        <td>
-                            <input asp-for="RegisterDate" class="form-control" style="text-align:center;width:30em;" />
-                        </td>
-                        <td style="min-width:30em;text-align:justify">
-                            <span asp-validation-for="RegisterDate" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>

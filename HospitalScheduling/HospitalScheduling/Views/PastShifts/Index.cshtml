@@ -1,0 +1,102 @@
+﻿@model HospitalScheduling.Models.ViewModels.PastShiftsViewModel
+
+@{
+    ViewData["Title"] = "Index";
+}
+
+<h2>Index</h2>
+
+<p>
+    <a asp-action="Create">Create New</a>
+</p>
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model.PastShifts)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Doctor.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.ShiftID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShiftEndDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.HistoryID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.HistoryID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.HistoryID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="margin-left:30px">
+    @{
+        string searchtext = "";
+        try
+        {
+            searchtext = string.IsNullOrEmpty(Context.Request.Form["search"]) ? string.Empty : Context.Request.Form["search"].ToString();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        if (string.IsNullOrEmpty(searchtext))
+        {
+            searchtext = ViewData["Search"] as string;
+        }
+
+        @if (Model.Pagination.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage > 1) ? 1 : Model.Pagination.CurrentPage, @search=searchtext})"><span class="icon-next">&lt;&lt;</span></a>
+            <span>&nbsp;</span>
+            <a href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @search=searchtext })"><span class="icon-next">&lt;</span></a>
+            <span>&nbsp;</span>
+        }
+
+        @for (int i = 1; i <= Model.Pagination.NumberPages; i++)
+        {
+            if (i == Model.Pagination.CurrentPage)
+            {
+                <span>@i.ToString()</span>
+                <span>&nbsp;&nbsp;</span>
+            }
+            else if (i != Model.Pagination.CurrentPage && i <= Model.Pagination.CurrentPage + 1 && i >= Model.Pagination.CurrentPage - 1 && Model.Pagination.CurrentPage != 1)
+            {
+                @Html.ActionLink(i.ToString(), "Index", "PastShifts", new { @page = i, @search = searchtext })
+                <span>&nbsp;</span>
+            }
+            else if (Model.Pagination.CurrentPage == 1 || Model.Pagination.CurrentPage == Model.Pagination.NumberPages)
+            {
+                @Html.ActionLink(i.ToString(), "Index", "PastShifts", new { @page = i, @search = searchtext })
+                <span>&nbsp;</span>
+            }
+        }
+
+        @if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages)
+        {
+            <a href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @search=searchtext})"><span class="icon-prev">&gt;</span></a>
+            <span>&nbsp;&nbsp;</span>
+            <a href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.NumberPages : Model.Pagination.CurrentPage , @search=searchtext})"><span class="icon-prev">&gt;&gt;</span></a>
+            <span>&nbsp;&nbsp;</span>
+        }
+    }
+</div>

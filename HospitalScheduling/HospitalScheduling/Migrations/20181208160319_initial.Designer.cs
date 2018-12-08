@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalScheduling.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20181129192610_initial")]
+    [Migration("20181208160319_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -35,7 +35,11 @@ namespace HospitalScheduling.Migrations
 
                     b.Property<string>("DoctorNumber");
 
+                    b.Property<bool>("DoesNightShifts");
+
                     b.Property<string>("Email");
+
+                    b.Property<DateTime>("LastWorkDay");
 
                     b.Property<string>("Name");
 
@@ -43,6 +47,10 @@ namespace HospitalScheduling.Migrations
                         .IsRequired();
 
                     b.Property<int>("SpecialityID");
+
+                    b.Property<int>("WeeklyHours");
+
+                    b.Property<int>("WorkingDays");
 
                     b.HasKey("DoctorID");
 
@@ -117,9 +125,34 @@ namespace HospitalScheduling.Migrations
                     b.Property<bool?>("Sons")
                         .IsRequired();
 
+                    b.Property<int>("SpecialityID");
+
                     b.HasKey("NurseID");
 
+                    b.HasIndex("SpecialityID");
+
                     b.ToTable("Nurse");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.PastShifts", b =>
+                {
+                    b.Property<int>("HistoryID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DoctorID");
+
+                    b.Property<DateTime>("ShiftEndDate");
+
+                    b.Property<int>("ShiftID");
+
+                    b.HasKey("HistoryID");
+
+                    b.HasIndex("DoctorID");
+
+                    b.HasIndex("ShiftID");
+
+                    b.ToTable("PastShifts");
                 });
 
             modelBuilder.Entity("HospitalScheduling.Models.RuleModel", b =>
@@ -152,13 +185,19 @@ namespace HospitalScheduling.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<bool>("Active");
+
                     b.Property<int>("DurationHours");
 
                     b.Property<int>("DurationMinutes");
 
-                    b.Property<int>("DurationSeconds");
+                    b.Property<DateTime>("EndDate");
+
+                    b.Property<bool>("Ended");
 
                     b.Property<string>("Name");
+
+                    b.Property<DateTime>("ShiftStartHour");
 
                     b.Property<DateTime>("StartDate");
 
@@ -176,11 +215,9 @@ namespace HospitalScheduling.Migrations
                     b.Property<string>("Name")
                         .IsRequired();
 
-                    b.Property<DateTime>("RegisterDate");
-
                     b.HasKey("SpecialityID");
 
-                    b.ToTable("DoctorsBySpeciality");
+                    b.ToTable("Speciality");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -366,6 +403,27 @@ namespace HospitalScheduling.Migrations
 
                     b.HasOne("HospitalScheduling.Models.Shift", "Shift")
                         .WithMany("Doctors")
+                        .HasForeignKey("ShiftID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.Nurse", b =>
+                {
+                    b.HasOne("HospitalScheduling.Models.Speciality", "Speciality")
+                        .WithMany()
+                        .HasForeignKey("SpecialityID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.PastShifts", b =>
+                {
+                    b.HasOne("HospitalScheduling.Models.Doctor", "Doctor")
+                        .WithMany("PreviousShifts")
+                        .HasForeignKey("DoctorID")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("HospitalScheduling.Models.Shift", "Shift")
+                        .WithMany("PreviousDoctors")
                         .HasForeignKey("ShiftID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });

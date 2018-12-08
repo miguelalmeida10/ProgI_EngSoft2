@@ -5,6 +5,7 @@
     ViewData["Active"] = "DoctorShifts";
 }
 
+<meta http-equiv="Refresh" content="60" />
 <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
     <div class="overlay"></div>
     <div class="container" style="height:200px">
@@ -21,34 +22,40 @@
     <div>
         <table>
             <tr>
-                <td style="min-width:5em;text-align:justify">
+                <td style="min-width:8em;text-align:justify">
                     <b>@Html.DisplayNameFor(model => model.Doctor.Name): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Doctor.Name)</td>
             </tr>
             <tr>
-                <td style="min-width:5em;text-align:justify">
+                <td style="min-width:8em;text-align:justify">
                     <b>@Html.DisplayNameFor(model => model.Doctor.Phone): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Doctor.Phone)</td>
             </tr>
             <tr>
-                <td style="min-width:5em;text-align:justify">
+                <td style="min-width:8em;text-align:justify">
                     <b>@Html.DisplayNameFor(model => model.Shift.Name): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Shift.Name)</td>
             </tr>
             <tr>
-                <td style="min-width:5em;text-align:justify">
+                <td style="min-width:8em;text-align:justify">
                     <b>@Html.DisplayNameFor(model => model.Shift.StartDate): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Shift.StartDate)</td>
             </tr>
             <tr>
-                <td style="min-width:5em;text-align:justify">
-                    <b>EndDate: </b>
+                <td style="min-width:8em;text-align:justify">
+                    <b>Shift ends in: </b>
                 </td>
-                <td>@Model.Shift.StartDate.AddHours(Model.Shift.DurationHours).AddMinutes(Model.Shift.DurationMinutes).AddSeconds(Model.Shift.DurationSeconds).ToString()</td>
+                <td>@Model.Shift.ShiftStartHour.AddDays(DateTime.Now.DayOfYear).AddYears(DateTime.Now.Year).AddHours(Model.Shift.DurationHours).AddMinutes(Model.Shift.DurationMinutes).Subtract(DateTime.Now).ToString()</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Shift.EndDate): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Shift.EndDate)</td>
             </tr>
         </table>
     </div>

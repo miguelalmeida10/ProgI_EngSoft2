@@ -1,5 +1,6 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace HospitalScheduling.Models
 {
@@ -39,6 +40,10 @@ namespace HospitalScheduling.Models
         //Address
         [Display(Name="Address")]
         public string Address { get; set; }
+
+        [ForeignKey("FK_SpecialityID")]
+        public int SpecialityID { get; set; }
+        public Speciality Speciality { get; set; }
 
         [Required]
         public bool? Sons { get; set; }

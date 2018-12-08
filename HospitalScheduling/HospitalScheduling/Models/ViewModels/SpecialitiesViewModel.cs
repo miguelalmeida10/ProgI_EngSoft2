@@ -3,11 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace HospitalScheduling.Models
+namespace HospitalScheduling.Models.ViewModels
 {
-    public class NurseListViewModel
+    public class SpecialitiesViewModel
     {
-        public IEnumerable<Nurse> Nurse { get; set; }
+        public IEnumerable<Speciality> Specialities { get; set; }
         public PagingViewModel Pagination { get; set; }
     }
 }

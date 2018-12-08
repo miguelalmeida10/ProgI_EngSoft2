@@ -17,7 +17,5 @@ namespace HospitalScheduling.Models
         public string Name { get; set; }
 
         public IEnumerable<Doctor> Doctors { get; set; }
-
-        public DateTime RegisterDate { get; set; }
     }
 }

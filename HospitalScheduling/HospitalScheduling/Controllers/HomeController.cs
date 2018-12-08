@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using HospitalScheduling.Models;
+using HospitalScheduling.Models.ViewModels;
 
 namespace HospitalScheduling.Controllers
 {

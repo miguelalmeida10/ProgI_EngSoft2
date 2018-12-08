@@ -1,6 +1,6 @@
 using System;
 
-namespace HospitalScheduling.Models
+namespace HospitalScheduling.Models.ViewModels
 {
     public class ErrorViewModel
     {

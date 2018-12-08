@@ -34,6 +34,16 @@ namespace HospitalScheduling.Data
                     .HasOne(ds => ds.Shift)
                     .WithMany(d => d.Doctors)
                     .HasForeignKey(ds => ds.ShiftID);
+
+            builder.Entity<PastShifts>()
+                    .HasOne(ds => ds.Doctor)
+                    .WithMany(d => (d.PreviousShifts))
+                    .HasForeignKey(ds => ds.DoctorID);
+
+            builder.Entity<PastShifts>()
+                    .HasOne(ds => ds.Shift)
+                    .WithMany(d => (d.PreviousDoctors))
+                    .HasForeignKey(ds => ds.ShiftID);
             #endregion
 
             base.OnModelCreating(builder);
@@ -43,13 +53,15 @@ namespace HospitalScheduling.Data
         public DbSet<HospitalScheduling.Models.Nurse> Nurse { get; set; }
         public DbSet<HospitalScheduling.Models.HollidayForm> HollidayForm { get; set; }
 
-        public DbSet<HospitalScheduling.Models.Speciality> DoctorsBySpeciality  { get; set; }
+        public DbSet<HospitalScheduling.Models.Speciality> Speciality  { get; set; }
 
         public DbSet<HospitalScheduling.Models.RuleModel> RuleModel { get; set; }
 
         public DbSet<HospitalScheduling.Models.Shift> Shift { get; set; }
 
         public DbSet<HospitalScheduling.Models.DoctorShifts> DoctorShifts { get; set; }
-        
+
+        public DbSet<HospitalScheduling.Models.PastShifts> PastShifts { get; set; }
+
     }
 }

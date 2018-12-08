@@ -32,7 +32,7 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td style="text-align:justify">
-                            <input asp-for="Name" class="form-control"  style="text-align:center;width:30em;" />
+                            <input asp-for="Name" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
                             <span asp-validation-for="Name" class="text-danger"></span>
@@ -44,7 +44,7 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td style="text-align:justify">
-                            <input asp-for="StartDate" class="form-control"  style="text-align:center;width:30em;" />
+                            <input asp-for="StartDate" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
                             <span asp-validation-for="StartDate" class="text-danger"></span>
@@ -56,22 +56,10 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td style="text-align:justify">
-                            <input asp-for="DurationMinutes" class="form-control"  style="text-align:center;width:30em;" />
+                            <input asp-for="DurationMinutes" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
                             <span asp-validation-for="DurationMinutes" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="min-width:10em;text-align:justify">
-                            <label asp-for="DurationSeconds" class="control-label"></label>
-                            <label style="margin-top:10px">: </label>
-                        </td>
-                        <td style="text-align:justify">
-                            <input asp-for="DurationSeconds" class="form-control"  style="text-align:center;width:30em;" />
-                        </td>
-                        <td>
-                            <span asp-validation-for="DurationSeconds" class="text-danger"></span>
                         </td>
                     </tr>
                     <tr>
@@ -80,10 +68,22 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td style="text-align:justify">
-                            <input asp-for="DurationHours" class="form-control"  style="text-align:center;width:30em;" />
+                            <input asp-for="DurationHours" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
                             <span asp-validation-for="DurationHours" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:10em;text-align:justify">
+                            <label asp-for="EndDate" class="control-label"></label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="EndDate" class="form-control" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>

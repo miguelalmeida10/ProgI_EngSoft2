@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.ViewFeatures;
 using Microsoft.AspNetCore.Razor.Runtime.TagHelpers;
 using Microsoft.AspNetCore.Razor.TagHelpers;
 using HospitalScheduling.Models;
+using HospitalScheduling.Models.ViewModels;
 
 namespace HospitalScheduling.Infrastucture
 {

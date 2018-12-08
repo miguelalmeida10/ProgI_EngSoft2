@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HospitalScheduling.Data;
 using HospitalScheduling.Models;
+using HospitalScheduling.Models.ViewModels;
 
 namespace HospitalScheduling.Controllers
 {
     public class ShiftsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        PagingViewModel paging = new PagingViewModel()
+        {
+            CurrentPage = 1
+        };
 
         public ShiftsController(ApplicationDbContext context)
         {
@@ -20,36 +25,105 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: Shifts
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
         {
-            var list = await _context.Shift.ToListAsync();
-            List<Shift> shiftsApagar = new List<Shift>();
-            list.ForEach(m =>
-            {
-                if (m.StartDate.Add(new TimeSpan(m.DurationHours, m.DurationMinutes, m.DurationSeconds)).Subtract(DateTime.Now).TotalMilliseconds<=0)
+            #region Clean Ended Shifts
+                var shiftlist = await _context.Shift.Include(d => d.Doctors).Where(s => !s.Ended).ToListAsync();
+                var list = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).ToListAsync();
+                List<DoctorShifts> shiftsApagar = new List<DoctorShifts>();
+                List<PastShifts> pastShiftsApagar = new List<PastShifts>();
+                List<Shift> shiftActualizar = new List<Shift>();
+
+                shiftlist.ForEach(m =>
                 {
-                    shiftsApagar.Add(m);
-                }
-            });
+                    bool activo = DateTime.Now.Subtract(m.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1)).Milliseconds > 0 && m.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1).AddHours(m.DurationHours).AddMinutes(m.DurationMinutes).Subtract(DateTime.Now).TotalMilliseconds > 0 && m.EndDate.Date.CompareTo(m.StartDate) < 0;
+                    if (!activo && m.EndDate.Date.CompareTo(DateTime.Now) < 0)
+                    {
+                        m.Active = false;
+                        shiftActualizar.Add(m);
+                        var docshifts = list.Where(s => s.Shift == m).FirstOrDefault();
+                        if (docshifts != null)
+                        {
+                            shiftsApagar.Add(list.Where(s => s.Shift == m).FirstOrDefault());
+                            pastShiftsApagar.Add(new PastShifts(list.Where(s => s.Shift == m).FirstOrDefault()));
+                        }
+                    }
+                    else if (activo && m.EndDate.Date.CompareTo(DateTime.Now) < 0)
+                    {
+                        m.Active = true;
+                        shiftActualizar.Add(m);
+                    }
+                    else if (m.EndDate.Date.CompareTo(DateTime.Now) >= 0)
+                    {
+                        m.Ended = true;
+                        shiftActualizar.Add(m);
+                        var docshifts = list.Where(s => s.Shift == m).FirstOrDefault();
+                        if (docshifts != null)
+                        {
+                            shiftsApagar.Add(list.Where(s => s.Shift == m).FirstOrDefault());
+                            pastShiftsApagar.Add(new PastShifts(list.Where(s => s.Shift == m).FirstOrDefault()));
+                        }
+                    }
+                });
 
 
-            _context.Shift.RemoveRange(shiftsApagar);
-            await _context.SaveChangesAsync();
+                _context.Shift.UpdateRange(shiftActualizar);
+                _context.PastShifts.AddRange(pastShiftsApagar);
+                _context.DoctorShifts.RemoveRange(shiftsApagar);
+                await _context.SaveChangesAsync();
+            #endregion
+            
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                   var shifts = await _context.Shift.Where(s => s.Active && !s.Ended).Skip(paging.PageSize * (page - 1))
+                        .Take(paging.PageSize).ToListAsync();
+                #endregion
 
-            return View(await _context.Shift.ToListAsync());
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        shifts = (await _context.Shift.Where(s => s.Active && !s.Ended).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.Shift.Count();
+                #endregion
+            #endregion
+
+            return View(new ShiftsViewModel { Shifts = shifts, Pagination = paging });
         }
 
         // Post: Shifts
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, int page = 1)
         {
-            if (!string.IsNullOrEmpty(search))
-            {
-                return View(await _context.Shift.Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).ToListAsync());
-            }
 
-            return View(await _context.Shift.ToListAsync());
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                   var shifts = await _context.Shift.Where(s => s.Active && !s.Ended).Skip(paging.PageSize * (page - 1))
+                        .Take(paging.PageSize).ToListAsync();
+                #endregion
+
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        shifts = (await _context.Shift.Where(s => s.Active && !s.Ended).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.Shift.Count();
+            #endregion
+            #endregion
+
+            ViewData["Search"] = search;
+            return View(new ShiftsViewModel { Shifts = shifts, Pagination = paging });
         }
 
         // GET: Shifts/Details/5
@@ -81,7 +155,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ShiftID,Name,StartDate,DurationMinutes,DurationSeconds,DurationHours")] Shift shift)
+        public async Task<IActionResult> Create([Bind("ShiftID,Name,StartDate,EndDate,ShiftStartHour,DurationMinutes,DurationHours")] Shift shift)
         {
             if (ModelState.IsValid)
             {
@@ -113,7 +187,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ShiftID,Name,StartDate,DurationMinutes,DurationSeconds,DurationHours")] Shift shift)
+        public async Task<IActionResult> Edit(int id, [Bind("ShiftID,Name,StartDate,EndDate,ShiftStartHour,DurationMinutes,DurationHours")] Shift shift)
         {
             if (id != shift.ShiftID)
             {
@@ -152,6 +226,26 @@ namespace HospitalScheduling.Controllers
             }
 
             var shift = await _context.Shift
+                .Where(s => s.Active && !s.Ended)
+                .FirstOrDefaultAsync(m => m.ShiftID == id);
+            if (shift == null)
+            {
+                return NotFound();
+            }
+
+            return View(shift);
+        }
+
+        // GET: Shifts/DeleteConfirmation/5
+        public async Task<IActionResult> DeleteConfirmation(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var shift = await _context.Shift
+                .Where(s => s.Active && !s.Ended)
                 .FirstOrDefaultAsync(m => m.ShiftID == id);
             if (shift == null)
             {
@@ -174,7 +268,7 @@ namespace HospitalScheduling.Controllers
 
         private bool ShiftExists(int id)
         {
-            return _context.Shift.Any(e => e.ShiftID == id);
+            return _context.Shift.Where(s => s.Active && !s.Ended).Any(e => e.ShiftID == id);
         }
     }
 }

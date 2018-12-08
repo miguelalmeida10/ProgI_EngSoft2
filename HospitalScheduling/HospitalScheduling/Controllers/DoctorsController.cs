@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HospitalScheduling.Data;
 using HospitalScheduling.Models;
+using HospitalScheduling.Models.ViewModels;
 
 namespace HospitalScheduling.Controllers
 {
     public class DoctorsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        PagingViewModel paging = new PagingViewModel()
+        {
+            CurrentPage = 1
+        };
 
         public DoctorsController(ApplicationDbContext context)
         {
@@ -20,22 +25,58 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: Doctors
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
         {
-            return View(await _context.Doctor.ToListAsync());
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                    var docslist = await _context.Doctor.Include(d => d.Speciality).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                #endregion
+
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        docslist = await _context.Doctor.Include(d => d.Speciality).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.Doctor.Count();
+                #endregion
+            #endregion
+
+            return View(new DoctorsViewModel { Doctors = docslist, Pagination = paging });
         }
 
         // Post: Doctors
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, int page=1)
         {
-            if (!string.IsNullOrEmpty(search))
-            {
-                return View(await _context.Doctor.Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search)).ToListAsync());
-            }
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                    var docslist = await _context.Doctor.Include(d => d.Speciality).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                #endregion
 
-            return View(await _context.Doctor.ToListAsync());
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        docslist = await _context.Doctor.Include(d => d.Speciality).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.Doctor.Count();
+            #endregion
+            #endregion
+
+            ViewData["Search"] = search;
+            return View(new DoctorsViewModel { Doctors = docslist, Pagination = paging });
         }
 
         // GET: Doctors/Details/5
@@ -46,12 +87,13 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
+            var doctor = await _context.Doctor.Include(d => d.Speciality)
                 .FirstOrDefaultAsync(m => m.DoctorID == id);
             if (doctor == null)
             {
                 return NotFound();
             }
+
 
             return View(doctor);
         }
@@ -59,6 +101,7 @@ namespace HospitalScheduling.Controllers
         // GET: Doctors/Create
         public IActionResult Create()
         {
+            ViewData["Speciality"] = new SelectList(_context.Speciality.ToList(), "SpecialityID", "Name", _context.Speciality.FirstOrDefault());
             return View();
         }
 
@@ -67,7 +110,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,Address,SpecialityID")] Doctor doctor)
+        public async Task<IActionResult> Create([Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,DoesNightShifts,LastWorkDay,WorkingDays,WeeklyHours,Address,SpecialityID")] Doctor doctor)
         {
             if (ModelState.IsValid)
             {
@@ -75,6 +118,7 @@ namespace HospitalScheduling.Controllers
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["Speciality"] = new SelectList(_context.Speciality.ToList(), "SpecialityID", "Name", _context.Speciality.FirstOrDefault());
             return View(doctor);
         }
 
@@ -86,11 +130,13 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor.FindAsync(id);
+            var doctor = await _context.Doctor.Include(d => d.Speciality).Where(d => d.DoctorID == id).FirstOrDefaultAsync();
             if (doctor == null)
             {
                 return NotFound();
             }
+
+            ViewData["Speciality"] = new SelectList(_context.Speciality.ToList(), "SpecialityID", "Name", doctor.SpecialityID);
             return View(doctor);
         }
 
@@ -99,7 +145,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,Address,SpecialityID")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,DoesNightShifts,LastWorkDay,WorkingDays,WeeklyHours,Address,SpecialityID")] Doctor doctor)
         {
             if (id != doctor.DoctorID)
             {
@@ -126,6 +172,8 @@ namespace HospitalScheduling.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+
+            ViewData["Speciality"] = new SelectList(_context.Speciality.ToList(), "SpecialityID", "Name", doctor.SpecialityID);
             return View(doctor);
         }
 
@@ -137,8 +185,27 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var doctor = await _context.Doctor
+            var doctor = await _context.Doctor.Include(d => d.Speciality)
                 .FirstOrDefaultAsync(m => m.DoctorID == id);
+            if (doctor == null)
+            {
+                return NotFound();
+            }
+
+            return View(doctor);
+        }
+
+        // GET: Doctors/DeleteConfirmation/5
+        public async Task<IActionResult> DeleteConfirmation(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var doctor = await _context.Doctor.Include(d => d.Speciality)
+                .FirstOrDefaultAsync(m => m.DoctorID == id);
+
             if (doctor == null)
             {
                 return NotFound();
@@ -152,7 +219,7 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var doctor = await _context.Doctor.FindAsync(id);
+            var doctor = await _context.Doctor.Include(d => d.Speciality).Where(d => d.DoctorID == id).FirstOrDefaultAsync();
             _context.Doctor.Remove(doctor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));

@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HospitalScheduling.Data;
 using HospitalScheduling.Models;
+using HospitalScheduling.Models.ViewModels;
 
 namespace HospitalScheduling.Controllers
 {
     public class SpecialitiesController : Controller
     {
         private readonly ApplicationDbContext _context;
+        PagingViewModel paging = new PagingViewModel()
+        {
+            CurrentPage = 1
+        };
 
         public SpecialitiesController(ApplicationDbContext context)
         {
@@ -20,22 +25,59 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: Specialities
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
         {
-            return View(await _context.DoctorsBySpeciality.ToListAsync());
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain nurses including thier specialities that skips 5 * number of items per page
+                    var specialities = await _context.Speciality.Skip(paging.PageSize * (page - 1))
+                        .Take(paging.PageSize).ToListAsync();
+                #endregion
+
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        specialities = (await _context.Speciality.Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.Speciality.Count();
+            #endregion
+            #endregion
+
+            return View(new SpecialitiesViewModel() { Specialities = specialities, Pagination = paging });
         }
 
         // Post: Specialities
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search,int page = 1)
         {
-            if (!string.IsNullOrEmpty(search))
-            {
-                return View(await _context.DoctorsBySpeciality.Where(ds => ds.Name.Contains(search)|| ds.SpecialityID.ToString().Contains(search)).ToListAsync());
-            }
 
-            return View(await _context.DoctorsBySpeciality.ToListAsync());
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain nurses including thier specialities that skips 5 * number of items per page
+                    var specialities = await _context.Speciality.Skip(paging.PageSize * (page - 1))
+                        .Take(paging.PageSize).ToListAsync();
+                #endregion
+
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        specialities = (await _context.Speciality.Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.Speciality.Count();
+                #endregion
+            #endregion
+            
+            ViewData["Search"] = search;
+            return View(new SpecialitiesViewModel() { Specialities = specialities, Pagination = paging });
         }
 
         // GET: Specialities/Details/5
@@ -46,7 +88,7 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var speciality = await _context.DoctorsBySpeciality
+            var speciality = await _context.Speciality
                 .FirstOrDefaultAsync(m => m.SpecialityID == id);
             if (speciality == null)
             {
@@ -67,7 +109,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("SpecialityID,Name,RegisterDate")] Speciality speciality)
+        public async Task<IActionResult> Create([Bind("SpecialityID,Name")] Speciality speciality)
         {
             if (ModelState.IsValid)
             {
@@ -86,7 +128,7 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var speciality = await _context.DoctorsBySpeciality.FindAsync(id);
+            var speciality = await _context.Speciality.FindAsync(id);
             if (speciality == null)
             {
                 return NotFound();
@@ -99,7 +141,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("SpecialityID,Name,RegisterDate")] Speciality speciality)
+        public async Task<IActionResult> Edit(int id, [Bind("SpecialityID,Name")] Speciality speciality)
         {
             if (id != speciality.SpecialityID)
             {
@@ -137,7 +179,25 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
 
-            var speciality = await _context.DoctorsBySpeciality
+            var speciality = await _context.Speciality
+                .FirstOrDefaultAsync(m => m.SpecialityID == id);
+            if (speciality == null)
+            {
+                return NotFound();
+            }
+
+            return View(speciality);
+        }
+
+        // GET: Specialities/DeleteConfirmation/5
+        public async Task<IActionResult> DeleteConfirmation(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var speciality = await _context.Speciality
                 .FirstOrDefaultAsync(m => m.SpecialityID == id);
             if (speciality == null)
             {
@@ -152,15 +212,15 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var speciality = await _context.DoctorsBySpeciality.FindAsync(id);
-            _context.DoctorsBySpeciality.Remove(speciality);
+            var speciality = await _context.Speciality.FindAsync(id);
+            _context.Speciality.Remove(speciality);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }
 
         private bool SpecialityExists(int id)
         {
-            return _context.DoctorsBySpeciality.Any(e => e.SpecialityID == id);
+            return _context.Speciality.Any(e => e.SpecialityID == id);
         }
     }
 }

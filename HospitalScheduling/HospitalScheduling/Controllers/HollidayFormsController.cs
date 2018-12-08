@@ -7,12 +7,17 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using HospitalScheduling.Data;
 using HospitalScheduling.Models;
+using HospitalScheduling.Models.ViewModels;
 
 namespace HospitalScheduling.Controllers
 {
     public class HollidayFormsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        PagingViewModel paging = new PagingViewModel()
+        {
+            CurrentPage = 1
+        };
 
         public HollidayFormsController(ApplicationDbContext context)
         {
@@ -20,22 +25,59 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: HollidayForms
-        public async Task<IActionResult> Index()
+        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
         {
-            return View(await _context.HollidayForm.ToListAsync());
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                    var holi = await _context.HollidayForm.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                #endregion
+                            
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        holi = (await _context.HollidayForm.Where(ds => ds.VacationID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.HollidayForm.Count();
+                #endregion
+            #endregion
+
+            return View(new HollidayFormViewModel { HollidayForms = holi, Pagination = paging });
         }
 
         // Post: HollidayForms
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search)
+        public async Task<IActionResult> Index(string search, int page = 1)
         {
-            if (!string.IsNullOrEmpty(search))
-            {
-                return View(await _context.HollidayForm.Where(ds => ds.VacationID.ToString().Contains(search)).ToListAsync());
-            }
 
-            return View(await _context.HollidayForm.ToListAsync());
+            #region Search, Sort & Pagination Related Region
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                    var holi = await _context.HollidayForm.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                #endregion
+
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                    if (!string.IsNullOrEmpty(search))
+                    {
+                        holi = (await _context.HollidayForm.Where(ds => ds.VacationID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                    }
+                #endregion
+
+                #region Pagination Data initialized
+                    paging.CurrentPage = page;
+                    paging.TotalItems = _context.HollidayForm.Count();
+            #endregion
+            #endregion
+
+            ViewData["Search"] = search;
+            return View(new HollidayFormViewModel { HollidayForms = holi, Pagination = paging });
         }
 
         // GET: HollidayForms/Details/5
@@ -131,6 +173,24 @@ namespace HospitalScheduling.Controllers
 
         // GET: HollidayForms/Delete/5
         public async Task<IActionResult> Delete(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var hollidayForm = await _context.HollidayForm
+                .FirstOrDefaultAsync(m => m.VacationID == id);
+            if (hollidayForm == null)
+            {
+                return NotFound();
+            }
+
+            return View(hollidayForm);
+        }
+
+        // GET: HollidayForms/DeleteConfirmation/5
+        public async Task<IActionResult> DeleteConfirmation(int? id)
         {
             if (id == null)
             {

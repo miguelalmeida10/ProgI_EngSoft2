@@ -5,7 +5,7 @@
     ViewData["Active"] = "Shifts";
 }
 
-<
+<meta http-equiv="Refresh" content="60" />
 <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
     <div class="overlay"></div>
     <div class="container" style="height:200px">
@@ -37,9 +37,15 @@
             </tr>
             <tr>
                 <td style="min-width:5em;text-align:justify">
+                    <b>Turn ends in: </b>
+                </td>
+                <td>@Model.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1).AddHours(Model.DurationHours).AddMinutes(Model.DurationMinutes).Subtract(DateTime.Now).ToString() </td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
                     <b>EndDate: </b>
                 </td>
-                <td>@Model.StartDate.AddHours(Model.DurationHours).AddMinutes(Model.DurationMinutes).AddSeconds(Model.DurationSeconds).ToString()</td>
+                <td>@Model.EndDate.ToString()</td>
             </tr>
         </table>
     </div>
@@ -47,7 +53,7 @@
 
     <form asp-action="Delete">
         <input type="hidden" asp-for="ShiftID" />
-        <input type="submit" value="Delete" class="btn btn-danger" />
+        <a asp-action="DeleteConfirmation" asp-route-id="@Model.ShiftID" class="btn btn-danger">Delete</a>
         <a asp-action="Index" class="btn btn-info">Back to List</a>
     </form>
     <br />

@@ -64,12 +64,18 @@
                             <td>@Html.DisplayFor(model => model.BirthdaySon)</td>
                         </tr>
                     }
-                }              
+                }
                 <tr>
                     <td style="min-width:5em;text-align:justify">
                         <b>@Html.DisplayNameFor(model => model.Address): </b>
                     </td>
                     <td>@Html.DisplayFor(model => model.Address)</td>
+                </tr>
+                <tr>
+                    <td style="min-width:8em;text-align:justify">
+                        <b>@Html.DisplayNameFor(model => model.Speciality): </b>
+                    </td>
+                    <td>@Html.DisplayFor(model => model.Speciality.Name)</td>
                 </tr>
             </table>
         </div>
@@ -77,7 +83,7 @@
 
         <form asp-action="Delete">
             <input type="hidden" asp-for="NurseID" />
-            <input type="submit" value="Delete" class="btn btn-danger" />
+            <a asp-action="DeleteConfirmation" asp-route-id="@Model.NurseID" class="btn btn-danger">Delete</a>
             <a asp-action="Index" class="btn btn-info">Back to List</a>
         </form>
         <br />

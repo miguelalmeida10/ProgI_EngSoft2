@@ -1,9 +1,11 @@
-﻿@model IEnumerable<HospitalScheduling.Models.Doctor>
+﻿@model HospitalScheduling.Models.ViewModels.DoctorsViewModel
 
 @{
     ViewData["Title"] = "List";
     ViewData["Active"] = "Doctors";
 }
+
+
 
 <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
     <div class="overlay"></div>
@@ -30,10 +32,14 @@
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine(ex.Message);
             }
             finally
             {
+                if (string.IsNullOrEmpty(search))
+                {
+                    search = ViewData["Search"] as string;
+                }
                 <input type="search" id="searchbox" autofocus oninput="this.form.submit();" onfocus="this.value = '@(search)'" onchange="this.form.submit()" name="search" style="position:absolute;right:0; margin-right:50px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;background-color:transparent;" />
             }
         }
@@ -45,19 +51,22 @@
     <thead>
         <tr>
             <th>
-                @Html.DisplayNameFor(model => model.Name)
+                @Html.DisplayNameFor(model => model.Doctors.FirstOrDefault().Name)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.Email)
+                @Html.DisplayNameFor(model => model.Doctors.FirstOrDefault().Email)
             </th>
-            <th colspan="3">
-                @Html.DisplayNameFor(model => model.Phone)
+            <th>
+                @Html.DisplayNameFor(model => model.Doctors.FirstOrDefault().Phone)
+            </th>
+            <th colspan="2">
+                @Html.DisplayNameFor(model => model.Doctors.FirstOrDefault().Speciality)
             </th>
             <th></th>
         </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model)
+        @foreach (var item in Model.Doctors)
         {
             <tr>
                 <td>
@@ -70,6 +79,9 @@
                     @Html.DisplayFor(modelItem => item.Phone)
                 </td>
                 <td>
+                    @Html.DisplayFor(modelItem => item.Speciality.Name)
+                </td>
+                <td>
                     <a asp-action="Edit" asp-route-id="@item.DoctorID">Edit</a> |
                     <a asp-action="Details" asp-route-id="@item.DoctorID">Details</a> |
                     <a asp-action="Delete" asp-route-id="@item.DoctorID">Delete</a>
@@ -78,3 +90,57 @@
         }
     </tbody>
 </table>
+<div style="margin-left:30px">
+    @{
+        string searchtext = "";
+        try
+        {
+            searchtext = string.IsNullOrEmpty(Context.Request.Form["search"]) ? string.Empty : Context.Request.Form["search"].ToString();
+
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        if (string.IsNullOrEmpty(searchtext))
+        {
+            searchtext = ViewData["Search"] as string;
+        }
+
+        @if (Model.Pagination.CurrentPage > 1)
+        {
+            <a href="@Url.Action("Index", "Doctors", new { @page = (Model.Pagination.CurrentPage > 1) ? 1 : Model.Pagination.CurrentPage, @search=searchtext})"><span class="icon-next">&lt;&lt;</span></a>
+            <span>&nbsp;</span>
+            <a href="@Url.Action("Index", "Doctors", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @search=searchtext })"><span class="icon-next">&lt;</span></a>
+            <span>&nbsp;</span>
+        }
+
+        @for (int i = 1; i <= Model.Pagination.NumberPages; i++)
+        {
+            if (i == Model.Pagination.CurrentPage)
+            {
+                <span>@i.ToString()</span>
+                <span>&nbsp;&nbsp;</span>
+            }
+            else if (i != Model.Pagination.CurrentPage && i <= Model.Pagination.CurrentPage + 1 && i >= Model.Pagination.CurrentPage - 1 && Model.Pagination.CurrentPage != 1)
+            {
+                @Html.ActionLink(i.ToString(), "Index", "Doctors", new { @page = i, @search = searchtext })
+                <span>&nbsp;</span>
+            }
+            else if (Model.Pagination.CurrentPage == 1 || Model.Pagination.CurrentPage == Model.Pagination.NumberPages)
+            {
+                @Html.ActionLink(i.ToString(), "Index", "Doctors", new { @page = i, @search = searchtext })
+                <span>&nbsp;</span>
+            }
+        }
+
+        @if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages)
+        {
+            <a href="@Url.Action("Index", "Doctors", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @search=searchtext})"><span class="icon-prev">&gt;</span></a>
+            <span>&nbsp;&nbsp;</span>
+            <a href="@Url.Action("Index", "Doctors", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.NumberPages : Model.Pagination.CurrentPage , @search=searchtext})"><span class="icon-prev">&gt;&gt;</span></a>
+            <span>&nbsp;&nbsp;</span>
+        }
+    }
+</div>
