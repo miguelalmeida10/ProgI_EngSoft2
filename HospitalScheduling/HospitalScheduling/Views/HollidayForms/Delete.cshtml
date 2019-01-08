@@ -2,6 +2,7 @@
 
 @{
     ViewData["Title"] = "Index";
+    ViewData["Active"] = "HolidayForms";
 }
 
 <!DOCTYPE html>
@@ -9,7 +10,7 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
-    <title>Delete</title>
+    <title>@ViewData["Active"] - Delete</title>
 </head>
 <body>
 
@@ -31,12 +32,18 @@
             @Html.DisplayFor(model => model.DateEnd)
         </dd>
     </dl>
-    
-    <form asp-action="Delete">
+
+    @{
+        Dictionary<int, string> dic = new Dictionary<int, string>();
+        dic.Add(Model.VacationID, @Html.DisplayNameFor(model => model.VacationID));
+        @await Html.PartialAsync("_DeletePartial", dic);
+    }
+    <form>
         <input type="hidden" asp-for="VacationID" />
-        <input type="submit" value="Delete" class="btn btn-default" /> |
-        <a asp-action="Index">Back to List</a>
+        <a style="color:white" id="delete" data-toggle="modal" data-target="#deleteconfirmation" class="btn btn-danger">Delete</a>
+        <a asp-action="Index" class="btn btn-info">Back to List</a>
     </form>
+    <br />
 </div>
 </body>
 </html>

@@ -1,0 +1,78 @@
+﻿@model HospitalScheduling.Models.DoctorShifts
+
+@{
+    ViewData["Title"] = "Delete";
+    ViewData["Active"] = "DoctorShifts";
+}
+
+
+<meta http-equiv="Refresh" content="60" />
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Assigned Shifts - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">Assigned Shifts - @ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<center>
+    <h3>Are you sure you want to delete this?</h3>
+    <div>
+        <hr />
+        <table>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Doctor.Name): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Doctor.Name)</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Doctor.Phone): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Doctor.Phone)</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Shift.Name): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Shift.Name)</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.Shift.StartDate): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.Shift.StartDate)</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>Shift ends in: </b>
+                </td>
+                <td>@(new DateTime(Model.Shift.StartDate.AddHours(6).Subtract(DateTime.Now).Ticks).ToLongTimeString())</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>End Date: </b>
+                </td>
+                <td>@Model.Shift.StartDate.AddHours(6)</td>
+            </tr>
+        </table>
+    </div>
+    <br />
+
+    @{
+        Dictionary<int, string> dic = new Dictionary<int, string>();
+        dic.Add(Model.DoctorShiftID, @Html.DisplayNameFor(model => model.DoctorShiftID));
+        @await Html.PartialAsync("_DeletePartial", dic);
+    }
+    <form>
+        <input type="hidden" asp-for="DoctorShiftID" />
+        <a style="color:white" id="delete" data-toggle="modal" data-target="#deleteconfirmation" class="btn btn-danger">Delete</a>
+        <a asp-action="Index" class="btn btn-info">Back to List</a>
+    </form>
+    <br />
+</center>

@@ -6,67 +6,168 @@
     <title>@ViewData["Title"] - HospitalScheduling</title>
 
     <environment include="Development">
-        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/css/style.css" />
     </environment>
     <environment exclude="Development">
         <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
+              asp-fallback-href="~/css/bootstrap.min.css"
               asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
-        <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
+        <link rel="stylesheet" href="~/css/style.css" asp-append-version="true" />
     </environment>
+
+    <link rel="stylesheet" type="text/css" href="//fonts.googleapis.com/css?family=Varela+Round" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:300,400,700" rel="stylesheet">
+    <link rel="stylesheet" href="~/css/open-iconic-bootstrap.min.css">
+    <link rel="stylesheet" href="~/css/animate.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+
+    <link rel="stylesheet" href="~/css/owl.carousel.min.css">
+    <link rel="stylesheet" href="~/css/owl.theme.default.min.css">
+    <link rel="stylesheet" href="~/css/magnific-popup.css">
+    <link rel="stylesheet" href="~/css/aos.css">
+    <link rel="stylesheet" href="~/css/ionicons.min.css">
+    <link rel="stylesheet" href="~/css/bootstrap-datepicker.css">
+    <link rel="stylesheet" href="~/css/jquery.timepicker.css">
+
+    <link rel="stylesheet" href="~/css/flaticon.css">
+    <link rel="stylesheet" href="~/css/icomoon.css">
+    <link rel="stylesheet" href="~/css/style.css">
+
+    <script>
+        function displaySons() {
+            if (document.getElementById('sonsbox') != null) {
+                if (document.getElementById('sonsbox').value == "false") {
+                    document.getElementById('displaysons').style.visibility = "collapse";
+                } else {
+                    document.getElementById('displaysons').style.visibility = "visible";
+                }
+            }
+        }
+
+        function showModal() {
+            $('#deleteconfirmation').trigger('focus')
+        }
+    </script>
 </head>
-<body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
-        <div class="container">
-            <div class="navbar-header">
-                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                    <span class="icon-bar"></span>
-                </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">HospitalScheduling</a>
-            </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Doctors" asp-action="Index">Doctors</a></li>
-                    <li><a asp-area="" asp-controller="Nurses" asp-action="Index">Nurses</a></li>
-                    <li><a asp-area="" asp-controller="HollidayForms" asp-action="Index">Holliday Form</a></li>
-                    <li><a asp-area="" asp-controller="RuleModels" asp-action="Index">Rules</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
+<body data-aos-easing="slide" data-aos-duration="800" data-aos-delay="0" style="color:black" onload="displaySons()">
+    <nav class="navbar navbar-expand navbar-dark ftco_navbar bg-dark ftco-navbar-light" id="ftco-navbar">
+        <div class="container" style="margin:0;min-width:100%">
+            <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand" style="color:black;font-weight:bolder;font-family: 'Varela Round';font-size:1.2em"><i class="flaticon-pharmacy"></i><span>Hospital</span>Scheduling</a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#ftco-nav" aria-controls="ftco-nav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="oi oi-menu"></span> Menu
+            </button>
+            <div class="collapse navbar-collapse" id="ftco-nav">
+                <ul class="navbar-nav ml-xl-auto">
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("Home")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="Home" asp-action="Index" class="nav-link">Home</a>
+                    </li>
+
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("Doctors")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="Doctors" asp-action="Index" class="nav-link">Doctors</a>
+                    </li>
+
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("Nurses")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="Nurses" asp-action="Index" class="nav-link">Nurses</a>
+                    </li>
+
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("Specialities")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="Specialities" asp-action="Index" class="nav-link">Specialities</a>
+                    </li>
+
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("Shifts")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="Shifts" asp-action="Index" class="nav-link">Shifts</a>
+                    </li>
+
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("DoctorShifts")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="DoctorShifts" asp-action="Index" class="nav-link">Assigned Shifts</a>
+                    </li>
+
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("HolidayForms")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="nav-link">Holiday Form</a>
+                    </li>
+                    <partial name="_LoginPartial" />
                 </ul>
-                <partial name="_LoginPartial" />
             </div>
         </div>
     </nav>
 
-    <partial name="_CookieConsentPartial" />
-
-    <div class="container body-content">
+    <div>
         @RenderBody()
-        <hr />
-        <footer>
-            <p>&copy; 2018 - HospitalScheduling</p>
+        <footer class="ftco-footer ftco-bg-dark ftco-section img" style="background-image: url(images/bg_5.jpg); background-color:turquoise;">
+            <div class="overlay"></div>
+            <div class="container">
+                <div class="row mb-5">
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <h2 class="ftco-heading-2">HospitalScheduling</h2>
+                            <p>A hospital scheduling site made enabled by c# asp.net core tecnology for the class: Programação para Internet</p>
+                            <ul class="ftco-footer-social list-unstyled float-md-left float-lft mt-5">
+                                <li class="ftco-animate"><a href="#"><span class="icon-twitter"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-facebook"></span></a></li>
+                                <li class="ftco-animate"><a href="#"><span class="icon-instagram"></span></a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <h2 class="ftco-heading-2" style="margin-left:170px">Site Links</h2>
+                            <ul class="list-unstyled" style="margin-top:-8px;margin-left:100px">
+                                <li><a asp-area="" asp-controller="Home" asp-action="Index" class="py-2 d-block">Home</a></li>
+                                <li><a asp-area="" asp-controller="Doctors" asp-action="Index" class="py-2 d-block">Doctors</a></li>
+                                <li><a asp-area="" asp-controller="Nurses" asp-action="Index" class="py-2 d-block">Nurses</a></li>
+                                <li><a asp-area="" asp-controller="Specialities" asp-action="Index" class="py-2 d-block">Specialities</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <ul class="list-unstyled" style="margin-top:60px;">
+                                <li><a asp-area="" asp-controller="Shifts" asp-action="Index" class="py-2 d-block">Shifts</a></li>
+                                <li><a asp-area="" asp-controller="DoctorShifts" asp-action="Index" class="py-2 d-block">Assigned Shifts</a></li>
+                                <li><a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="py-2 d-block">Holiday Form</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-md">
+                        <div class="ftco-footer-widget mb-4">
+                            <h2 class="ftco-heading-2">Have Questions?</h2>
+                            <div class="block-23 mb-3">
+                                <ul>
+                                    <li><span class="icon icon-map-marker"></span><span class="text">Av. Dr. Francisco Sá Carneiro, 50</span></li>
+                                    <li><a href="#"><span class="icon icon-phone"></span><span class="text">+351 271 220 164</span></a></li>
+                                    <li style="margin-top:-20px;"><a href="mailto:estg-geral@ipg.pt?Subject=Questoes"><span class="icon icon-envelope"></span><span class="text">estg-geral@ipg.pt</span></a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12 text-center">
+                        <p>
+                            Copyright &copy;
+                            <script>document.write(new Date().getFullYear());</script> All Rights Reserved | This template was adapted <i class="icon-heart" aria-hidden="true"></i> by Diogo Sá
+                        </p>
+                    </div>
+                </div>
+            </div>
         </footer>
     </div>
 
     <environment include="Development">
-        <script src="~/lib/jquery/dist/jquery.js"></script>
-        <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
+        <script src="~/js/jquery.min.js"></script>
+        <script src="~/js/bootstrap.min.js"></script>
         <script src="~/js/site.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
         <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
+                asp-fallback-src="~/js/jquery.min.js"
                 asp-fallback-test="window.jQuery"
                 crossorigin="anonymous"
                 integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
         </script>
         <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
+                asp-fallback-src="~/js/bootstrap.min.js"
                 asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
                 crossorigin="anonymous"
                 integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">

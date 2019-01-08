@@ -1,45 +1,32 @@
 ﻿@{
     ViewData["Title"] = "Home Page";
+    ViewData["Active"] = "Home";
 }
 
 <html>
-<head>
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <style>
-        body {
-            margin: 0;
-            font-family: Arial, Helvetica, sans-serif;
-        }
-
-        .hero-image {
-            background-image: url("images/fundoimage.jpg");
-            background-color: #cccccc;
-            height: 500px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: cover;
-            position: relative;
-        }
-
-        .hero-text {
-            text-align: center;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-        }
-    </style>
-</head>
 <body>
-
-    <div class="hero-image">
-        <div class="hero-text">
-            <h1 style="font-size:50px">Welcome</h1>
-            <h3>Para ver horarios/ferias ou alterações faça login.</h3>
-            <a href="/Identity/Account/Login" class="btn btn-primary">Login</a>
+    <div class="hero-wrap" style="background-image: url('images/bg_1.jpg'); background-attachment:fixed;">
+        <div class="overlay"></div>
+        <div class="container">
+            <div class="row no-gutters slider-text align-items-center justify-content-center" data-scrollax-parent="true">
+                <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                    @{
+                        if (!User.Identity.IsAuthenticated)
+                        {
+                            <h1 class="mb-4">Welcome</h1>
+                            <h6 class="mb-3 bread">To see the schedules/holidays or alterations, please login.</h6>
+                            <a href="/Identity/Account/Login" class="btn btn-primary">Login</a>
+                        }
+                        else
+                        {
+                            <h1 class="mb-4">Welcome, @User.Identity.Name</h1>
+                            <h6 class="mb-3 bread">To see the schedules you can visit @Html.ActionLink("Doctors", "Index", "Doctors") or @Html.ActionLink("Nurses", "Index", "Nurses").</h6>
+                            <h6 class="mb-3 bread">You can also visit @Html.ActionLink("Holiday Forms", "Index", "HollidayForms") to schedule your holidays.</h6>
+                        }
+                    }
+                </div>
+            </div>
         </div>
     </div>
-
 </body>
 </html>

@@ -71,9 +71,7 @@ namespace HospitalScheduling
             });
 
 
-            SeedDataNurses.Populate(app.ApplicationServices);
-            SeedDataDoctors.Populate(app.ApplicationServices);
-            SeedDataSpecıalıty.Populate(app.ApplicationServices);
+            SeedData.Populate(app.ApplicationServices);
 
         }
     }

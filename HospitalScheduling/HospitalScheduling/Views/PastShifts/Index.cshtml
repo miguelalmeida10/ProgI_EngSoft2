@@ -1,0 +1,236 @@
+﻿@model HospitalScheduling.Models.ViewModels.PastShiftsViewModel
+
+@{
+    ViewData["Title"] = "List";
+    ViewData["Active"] = "PastShifts";
+}
+
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+<form id="searchform" asp-action="Index">
+    <div style="min-width:100%">
+        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
+
+        @{
+            string search = "", filter = "", order = "", asc = "";
+            try
+            {
+                search = string.IsNullOrEmpty(Context.Request.Form["search"]) ? string.Empty : Context.Request.Form["search"].ToString();
+
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (string.IsNullOrEmpty(search))
+                {
+                    search = ViewData["Search"] as string;
+                }
+            }
+
+            try
+            {
+                filter = string.IsNullOrEmpty(Context.Request.Form["filter"]) ? string.Empty : Context.Request.Form["filter"].ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (string.IsNullOrEmpty(filter) && ViewData["Filter"] != null)
+                {
+                    filter = ViewData["Filter"] as string;
+                }
+            }
+
+            try
+            {
+                order = string.IsNullOrEmpty(Context.Request.Form["order"]) ? string.Empty : Context.Request.Form["order"].ToString();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
+            finally
+            {
+                if (string.IsNullOrEmpty(order) && ViewData["Order"] != null)
+                {
+                    order = ViewData["Order"] as string;
+                }
+            }
+
+            if (string.IsNullOrEmpty(asc) && ViewData["Asc"] != null)
+            {
+                asc = ViewData["Asc"] as string;
+            }
+
+            <b style="position:absolute;right:0;margin-top:2px; margin-right:390px;font-size: 1.2em;text-align: justify;background-color:transparent;">Filter By: </b>
+            <select value="@(filter)" name="filter" onchange="this.form.submit()" style="position:absolute;right:0; border: 2px solid #167ce9;margin-top:5px; margin-right:280px;font-size: 1.2em;text-align-last: center;border-radius: 20px;background-color:transparent;outline:none">
+                @{if (filter.Equals("All"))
+                    {
+                        <option selected value="All">All Fields</option>
+                    }
+                    else
+                    {
+                        <option value="All">All Fields</option>
+                    }
+                }
+
+                @{if (filter.Equals("Name"))
+                    {
+                        <option selected value="Name">Name</option>
+                    }
+                    else
+                    {
+                        <option value="Name">Name</option>
+                    }
+                }
+
+                @{if (filter.Equals("Shift"))
+                    {
+                        <option selected value="Shift">Shift</option>
+                    }
+                    else
+                    {
+                        <option value="Shift">Shift</option>
+                    }
+                }
+            </select>
+            <input type="search" id="searchbox" autofocus oninput="this.form.submit();" onfocus="this.value = '@(search)'" onchange="this.form.submit()" name="search" style="position:absolute;right:0; margin-right:50px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;outline:none !important;border-radius: 20px;background-color:transparent;" />
+            <div style="display:none">
+                @ViewData["Search"] = search;
+                @ViewData["Filter"] = filter;
+                @ViewData["Order"] = order;
+            </div>
+            <input type="hidden" name="asc" value="@(ViewData["Asc"])" />
+        }
+        <input type="submit" class="icon-search fa-7x" value="&#xf002;" style="font-family: FontAwesome;height:35px;width:35px; position:absolute;right:0;background-color:transparent;margin-right:5px;margin-top:1px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;outline:none !important" />
+    </div>
+</form>
+<br />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor) })
+            </th>
+            <th>
+                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift) })
+            </th>
+            <th>
+                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate) })
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    }
+    <tbody>
+        @foreach (var item in Model.PastShifts)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Doctor.Phone)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Shift.ShiftID)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.ShiftEndDate)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.HistoryID">Edit</a> |
+                    <a asp-action="Details" asp-route-id="@item.HistoryID">Details</a> |
+                    <a asp-action="Delete" asp-route-id="@item.HistoryID">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<div style="margin-left:30px">
+    @{
+        string searchtext = "";
+        string filtertext = "";
+        try
+        {
+            searchtext = string.IsNullOrEmpty(Context.Request.Form["search"]) ? string.Empty : Context.Request.Form["search"].ToString();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        try
+        {
+            filtertext = string.IsNullOrEmpty(Context.Request.Form["filter"]) ? string.Empty : Context.Request.Form["filter"].ToString();
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+        }
+
+        if (string.IsNullOrEmpty(searchtext))
+        {
+            searchtext = ViewData["Search"] as string;
+        }
+
+        if (string.IsNullOrEmpty(filtertext))
+        {
+            filtertext = ViewData["Filter"] as string;
+        }
+
+        @if (Model.Pagination.CurrentPage > 1 && Model.Pagination.CurrentPage != 2)
+        {
+            <a title="First Page" href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage > 1) ? 1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext})"><span class="icon-prev"><i style="color:black" class="fas fa-angle-double-left"></i></span></a>
+            <span>&nbsp;</span>
+            <a title="Previous Page" href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext })"><span class="icon-prev"><i style="color:black" class="fas fa-angle-left"></i></span></a>
+            <span>&nbsp;</span>
+        }
+        else if (Model.Pagination.CurrentPage > 1 && Model.Pagination.CurrentPage == 2)
+        {
+            <a title="Previous Page" href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext })"><span class="icon-prev"><i style="color:black" class="fas fa-angle-left"></i></span></a>
+            <span>&nbsp;</span>
+        }
+
+        if (Model.Pagination.CurrentPage > 2)
+        {
+            @Html.ActionLink((Model.Pagination.CurrentPage - 1).ToString(), "Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage - 1), @filter = filtertext, @search = searchtext }, new { @style = "font-family: 'Varela Round';color:black;font-weight:bolder;" })
+            <span>&nbsp;</span>
+        }
+
+        <span style="font-family: 'Varela Round';color:#167ce9;font-weight:bolder;">@Model.Pagination.CurrentPage.ToString()</span>
+        <span>&nbsp;</span>
+
+
+        if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages - 1)
+        {
+            @Html.ActionLink((Model.Pagination.CurrentPage + 1).ToString(), "Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage + 1), @filter = filtertext, @search = searchtext }, new { @style = "font-family: 'Varela Round';color:black;font-weight:bolder;" })
+            <span>&nbsp;</span>
+        }
+
+        @if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages && Model.Pagination.CurrentPage + 1 < Model.Pagination.NumberPages)
+        {
+            <a title="Next Page" href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext})"><span class="icon-next"><i style="color:black" class="fas fa-angle-right"></i></span></a>
+            <span>&nbsp;&nbsp;</span>
+            <a title="Last Page" href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.NumberPages : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext})"><span class="icon-next"><i style="color:black" class="fas fa-angle-double-right"></i></span></a>
+            <span>&nbsp;&nbsp;</span>
+        }
+        else if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages && Model.Pagination.CurrentPage < Model.Pagination.NumberPages)
+        {
+            <a title="Next Page" href="@Url.Action("Index", "PastShifts", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext})"><span class="icon-next"><i style="color:black" class="fas fa-angle-right"></i></span></a>
+            <span>&nbsp;&nbsp;</span>
+        }
+    }
+</div>

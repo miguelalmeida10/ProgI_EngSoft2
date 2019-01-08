@@ -1,0 +1,45 @@
+﻿@model HospitalScheduling.Models.PastShifts
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>Delete</h2>
+
+<h3>Are you sure you want to delete this?</h3>
+<div>
+    <h4>PastShifts</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Doctor)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Doctor.Phone)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Shift)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Shift.ShiftID)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.ShiftEndDate)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.ShiftEndDate)
+        </dd>
+    </dl>
+
+    @{
+        Dictionary<int, string> dic = new Dictionary<int, string>();
+        dic.Add(Model.HistoryID, @Html.DisplayNameFor(model => model.HistoryID));
+        @await Html.PartialAsync("_DeletePartial", dic);
+    }
+    <form>
+        <input type="hidden" asp-for="HistoryID" />
+        <a style="color:white" id="delete" data-toggle="modal" data-target="#deleteconfirmation" class="btn btn-danger">Delete</a>
+        <a asp-action="Index" class="btn btn-info">Back to List</a>
+    </form>
+    <br />
+</div>

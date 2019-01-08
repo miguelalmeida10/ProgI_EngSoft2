@@ -2,53 +2,143 @@
 
 @{
     ViewData["Title"] = "Edit";
+    ViewData["Active"] = "Doctors";
 }
 
-<h2>Edit</h2>
 
-<h4>Doctor</h4>
-<hr />
-<div class="row">
-    <div class="col-md-4">
-        <form asp-action="Edit">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="EmployeeID" />
-            <div class="form-group">
-                <label asp-for="Name" class="control-label"></label>
-                <input asp-for="Name" class="form-control" />
-                <span asp-validation-for="Name" class="text-danger"></span>
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
-            <div class="form-group">
-                <label asp-for="Email" class="control-label"></label>
-                <input asp-for="Email" class="form-control" />
-                <span asp-validation-for="Email" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Phone" class="control-label"></label>
-                <input asp-for="Phone" class="form-control" />
-                <span asp-validation-for="Phone" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Birthday" class="control-label"></label>
-                <input asp-for="Birthday" class="form-control" />
-                <span asp-validation-for="Birthday" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Adress" class="control-label"></label>
-                <input asp-for="Adress" class="form-control" />
-                <span asp-validation-for="Adress" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-default" />
-            </div>
-        </form>
+        </div>
     </div>
 </div>
-
-<div>
-    <a asp-action="Index">Back to List</a>
-</div>
-
+<br />
+<center>
+    <hr />
+    <div>
+        <div class="col-md-4">
+            <form asp-action="Edit">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <input type="hidden" asp-for="DoctorID" />
+                <input type="hidden" asp-for="SpecialityID" />
+                <input type="hidden" asp-for="Speciality" />
+                <input type="hidden" asp-for="Speciality.Name" value="@Model.Speciality.Name" />
+                <table class="table-borderless">
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Name" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="Name" class="form-control" placeholder="Insert a name" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="Name" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="DoctorNumber" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="DoctorNumber" class="form-control" placeholder="Insert a doctors number" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="DoctorNumber" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="CC" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="CC" class="form-control" placeholder="Insert a cc" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="CC" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Email" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="Email" class="form-control" placeholder="Insert an email" style="text-align:justify" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="Email" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Phone" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="Phone" class="form-control" placeholder="Insert a phone number" style="text-align:justify" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="Phone" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Birthday" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="Birthday" class="form-control" placeholder="Insert a birth date" style="text-align:justify" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="Birthday" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Address" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="Address" class="form-control" placeholder="Insert an address" style="text-align:justify;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="Address" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="Speciality" class="control-label" style="margin-top:10px">
+                            </label><label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <select asp-for="Speciality.SpecialityID" asp-items="ViewBag.Speciality" class="form-control" placeholder="Insert a speciality" style="text-align:justify;"></select>
+                        </td>
+                        <td>
+                            <span asp-validation-for="Speciality.SpecialityID" class="text-danger"></span>
+                        </td>
+                    </tr>
+                </table>
+                <br />
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-success" />
+                    <a asp-action="Index" class="btn btn-info">Back to List</a>
+                </div>
+            </form>
+        </div>
+    </div>
+    <br />
+</center>
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
