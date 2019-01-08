@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Doctors - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Doctors - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -28,6 +28,18 @@
                     <b>@Html.DisplayNameFor(model => model.Name): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Name)</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.DoctorNumber): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.DoctorNumber)</td>
+            </tr>
+            <tr>
+                <td style="min-width:8em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.CC): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.CC)</td>
             </tr>
             <tr>
                 <td style="min-width:8em;text-align:justify">
@@ -63,10 +75,14 @@
     </div>
     <br />
 
-
+    @{
+        Dictionary<int, string> dic = new Dictionary<int, string>();
+        dic.Add(Model.DoctorID,  @Html.DisplayNameFor(model => model.DoctorID));
+        @await Html.PartialAsync("_DeletePartial", dic);
+    }
     <form>
         <input type="hidden" asp-for="DoctorID" />
-        <a asp-action="DeleteConfirmation" asp-route-id="@Model.DoctorID" class="btn btn-danger">Delete</a>
+        <a style="color:white" id="delete" data-toggle="modal" data-target="#deleteconfirmation" class="btn btn-danger">Delete</a>
         <a asp-action="Index" class="btn btn-info">Back to List</a>
     </form>
     <br />

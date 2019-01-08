@@ -1,9 +1,8 @@
-﻿@model HospitalScheduling.Models.ViewModels.NurseViewModel
+﻿@model HospitalScheduling.Models.ViewModels.DoctorSpecialitiesViewModel
 
 @{
-    ViewData["Title"] = "List";
-    ViewData["Active"] = "Nurses";
-    ViewData["Asc"] = (ViewData["Asc"] != null && ViewData["Asc"].Equals("Asc")) ? "Dsc" : (ViewData["Asc"] != null && ViewData["Asc"].Equals("Dsc")) ? "Dsc" : "Asc";
+    ViewData["Title"] = "List of Specialities";
+    ViewData["Active"] = "Doctors";
 }
 
 <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
@@ -20,7 +19,7 @@
 <br />
 <form id="searchform" asp-action="Index">
     <div style="min-width:100%">
-        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
+        <a class='btn btn-primary' style='margin-left:15px;visibility:hidden'>Back</a>
 
         @{
             string search = "", filter = "", order = "", asc = "";
@@ -147,9 +146,9 @@
     <thead>
         <tr>
             <th>
-                @Html.ActionLink(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Name), "Index", "Nurses", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = "Name", @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+                @Html.ActionLink(Html.DisplayNameFor(model => model.DoctorSpecialities.FirstOrDefault().Doctor.Name), "Index", "DoctorSpecialities", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = "DoctorsName", @asc = ViewData["Asc"].Equals("Asc") ? "Desc" : "Asc" })
                 &nbsp;<i style="color:black" class="
-                         @if (ViewData["Order"] != null && ViewData["Order"].Equals("Name")) {
+                         @if (ViewData["Order"] != null && ViewData["Order"].Equals("DoctorsName")) {
                              if (ViewData["Asc"].Equals("Asc")) {
                                   @:fas icon-sort-asc
                              } else {
@@ -159,73 +158,71 @@
                          }"></i>
             </th>
             <th>
-                @Html.ActionLink(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Email), "Index", "Nurses", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Email), @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+                @Html.ActionLink("Speciality Name", "Index", "DoctorSpecialities", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = "SpecialitiesName", @asc = ViewData["Asc"].Equals("Asc") ? "Desc" : "Asc" })
                 &nbsp;<i style="color:black" class="
-                         @if (ViewData["Order"] != null && ViewData["Order"].Equals(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Email))) {
-                             if (ViewData["Asc"].Equals("Asc")) {
-                                 @:fas icon-sort-asc
-                             } else {
-                                 @:fas icon-sort-desc
-                             }
+                         @if (ViewData["Order"] !=null && ViewData["Order"].Equals("SpecialitiesName")) {
+                         if (ViewData["Asc"].Equals("Asc")) {
+                         @:fas icon-sort-asc
                          } else {
-                                 @:fas icon-sort
+                         @:fas icon-sort-desc
+                         }
+                         } else { @:fas icon-sort
                          }"></i>
             </th>
             <th>
-                @Html.ActionLink(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Phone), "Index", "Nurses", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Phone), @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+                @Html.ActionLink("Alteration Date", "Index", "DoctorSpecialities", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = "Date", @asc = ViewData["Asc"].Equals("Asc") ? "Desc" : "Asc" })
                 &nbsp;<i style="color:black" class="
-                         @if (ViewData["Order"] != null && ViewData["Order"].Equals(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Phone))) {
+                         @if (ViewData["Order"] != null && ViewData["Order"].Equals("Date")) {
                              if (ViewData["Asc"].Equals("Asc")) {
-                                 @:fas icon-sort-asc
+                                  @:fas icon-sort-asc
                              } else {
                                  @:fas icon-sort-desc
                              }
-                         } else {
-                             @:fas icon-sort
+                         } else { @:fas icon-sort
                          }"></i>
             </th>
-            <th colspan="2">
-                @Html.ActionLink(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Speciality), "Index", "Nurses", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Speciality), @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+            <th>
+                @Html.ActionLink("Alteration Type", "Index", "DoctorSpecialities", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = "Type", @asc = ViewData["Asc"].Equals("Asc") ? "Desc" : "Asc" })
                 &nbsp;<i style="color:black" class="
-                         @if (ViewData["Order"] != null && ViewData["Order"].Equals(Html.DisplayNameFor(model => model.Nurses.FirstOrDefault().Speciality))) {
+                         @if (ViewData["Order"] != null && ViewData["Order"].Equals("Type")) {
                              if (ViewData["Asc"].Equals("Asc")) {
-                                 @:fas icon-sort-asc
+                                  @:fas icon-sort-asc
                              } else {
                                  @:fas icon-sort-desc
                              }
-                         } else {
-                             @:fas icon-sort
+                         } else { @:fas icon-sort
                          }"></i>
             </th>
             <th></th>
+        </tr>
     </thead>
     <tbody>
-        @foreach (var item in Model.Nurses)
+        @foreach (var item in Model.DoctorSpecialities)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Name)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Email)
-                </td>
-                <td>
-                    @Html.DisplayFor(modelItem => item.Phone)
+                    @Html.DisplayFor(modelItem => item.Doctor.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.Speciality.Name)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.NurseID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.NurseID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.NurseID">Delete</a>
+                    @Html.DisplayFor(modelItem => item.Date)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Type)
                 </td>
             </tr>
         }
     </tbody>
 </table>
+<div style="margin-left:30px;margin-bottom:10px">
+    <center>
+        <div style="margin-bottom:-20px;">
+            <a asp-action="Index" asp-controller="Doctors" class="btn btn-info">Back to List</a>
+        </div>
+    </center>
 
-<div style="margin-left:30px">
     @{
         string searchtext = "";
         string filtertext = "";
@@ -259,20 +256,20 @@
 
         @if (Model.Pagination.CurrentPage > 1 && Model.Pagination.CurrentPage != 2)
         {
-            <a title="First Page" href="@Url.Action("Index", "Nurses", new { @page = (Model.Pagination.CurrentPage > 1) ? 1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-prev"><i style="color:black" class="fas fa-angle-double-left"></i></span></a>
+            <a title="First Page" href="@Url.Action("Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage > 1) ? 1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-prev"><i style="color:black" class="fas fa-angle-double-left"></i></span></a>
             <span>&nbsp;</span>
-            <a title="Previous Page" href="@Url.Action("Index", "Nurses", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"] })"><span class="icon-prev"><i style="color:black" class="fas fa-angle-left"></i></span></a>
+            <a title="Previous Page" href="@Url.Action("Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"] })"><span class="icon-prev"><i style="color:black" class="fas fa-angle-left"></i></span></a>
             <span>&nbsp;</span>
         }
         else if (Model.Pagination.CurrentPage > 1 && Model.Pagination.CurrentPage == 2)
         {
-            <a title="Previous Page" href="@Url.Action("Index", "Nurses", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"] })"><span class="icon-prev"><i style="color:black" class="fas fa-angle-left"></i></span></a>
+            <a title="Previous Page" href="@Url.Action("Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage > 1) ? Model.Pagination.CurrentPage-1 : Model.Pagination.CurrentPage, @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"] })"><span class="icon-prev"><i style="color:black" class="fas fa-angle-left"></i></span></a>
             <span>&nbsp;</span>
         }
 
         if (Model.Pagination.CurrentPage > 2)
         {
-            @Html.ActionLink((Model.Pagination.CurrentPage - 1).ToString(), "Index", "Nurses", new { @page = (Model.Pagination.CurrentPage - 1), @filter = filtertext, @search = searchtext, @order = ViewData["Order"], @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" }, new { @style = "font-family: 'Varela Round';color:black;font-weight:bolder;" })
+            @Html.ActionLink((Model.Pagination.CurrentPage - 1).ToString(), "Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage - 1), @filter = filtertext, @search = searchtext, @order = ViewData["Order"], @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" }, new { @style = "font-family: 'Varela Round';color:black;font-weight:bolder;" })
             <span>&nbsp;</span>
         }
 
@@ -282,20 +279,20 @@
 
         if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages - 1)
         {
-            @Html.ActionLink((Model.Pagination.CurrentPage + 1).ToString(), "Index", "Nurses", new { @page = (Model.Pagination.CurrentPage + 1), @filter = filtertext, @search = searchtext, @order = ViewData["Order"], @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" }, new { @style = "font-family: 'Varela Round';color:black;font-weight:bolder;" })
+            @Html.ActionLink((Model.Pagination.CurrentPage + 1).ToString(), "Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage + 1), @filter = filtertext, @search = searchtext, @order = ViewData["Order"], @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" }, new { @style = "font-family: 'Varela Round';color:black;font-weight:bolder;" })
             <span>&nbsp;</span>
         }
 
         @if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages && Model.Pagination.CurrentPage + 1 < Model.Pagination.NumberPages)
         {
-            <a title="Next Page" href="@Url.Action("Index", "Nurses", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-next"><i style="color:black" class="fas fa-angle-right"></i></span></a>
+            <a title="Next Page" href="@Url.Action("Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-next"><i style="color:black" class="fas fa-angle-right"></i></span></a>
             <span>&nbsp;&nbsp;</span>
-            <a title="Last Page" href="@Url.Action("Index", "Nurses", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.NumberPages : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-next"><i style="color:black" class="fas fa-angle-double-right"></i></span></a>
+            <a title="Last Page" href="@Url.Action("Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.NumberPages : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-next"><i style="color:black" class="fas fa-angle-double-right"></i></span></a>
             <span>&nbsp;&nbsp;</span>
         }
         else if (Model.Pagination.CurrentPage < Model.Pagination.NumberPages && Model.Pagination.CurrentPage < Model.Pagination.NumberPages)
         {
-            <a title="Next Page" href="@Url.Action("Index", "Nurses", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-next"><i style="color:black" class="fas fa-angle-right"></i></span></a>
+            <a title="Next Page" href="@Url.Action("Index", "DoctorSpecialities", new { @page = (Model.Pagination.CurrentPage < Model.Pagination.NumberPages) ? Model.Pagination.CurrentPage + 1 : Model.Pagination.CurrentPage , @filter=filtertext, @search=searchtext, @order = ViewData["Order"], @asc= ViewData["Asc"]})"><span class="icon-next"><i style="color:black" class="fas fa-angle-right"></i></span></a>
             <span>&nbsp;&nbsp;</span>
         }
     }

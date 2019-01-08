@@ -25,27 +25,64 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: Specialities
-        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
+        // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
+        public async Task<IActionResult> Index(string search = "",string filter="", string order = "", string asc = "", int page = 1, int lazy = 1)
         {
             #region Search, Sort & Pagination Related Region
+                int count = 0;
                 #region Variable to obtain nurses including thier specialities that skips 5 * number of items per page
-                    var specialities = await _context.Speciality.Skip(paging.PageSize * (page - 1))
+                    var specialities = await _context.Speciality.OrderBy(sp => sp.Name).Skip(paging.PageSize * (page - 1))
                         .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        specialities = await _context.Speciality.OrderBy(sp => sp.Name).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
                     {
-                        specialities = (await _context.Speciality.Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    specialities = await _context.Speciality.OrderBy(sp => sp.Name).Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                break;
+                            case "ID":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Where(ds => ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    specialities = await _context.Speciality.OrderBy(sp => sp.Name).Where(ds => ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                break;
+                            case "Name":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                else
+                                    specialities = await _context.Speciality.OrderBy(sp => sp.Name).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                break;                            
+                        }
+               
+                        count = specialities.Count();
+                        specialities = specialities.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.Speciality.Count();
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.Speciality.Count() : count;
+                #endregion
             #endregion
-            #endregion
+
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
 
             return View(new SpecialitiesViewModel() { Specialities = specialities, Pagination = paging });
         }
@@ -53,30 +90,64 @@ namespace HospitalScheduling.Controllers
         // Post: Specialities
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search,int page = 1)
+        public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1)
         {
-
             #region Search, Sort & Pagination Related Region
+                int count = 0;
                 #region Variable to obtain nurses including thier specialities that skips 5 * number of items per page
-                    var specialities = await _context.Speciality.Skip(paging.PageSize * (page - 1))
+                    var specialities = await _context.Speciality.OrderBy(sp => sp.Name).Skip(paging.PageSize * (page - 1))
                         .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        specialities = await _context.Speciality.OrderBy(sp => sp.Name).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
                     {
-                        specialities = (await _context.Speciality.Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    specialities = await _context.Speciality.OrderBy(sp => sp.Name).Where(ds => ds.Name.Contains(search) || ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                break;
+                            case "ID":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Where(ds => ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    specialities = await _context.Speciality.OrderBy(sp => sp.Name).Where(ds => ds.SpecialityID.ToString().Contains(search)).ToListAsync();
+                                break;
+                            case "Name":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    specialities = await _context.Speciality.OrderByDescending(sp => sp.Name).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                else
+                                    specialities = await _context.Speciality.OrderBy(sp => sp.Name).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                break;                            
+                        }
+               
+                        count = specialities.Count();
+                        specialities = specialities.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.Speciality.Count();
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.Speciality.Count() : count;
                 #endregion
             #endregion
-            
-            ViewData["Search"] = search;
+
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
+
             return View(new SpecialitiesViewModel() { Specialities = specialities, Pagination = paging });
         }
 

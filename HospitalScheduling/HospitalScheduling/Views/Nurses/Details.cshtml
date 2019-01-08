@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Nurses - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Nurses - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -27,6 +27,18 @@
                     <b>@Html.DisplayNameFor(model => model.Name): </b>
                 </td>
                 <td>@Html.DisplayFor(model => model.Name)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.NurseNumber): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.NurseNumber)</td>
+            </tr>
+            <tr>
+                <td style="min-width:5em;text-align:justify">
+                    <b>@Html.DisplayNameFor(model => model.CC): </b>
+                </td>
+                <td>@Html.DisplayFor(model => model.CC)</td>
             </tr>
             <tr>
                 <td style="min-width:5em;text-align:justify">

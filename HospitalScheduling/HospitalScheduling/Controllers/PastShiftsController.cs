@@ -24,27 +24,64 @@ namespace HospitalScheduling.Models
         }
 
         // GET: PastShifts
-        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
+        // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
+        public async Task<IActionResult> Index(string search = "", string filter = "", string order = "", string asc = "", int page = 1, int lazy = 1)
         {
             #region Search, Sort & Pagination Related Region
+                int count = 0;
                 #region Variable to obtain past shifts including thier specialities that skips 5 * number of items per page
-                    var applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).Skip(paging.PageSize * (page - 1))
+                    var applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).OrderBy(p => order).Skip(paging.PageSize * (page - 1))
                                 .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).OrderBy(p => order).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).OrderByDescending(p => order).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
                     {
-                        applicationDbContext = (await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(p => order).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).ToListAsync();
+                                else
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(p => order).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).ToListAsync();
+                                break;
+                        case "Name":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(p => order).Where(ds => ds.Doctor.Name.Contains(search)).ToListAsync();
+                                else
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(p => order).Where(ds => ds.Doctor.Name.Contains(search)).ToListAsync();
+                                break;
+                        case "Shift":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(p => order).Where(ds => ds.Shift.Name.Contains(search)).ToListAsync();
+                                else
+                                   applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(p => order).Where(ds => ds.Shift.Name.Contains(search)).ToListAsync();
+                                break;
+                        }
+               
+                        count = applicationDbContext.Count();
+                        applicationDbContext = applicationDbContext.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.PastShifts.Count();
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.PastShifts.Count() : count;
                 #endregion
             #endregion
+
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
 
             return View(new PastShiftsViewModel { PastShifts = applicationDbContext, Pagination = paging });
         }
@@ -52,29 +89,64 @@ namespace HospitalScheduling.Models
         // Post: PastShifts
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search, int page = 1)
+        public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1)
         {
             #region Search, Sort & Pagination Related Region
-                #region Variable to obtain past shifts including thier specialities that skips 5 * number of items per page, filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    var applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).Skip(paging.PageSize * (page - 1))
+                int count = 0;
+                #region Variable to obtain past shifts including thier specialities that skips 5 * number of items per page
+                    var applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).OrderBy(p => order).Skip(paging.PageSize * (page - 1))
                                 .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).OrderBy(p => order).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        applicationDbContext = await _context.PastShifts.Include(p => p.Doctor).Include(p => p.Shift).OrderByDescending(p => order).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
                 #endregion
 
-                #region If searching gets same list as the one above and f
-                    if (!string.IsNullOrEmpty(search))
+                #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
+                if (!string.IsNullOrEmpty(search))
                     {
-                        applicationDbContext = (await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(p => order).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).ToListAsync();
+                                else
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(p => order).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).ToListAsync();
+                                break;
+                        case "Name":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(p => order).Where(ds => ds.Doctor.Name.Contains(search)).ToListAsync();
+                                else
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(p => order).Where(ds => ds.Doctor.Name.Contains(search)).ToListAsync();
+                                break;
+                        case "Shift":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(p => order).Where(ds => ds.Shift.Name.Contains(search)).ToListAsync();
+                                else
+                                   applicationDbContext = await _context.PastShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(p => order).Where(ds => ds.Shift.Name.Contains(search)).ToListAsync();
+                                break;
+                        }
+               
+                        count = applicationDbContext.Count();
+                        applicationDbContext = applicationDbContext.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.PastShifts.Count();
-            #endregion
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.PastShifts.Count() : count;
+                #endregion
             #endregion
 
-            ViewData["Search"] = search;
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
+
             return View(new PastShiftsViewModel { PastShifts = applicationDbContext, Pagination = paging });
         }
 

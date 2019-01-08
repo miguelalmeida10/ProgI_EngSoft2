@@ -25,63 +25,156 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: Nurses
-        public async Task<IActionResult> Index(string search = "", int page = 1,int lazy=1)
+        // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
+        public async Task<IActionResult> Index(string search = "", string filter = "", string order = "", string asc = "", int page = 1,int lazy=1)
         {
-
-            #region Search, Sort & Pagination Related Region
-                #region Variable to obtain nurses including thier specialities that skips 5 * number of items per page
-                    var nurses = await _context.Nurse.Include(d => d.Speciality).Skip(paging.PageSize * (page - 1))
-                                    .Take(paging.PageSize).ToListAsync();
+             #region Search, Sort & Pagination Related Region
+                int count = 0;
+                var nurselist = await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                    .Take(paging.PageSize).ToListAsync();
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                     else if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
                     if (!string.IsNullOrEmpty(search))
                     {
-                        nurses = (await _context.Nurse.Include(d => d.Speciality).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).ToListAsync());
+                                break;
+                            case "Name":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search)).ToListAsync());
+                                else
+                                   nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search)).ToListAsync());
+                                break;
+                            case "Phone":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Phone.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Phone.Contains(search)).ToListAsync());
+                                break;
+                            case "Email":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Email.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Email.Contains(search)).ToListAsync());
+                                break;
+                            case "Speciality":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Speciality.Name.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Speciality.Name.Contains(search)).ToListAsync());
+                                break;
+                        }
+
+                        count = nurselist.Count();
+                        nurselist = nurselist.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        
                         ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.Nurse.Count();
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.Nurse.Count() : count;
                 #endregion
             #endregion
 
-            return View(new NurseViewModel { Nurses = nurses, Pagination = paging });
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
+
+            return View(new NurseViewModel { Nurses = nurselist, Pagination = paging });
         }
 
         // Post: Nurses
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search, int page = 1)
+        public async Task<IActionResult> Index(string search, string filter, string order ="", string asc = "", int page = 1)
         {
-
-            #region Search, Sort & Pagination Related Region
-                #region Variable to obtain nurses including thier specialities that skips 5 * number of items per page
-                    var nurses = await _context.Nurse.Include(d => d.Speciality).Skip(paging.PageSize * (page - 1))
-                                    .Take(paging.PageSize).ToListAsync();
+             #region Search, Sort & Pagination Related Region
+                int count = 0;
+                var nurselist = await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                    .Take(paging.PageSize).ToListAsync();
+                #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
+                     else if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync());
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
                     if (!string.IsNullOrEmpty(search))
                     {
-                        nurses = (await _context.Nurse.Include(d => d.Speciality).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search) || ds.Email.Contains(search) || ds.Phone.Contains(search) || ds.Speciality.Name.Contains(search)).ToListAsync());
+                                break;
+                            case "Name":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search)).ToListAsync());
+                                else
+                                   nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Name.Contains(search)).ToListAsync());
+                                break;
+                            case "Phone":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Phone.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Phone.Contains(search)).ToListAsync());
+                                break;
+                            case "Email":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Email.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Email.Contains(search)).ToListAsync());
+                                break;
+                            case "Speciality":
+                                if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Speciality.Name.Contains(search)).ToListAsync());
+                                else
+                                    nurselist = (await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Where(ds => ds.Speciality.Name.Contains(search)).ToListAsync());
+                                break;
+                        }
+
+                        count = nurselist.Count();
+                        nurselist = nurselist.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        
                         ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.Nurse.Count();
-            #endregion
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.Nurse.Count() : count;
+                #endregion
             #endregion
 
-            ViewData["Search"] = search;
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
 
-            return View(new NurseViewModel { Nurses = nurses, Pagination = paging });
+            return View(new NurseViewModel { Nurses = nurselist, Pagination = paging });
         }
 
         // GET: Nurses/Details/5

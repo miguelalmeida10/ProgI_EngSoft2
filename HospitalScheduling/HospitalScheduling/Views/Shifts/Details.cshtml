@@ -10,8 +10,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Shifts - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Shifts - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -34,15 +34,15 @@
             </tr>
             <tr>
                 <td style="min-width:8em;text-align:justify">
-                    <b>Turn ends in: </b>
+                    <b>Shift ends in: </b>
                 </td>
-                <td>@Model.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year- 1).AddHours(Model.DurationHours).AddMinutes(Model.DurationMinutes).Subtract(DateTime.Now).ToString() </td>
+                <td>@(new DateTime(Model.StartDate.AddHours(6).Subtract(DateTime.Now).Ticks).ToLongTimeString())</td>
             </tr>
             <tr>
                 <td style="min-width:8em;text-align:justify">
-                    <b>EndDate: </b>
+                    <b>End Date: </b>
                 </td>
-                <td>@Model.EndDate.ToString()</td>
+                <td>@Model.StartDate.AddHours(6).ToString()</td>
             </tr>
         </table>
     </div>

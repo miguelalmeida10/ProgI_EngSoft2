@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Holiday Form - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Holiday Form - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -31,7 +31,7 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="DateStart" class="form-control" style="text-align:justifywidth:30em;" />
+                            <input asp-for="DateStart" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
                             <span asp-validation-for="DateStart" class="text-danger"></span>
@@ -43,7 +43,7 @@
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="DateEnd" class="form-control" style="text-align:justifywidth:30em;" />
+                            <input asp-for="DateEnd" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
                             <span asp-validation-for="DateEnd" class="text-danger"></span>

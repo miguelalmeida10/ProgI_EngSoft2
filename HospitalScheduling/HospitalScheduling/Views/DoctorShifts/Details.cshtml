@@ -49,13 +49,13 @@
                 <td style="min-width:8em;text-align:justify">
                     <b>Shift ends in: </b>
                 </td>
-                <td>@Model.Shift.ShiftStartHour.AddDays(DateTime.Now.DayOfYear).AddYears(DateTime.Now.Year).AddHours(Model.Shift.DurationHours).AddMinutes(Model.Shift.DurationMinutes).Subtract(DateTime.Now).ToString()</td>
+                <td>@(new DateTime(Model.Shift.StartDate.AddHours(6).Subtract(DateTime.Now).Ticks).ToLongTimeString())</td>
             </tr>
             <tr>
                 <td style="min-width:8em;text-align:justify">
-                    <b>@Html.DisplayNameFor(model => model.Shift.EndDate): </b>
+                    <b>End Date: </b>
                 </td>
-                <td>@Html.DisplayFor(model => model.Shift.EndDate)</td>
+                <td>@Model.Shift.StartDate.AddHours(6)</td>
             </tr>
         </table>
     </div>

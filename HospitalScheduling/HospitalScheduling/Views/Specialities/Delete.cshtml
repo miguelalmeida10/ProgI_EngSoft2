@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Specialities - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Specialities - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -33,9 +33,14 @@
     </div>
     <br />
 
-    <form asp-action="Delete">
+    @{
+        Dictionary<int, string> dic = new Dictionary<int, string>();
+        dic.Add(Model.SpecialityID, @Html.DisplayNameFor(model => model.SpecialityID));
+        @await Html.PartialAsync("_DeletePartial", dic);
+    }
+    <form>
         <input type="hidden" asp-for="SpecialityID" />
-        <a asp-action="DeleteConfirmation" asp-route-id="@Model.SpecialityID" class="btn btn-danger">Delete</a>
+        <a style="color:white" id="delete" data-toggle="modal" data-target="#deleteconfirmation" class="btn btn-danger">Delete</a>
         <a asp-action="Index" class="btn btn-info">Back to List</a>
     </form>
     <br />

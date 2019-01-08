@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Shifts - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Shifts - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -26,7 +26,7 @@
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <table class="table-borderless">
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Name" class="control-label" style="margin-top:10px">
                             </label>
                             <label style="margin-top:10px">: </label>
@@ -39,7 +39,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="StartDate" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
@@ -48,54 +48,6 @@
                         </td>
                         <td style="min-width:30em;text-align:justify">
                             <span asp-validation-for="StartDate" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="min-width:8em;text-align:justify">
-                            <label asp-for="ShiftStartHour" class="control-label" style="margin-top:10px">
-                            </label><label style="margin-top:10px">: </label>
-                        </td>
-                        <td>
-                            <input asp-for="ShiftStartHour" class="form-control" style="text-align:justify" />
-                        </td>
-                        <td style="min-width:30em;text-align:justify">
-                            <span asp-validation-for="ShiftStartHour" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="min-width:7em;text-align:justify">
-                            <label asp-for="DurationHours" class="control-label" style="margin-top:10px">
-                            </label><label style="margin-top:10px">: </label>
-                        </td>
-                        <td>
-                            <input asp-for="DurationHours" class="form-control" style="text-align:justify" />
-                        </td>
-                        <td style="min-width:30em;text-align:justify">
-                            <span asp-validation-for="DurationHours" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="min-width:7em;text-align:justify">
-                            <label asp-for="DurationMinutes" class="control-label" style="margin-top:10px">
-                            </label><label style="margin-top:10px">: </label>
-                        </td>
-                        <td>
-                            <input asp-for="DurationMinutes" class="form-control" style="text-align:justify" />
-                        </td>
-                        <td style="min-width:30em;text-align:justify">
-                            <span asp-validation-for="DurationMinutes" class="text-danger"></span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td style="min-width:8em;text-align:justify">
-                            <label asp-for="EndDate" class="control-label" style="margin-top:10px">
-                            </label><label style="margin-top:10px">: </label>
-                        </td>
-                        <td>
-                            <input asp-for="EndDate" class="form-control" style="text-align:justify" />
-                        </td>
-                        <td style="min-width:30em;text-align:justify">
-                            <span asp-validation-for="EndDate" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>

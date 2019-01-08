@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Doctors - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Doctors - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -25,6 +25,9 @@
             <form asp-action="Edit">
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <input type="hidden" asp-for="DoctorID" />
+                <input type="hidden" asp-for="SpecialityID" />
+                <input type="hidden" asp-for="Speciality" />
+                <input type="hidden" asp-for="Speciality.Name" value="@Model.Speciality.Name" />
                 <table class="table-borderless">
                     <tr>
                         <td style="min-width:8em;text-align:justify">
@@ -37,6 +40,32 @@
                         </td>
                         <td>
                             <span asp-validation-for="Name" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="DoctorNumber" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="DoctorNumber" class="form-control" placeholder="Insert a doctors number" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="DoctorNumber" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="CC" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td style="text-align:justify">
+                            <input asp-for="CC" class="form-control" placeholder="Insert a cc" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="CC" class="text-danger"></span>
                         </td>
                     </tr>
                     <tr>
@@ -93,10 +122,10 @@
                             </label><label style="margin-top:10px">: </label>
                         </td>
                         <td style="text-align:justify">
-                            <select asp-for="SpecialityID" asp-items="ViewBag.Speciality" class="form-control" placeholder="Insert a speciality" style="text-align:justify;"></select>
+                            <select asp-for="Speciality.SpecialityID" asp-items="ViewBag.Speciality" class="form-control" placeholder="Insert a speciality" style="text-align:justify;"></select>
                         </td>
                         <td>
-                            <span asp-validation-for="SpecialityID" class="text-danger"></span>
+                            <span asp-validation-for="Speciality.SpecialityID" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>

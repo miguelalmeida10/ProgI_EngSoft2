@@ -32,21 +32,56 @@ namespace HospitalScheduling.Data
                     EnsureDoctorsPopulated(db);
                 }
 
-                if (!db.Shift.Any())
-                {
-                    EnsureShiftPopulated(db);
-                }
+                EnsureShiftPopulated(db);
             }
         }
 
         private static void EnsureShiftPopulated(ApplicationDbContext db)
         {
-            db.Shift.AddRange(
-                 new Shift { Name = "Manha", StartDate = new DateTime(2018, 4, 1, 9, 0, 0), EndDate = new DateTime(9999, 1, 1, 1, 0, 0), ShiftStartHour = new DateTime(0), DurationHours = 5, DurationMinutes = 30, Ended = false },
-                 new Shift { Name = "Meio Dia", StartDate = new DateTime(2018, 4, 1, 14, 30, 0), EndDate = new DateTime(9999, 1, 1, 1, 0, 0), ShiftStartHour = new DateTime(0), DurationHours = 5, DurationMinutes = 15, Ended = false },
-                 new Shift { Name = "Tarde", StartDate = new DateTime(2018, 4, 1, 19, 45, 50), EndDate = new DateTime(9999, 1, 1, 1, 0, 0), ShiftStartHour = new DateTime(0), DurationHours = 5, DurationMinutes = 30, Ended = false },
-                 new Shift { Name = "Noite", StartDate = new DateTime(2018, 4, 1, 19, 45, 50), EndDate = new DateTime(9999, 1, 1, 1, 0, 0), ShiftStartHour = new DateTime(0), DurationHours = 5, DurationMinutes = 30, Ended = false }
-             );
+            Task newShifts = Task.Run(() =>
+            {
+                if (db.Shift.Count() == 0 || db.Shift.LastOrDefault().StartDate.Year < DateTime.Now.Year)
+                {
+                    List<Shift> shiftsOfYear = new List<Shift>();
+                    for (int i = DateTime.Now.Month; i <= 12; i++)
+                    {
+                        int maxDias = (DateTime.IsLeapYear(DateTime.Now.Year) && i == 2) ? 29 : 28;
+                        int maxDiasMes = 0;
+
+                        switch (i)
+                        {
+                            case 4:
+                            case 6:
+                            case 9:
+                            case 11:
+                                maxDiasMes = 30;
+                                break;
+                            case 1:
+                            case 3:
+                            case 5:
+                            case 7:
+                            case 8:
+                            case 10:
+                            case 12:
+                                maxDiasMes = 31;
+                                break;
+                        };
+
+                        maxDias = (!DateTime.IsLeapYear(DateTime.Now.Year) && i == 2) ? 28 : maxDiasMes;
+
+                        for (int j = DateTime.Now.Day; j <= maxDias; j++)
+                        {
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 6, 0, 0).ToLongDateString()+" - Manha", StartDate = new DateTime(DateTime.Now.Year, i, j, 6, 0, 0), Active = (j==DateTime.Now.Day?true:false), Ended = false });
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 6, 0, 0).ToLongDateString() + " - Tarde", StartDate = new DateTime(DateTime.Now.Year, i, j, 12, 0, 0), Active = (j == DateTime.Now.Day ? true : false), Ended = false });
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 6, 0, 0).ToLongDateString() + " - Noite", StartDate = new DateTime(DateTime.Now.Year, i, j, 18, 0, 0), Active = (j == DateTime.Now.Day ? true : false), Ended = false });
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 6, 0, 0).ToLongDateString() + " - Madrugada", StartDate = new DateTime(DateTime.Now.Year, i, j, 0, 0, 0), Active = (j == DateTime.Now.Day ? true : false), Ended = false });
+                        }
+                    }
+                    db.Shift.AddRange(shiftsOfYear);
+                }
+            });
+
+            newShifts.Wait();
 
             db.SaveChanges();
         }
@@ -54,7 +89,7 @@ namespace HospitalScheduling.Data
         private static void EnsureNursesPopulated(ApplicationDbContext db)
         {
             db.Nurse.AddRange(
-                new Nurse { CC = "10205101", NurseNumber = "10205101", Name = "Diogo", Email = "diogo@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count()+1)},
+                new Nurse { CC = "10205101", NurseNumber = "10205101", Name = "Diogo", Email = "diogo@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "11018610", NurseNumber = "11018610", Name = "Miguel", Email = "miguel@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "10201240", NurseNumber = "10201240", Name = "Maria", Email = "maria@email.com", Phone = "912345678", Sons = false, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "10212410", NurseNumber = "10212410", Name = "Ana", Email = "ana@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
@@ -90,18 +125,22 @@ namespace HospitalScheduling.Data
         private static void EnsureDoctorsPopulated(ApplicationDbContext db)
         {
             db.Doctor.AddRange(
-                 new Doctor { CC = "10205101", DoctorNumber = "10205101", Name = "Dr Diogo", Email = "diogo@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 1 },
-                new Doctor { CC = "11018610", DoctorNumber = "11018610", Name = "Dr Miguel", Email = "miguel@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 2 },
-                new Doctor { CC = "10201240", DoctorNumber = "10201240", Name = "Dr Maria", Email = "maria@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 5 },
-                new Doctor { CC = "10212410", DoctorNumber = "10212410", Name = "Dr Ana", Email = "ana@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 1 },
-                new Doctor { CC = "12312547", DoctorNumber = "12312547", Name = "Dr João", Email = "joao@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 3 },
-                new Doctor { CC = "10212770", DoctorNumber = "10212770", Name = "Dr Pedro", Email = "pedro@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 5 },
-                new Doctor { CC = "10201010", DoctorNumber = "10201010", Name = "Dr Inês", Email = "ines@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 1 },
-                new Doctor { CC = "41241770", DoctorNumber = "41241770", Name = "Dr Noel", Email = "noel@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 4 },
-                new Doctor { CC = "10114010", DoctorNumber = "10114010", Name = "Dr Rita", Email = "rita@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 2 },
-                new Doctor { CC = "10221410", DoctorNumber = "10221410", Name = "Dr Mariana", Email = "mariana@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 3 },
-                new Doctor { CC = "10513010", DoctorNumber = "10513010", Name = "Dr Mario", Email = "mario@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 1 },
-                new Doctor { CC = "10161010", DoctorNumber = "10161010", Name = "Dr Zorlak", Email = "zorlak@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 4 });
+                new Doctor { CC = "10205101", DoctorNumber = "10205101", Name = "Diogo", Email = "diogo@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = 1 },
+                new Doctor { CC = "11018610", DoctorNumber = "11018610", Name = "Miguel", Email = "miguel@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID =  2 },
+                new Doctor { CC = "10201240", DoctorNumber = "10201240", Name = "Maria", Email = "maria@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID =  5 },
+                new Doctor { CC = "10212410", DoctorNumber = "10212410", Name = "Ana", Email = "ana@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 1 },
+                new Doctor { CC = "12312547", DoctorNumber = "12312547", Name = "João", Email = "joao@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 3 },
+                new Doctor { CC = "10212770", DoctorNumber = "10212770", Name = "Pedro", Email = "pedro@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 5 },
+                new Doctor { CC = "10201010", DoctorNumber = "10201010", Name = "Inês", Email = "ines@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 1 },
+                new Doctor { CC = "41241770", DoctorNumber = "41241770", Name = "Noel", Email = "noel@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 4 },
+                new Doctor { CC = "10114010", DoctorNumber = "10114010", Name = "Rita", Email = "rita@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 2 },
+                new Doctor { CC = "10221410", DoctorNumber = "10221410", Name = "Mariana", Email = "mariana@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 3 },
+                new Doctor { CC = "10221411", DoctorNumber = "10221411", Name = "Mariano", Email = "mariano@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 3 },
+                new Doctor { CC = "10221412", DoctorNumber = "10221412", Name = "Marta", Email = "marta@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 3 },
+                new Doctor { CC = "10221413", DoctorNumber = "10221413", Name = "Manuel", Email = "manuel@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 3 },
+                new Doctor { CC = "10221414", DoctorNumber = "10221414", Name = "Manuela", Email = "manuela@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 3 },
+                new Doctor { CC = "10513010", DoctorNumber = "10513010", Name = "Mario", Email = "mario@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 1 },
+                new Doctor { CC = "10161010", DoctorNumber = "10161010", Name = "Zorlak", Email = "zorlak@email.com", Phone = "912345678", Birthday = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID= 4 });
 
 
             db.SaveChanges();

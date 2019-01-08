@@ -41,7 +41,6 @@
     <None Include="wwwroot\js\popper.min.js" />
     <None Include="wwwroot\js\range.js" />
     <None Include="wwwroot\js\scrollax.min.js" />
-    <None Include="wwwroot\OldTheme\images\fundoimage.jpg" />
     <None Include="wwwroot\scss\.DS_Store" />
     <None Include="wwwroot\scss\bootstrap\bootstrap-grid.scss" />
     <None Include="wwwroot\scss\bootstrap\bootstrap-reboot.scss" />
@@ -144,25 +143,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Content Update="Views\DoctorShifts\DeleteConfirmation.cshtml">
+    <Content Update="Views\DoctorSpecialities\NotFound.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
-    <Content Update="Views\Doctors\DeleteConfirmation.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\HollidayForms\DeleteConfirmation.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Nurses\DeleteConfirmation.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\PastShifts\DeleteConfirmation.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Shifts\DeleteConfirmation.cshtml">
-      <Pack>$(IncludeRazorContentInPack)</Pack>
-    </Content>
-    <Content Update="Views\Specialities\DeleteConfirmation.cshtml">
+    <Content Update="Views\Shared\_DeletePartial.cshtml">
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
   </ItemGroup>

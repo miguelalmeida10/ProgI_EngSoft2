@@ -1,8 +1,6 @@
-﻿@model HospitalScheduling.Models.Speciality
-
-@{
-    ViewData["Title"] = "Details";
-    ViewData["Active"] = "Specialities";
+﻿@{
+    ViewData["Title"] = "Specialities: Not Found";
+    ViewData["Active"] = "Doctors";
 }
 
 
@@ -20,19 +18,11 @@
 <br />
 <center>
     <div>
-        <table>
-            <tr>
-                <td style="min-width:8em;text-align:justify">
-                    <b>@Html.DisplayNameFor(model => model.Name): </b>
-                </td>
-                <td>@Html.DisplayFor(model => model.Name)</td>
-            </tr>
-        </table>
+        <h1>List of specialities for this doctor not found</h1>
     </div>
     <br />
     <div>
-        <a asp-action="Edit" asp-route-id="@Model.SpecialityID" class="btn btn-success">Edit</a>
-        <a asp-action="Index" class="btn btn-info">Back to List</a>
+        <a asp-action="Index" asp-controller="Doctors" class="btn btn-info">Back to List</a>
     </div>
     <br />
 </center>

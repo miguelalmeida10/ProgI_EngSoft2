@@ -25,73 +25,83 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: Shifts
-        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
+        // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
+        public async Task<IActionResult> Index(string search = "", string filter = "", string order = "", string asc = "", int page = 1, int lazy = 1)
         {
-            #region Clean Ended Shifts
-                var shiftlist = await _context.Shift.Include(d => d.Doctors).Where(s => !s.Ended).ToListAsync();
-                var list = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).ToListAsync();
-                List<DoctorShifts> shiftsApagar = new List<DoctorShifts>();
-                List<PastShifts> pastShiftsApagar = new List<PastShifts>();
-                List<Shift> shiftActualizar = new List<Shift>();
-
-                shiftlist.ForEach(m =>
-                {
-                    bool activo = DateTime.Now.Subtract(m.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1)).Milliseconds > 0 && m.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1).AddHours(m.DurationHours).AddMinutes(m.DurationMinutes).Subtract(DateTime.Now).TotalMilliseconds > 0 && m.EndDate.Date.CompareTo(m.StartDate) < 0;
-                    if (!activo && m.EndDate.Date.CompareTo(DateTime.Now) < 0)
-                    {
-                        m.Active = false;
-                        shiftActualizar.Add(m);
-                        var docshifts = list.Where(s => s.Shift == m).FirstOrDefault();
-                        if (docshifts != null)
-                        {
-                            shiftsApagar.Add(list.Where(s => s.Shift == m).FirstOrDefault());
-                            pastShiftsApagar.Add(new PastShifts(list.Where(s => s.Shift == m).FirstOrDefault()));
-                        }
-                    }
-                    else if (activo && m.EndDate.Date.CompareTo(DateTime.Now) < 0)
-                    {
-                        m.Active = true;
-                        shiftActualizar.Add(m);
-                    }
-                    else if (m.EndDate.Date.CompareTo(DateTime.Now) >= 0)
-                    {
-                        m.Ended = true;
-                        shiftActualizar.Add(m);
-                        var docshifts = list.Where(s => s.Shift == m).FirstOrDefault();
-                        if (docshifts != null)
-                        {
-                            shiftsApagar.Add(list.Where(s => s.Shift == m).FirstOrDefault());
-                            pastShiftsApagar.Add(new PastShifts(list.Where(s => s.Shift == m).FirstOrDefault()));
-                        }
-                    }
-                });
-
-
-                _context.Shift.UpdateRange(shiftActualizar);
-                _context.PastShifts.AddRange(pastShiftsApagar);
-                _context.DoctorShifts.RemoveRange(shiftsApagar);
+            #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
+                var sh = _context.Shift;
+                var list = new List<Shift>();
+                await sh.ForEachAsync(s => {
+                    if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours <= 0 && s.StartDate.AddHours(6).Year <= DateTime.Now.Year && s.StartDate.AddHours(6).Month <= DateTime.Now.Month) {
+                        s.Active = false;
+                        s.Ended = true;
+                        list.Add(s);
+                    } else if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours > 0 && s.StartDate.AddHours(6).Year == DateTime.Now.Year && s.StartDate.AddHours(6).Month == DateTime.Now.Month) {
+                        s.Active = true;
+                        s.Ended = false;
+                        list.Add(s);
+                    } });
+                _context.Shift.UpdateRange(list);
                 await _context.SaveChangesAsync();
             #endregion
-            
+
             #region Search, Sort & Pagination Related Region
+            int count = 0;
                 #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
-                   var shifts = await _context.Shift.Where(s => s.Active && !s.Ended).Skip(paging.PageSize * (page - 1))
+                   string oldOrder = order;
+                   order = (order.Equals("Name")?"StartDate":order);
+                   var shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
                         .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
                     {
-                        shifts = (await _context.Shift.Where(s => s.Active && !s.Ended).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                break;
+                            case "Name":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                else
+                                    shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                break;
+                            case "ID":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                break;
+                        }
+               
+                        count = shifts.Count();
+                        shifts = shifts.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.Shift.Count();
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.Shift.Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Count() : count;
                 #endregion
             #endregion
+
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : oldOrder;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
 
             return View(new ShiftsViewModel { Shifts = shifts, Pagination = paging });
         }
@@ -99,30 +109,83 @@ namespace HospitalScheduling.Controllers
         // Post: Shifts
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search, int page = 1)
+        public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1)
         {
+            #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
+                var sh = _context.Shift;
+                var list = new List<Shift>();
+                await sh.ForEachAsync(s => {
+                    if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours <= 0 && s.StartDate.AddHours(6).Year <= DateTime.Now.Year && s.StartDate.AddHours(6).Month <= DateTime.Now.Month) {
+                        s.Active = false;
+                        s.Ended = true;
+                        list.Add(s);
+                    } else if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours > 0 && s.StartDate.AddHours(6).Year == DateTime.Now.Year && s.StartDate.AddHours(6).Month == DateTime.Now.Month) {
+                        s.Active = true;
+                        s.Ended = false;
+                        list.Add(s);
+                    } });
+                _context.Shift.UpdateRange(list);
+                await _context.SaveChangesAsync();
+            #endregion
 
             #region Search, Sort & Pagination Related Region
+            int count = 0;
                 #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
-                   var shifts = await _context.Shift.Where(s => s.Active && !s.Ended).Skip(paging.PageSize * (page - 1))
+                   string oldOrder = order;
+                   order = (order.Equals("Name")?"StartDate":order);
+                   var shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
                         .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
                     {
-                        shifts = (await _context.Shift.Where(s => s.Active && !s.Ended).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        switch (filter)
+                        {
+                            default:
+                            case "All":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search) || ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                break;
+                            case "Name":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                else
+                                    shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.Name.Contains(search)).ToListAsync();
+                                break;
+                            case "ID":
+                                if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                    shifts = await _context.Shift.OrderByDescending(d => d.StartDate.Day).OrderByDescending(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                else
+                                    shifts = await _context.Shift.OrderBy(d=> d.StartDate.Day).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("StartDate") ? d.StartDate.ToString() : order.Equals("TimeLeft") ? d.StartDate.ToString() : order.Equals("EndDate") ? d.StartDate.ToString() : d.Name).Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Where(ds => ds.ShiftID.ToString().Contains(search)).ToListAsync();
+                                break;
+                        }
+               
+                        count = shifts.Count();
+                        shifts = shifts.Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToList();
+                        ViewData["Search"] = search;
+                        ViewData["Filter"] = filter;
                     }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.Shift.Count();
-            #endregion
+                    paging.TotalItems = (string.IsNullOrEmpty(search)) ? _context.Shift.Where(s => s.Active && !s.Ended && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).Count() : count;
+                #endregion
             #endregion
 
-            ViewData["Search"] = search;
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : oldOrder;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
+
             return View(new ShiftsViewModel { Shifts = shifts, Pagination = paging });
         }
 
@@ -155,7 +218,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("ShiftID,Name,StartDate,EndDate,ShiftStartHour,DurationMinutes,DurationHours")] Shift shift)
+        public async Task<IActionResult> Create([Bind("ShiftID,Name,StartDate,EndDate,ShiftStart,ShiftStartHour,ShiftStartMinute,DurationMinutes,DurationHours")] Shift shift)
         {
             if (ModelState.IsValid)
             {
@@ -187,7 +250,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("ShiftID,Name,StartDate,EndDate,ShiftStartHour,DurationMinutes,DurationHours")] Shift shift)
+        public async Task<IActionResult> Edit(int id, [Bind("ShiftID,Name,StartDate,EndDate,ShiftStart,ShiftStartHour,ShiftStartMinute,DurationMinutes,DurationHours")] Shift shift)
         {
             if (id != shift.ShiftID)
             {

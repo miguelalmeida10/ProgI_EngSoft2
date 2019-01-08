@@ -25,74 +25,82 @@ namespace HospitalScheduling.Controllers
         }
 
         // GET: DoctorShifts
-        public async Task<IActionResult> Index(string search = "", int page = 1, int lazy = 1)
+        // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
+        public async Task<IActionResult> Index(string search = "", string filter = "", string order = "", string asc = "", int page = 1)
         {
-            #region Clean Ended Shifts
-            var shiftlist = await _context.Shift.Include(d => d.Doctors).Where(s => !s.Ended).ToListAsync();
-            var list = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).ToListAsync();
-            List<DoctorShifts> shiftsApagar = new List<DoctorShifts>();
-            List<PastShifts> pastShiftsApagar = new List<PastShifts>();
-            List<Shift> shiftActualizar = new List<Shift>();
-
-            list.ForEach(m =>
-            {
-                bool activo = DateTime.Now.Subtract(m.Shift.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1)).Milliseconds > 0 && m.Shift.ShiftStartHour.AddDays(DateTime.Now.DayOfYear - 1).AddYears(DateTime.Now.Year - 1).AddHours(m.Shift.DurationHours).AddMinutes(m.Shift.DurationMinutes).Subtract(DateTime.Now).TotalMilliseconds > 0 && m.Shift.EndDate.Date.CompareTo(m.Shift.StartDate) < 0;
-                if (!activo && m.Shift.EndDate.Date.CompareTo(DateTime.Now) < 0)
-                {
-                    m.Shift.Active = false;
-                    shiftActualizar.Add(m.Shift);
-
-                    var docshifts = list.Where(s => s.Shift == m.Shift).FirstOrDefault();
-                    if (docshifts != null)
-                    {
-                        shiftsApagar.Add(list.Where(s => s.Shift == m.Shift).FirstOrDefault());
-                        pastShiftsApagar.Add(new PastShifts(list.Where(s => s.Shift == m.Shift).FirstOrDefault()));
-                    }
-                }
-                else if (activo && m.Shift.EndDate.Date.CompareTo(DateTime.Now) < 0)
-                {
-                    m.Shift.Active = true;
-                    shiftActualizar.Add(m.Shift);
-                }
-                else if (m.Shift.EndDate.Date.CompareTo(DateTime.Now) >= 0)
-                {
-                    m.Shift.Ended = true;
-                    shiftActualizar.Add(m.Shift);
-
-                    var docshifts = list.Where(s => s.Shift == m.Shift).FirstOrDefault();
-                    if (docshifts != null)
-                    {
-                        shiftsApagar.Add(list.Where(s => s.Shift == m.Shift).FirstOrDefault());
-                        pastShiftsApagar.Add(new PastShifts(list.Where(s => s.Shift == m.Shift).FirstOrDefault()));
-                    }
-                }
-            });
-
-            _context.Shift.UpdateRange(shiftActualizar);
-            _context.PastShifts.AddRange(pastShiftsApagar);
-            _context.DoctorShifts.RemoveRange(shiftsApagar);
-            await _context.SaveChangesAsync();
+            #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
+                var sh = _context.Shift;
+                var list = new List<Shift>();
+                await sh.ForEachAsync(s => {
+                    if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours <= 0 && s.StartDate.AddHours(6).Year <= DateTime.Now.Year && s.StartDate.AddHours(6).Month <= DateTime.Now.Month) {
+                        s.Active = false;
+                        s.Ended = true;
+                        list.Add(s);
+                    } else if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours > 0 && s.StartDate.AddHours(6).Year == DateTime.Now.Year && s.StartDate.AddHours(6).Month == DateTime.Now.Month) {
+                        s.Active = true;
+                        s.Ended = false;
+                        list.Add(s);
+                    } });
+                _context.Shift.UpdateRange(list);
+                await _context.SaveChangesAsync();
             #endregion
 
             #region Search, Sort & Pagination Related Region
+                int count = 0;
                 #region Variable to obtain doctorshifts including thier specialities that skips 5 * number of items per page
-                    var applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Skip(paging.PageSize * (page - 1))
+                    var applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Shift.Active && !ds.Shift.Ended && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => ds.Shift.Active && !ds.Shift.Ended && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => ds.Shift.Active && !ds.Shift.Ended && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
                                 .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
+                {
+
+                    switch (filter)
                     {
-                        applicationDbContext = (await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        default:
+                        case "All":
+                            if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order.Equals("Doctor.Name")?ds.Doctor.Name:ds.Shift.Name).Where(ds => (ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            else
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => (ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            break;
+                        case "Name":
+                            if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => ds.Doctor.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            else
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => ds.Doctor.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            break;
+                        case "Shift":
+                            if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => ds.Shift.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            else
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order.Equals("Doctor.Name") ? ds.Doctor.Name : ds.Shift.Name).Where(ds => ds.Shift.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                        break;
                     }
+
+                    count = applicationDbContext.Count();
+                    applicationDbContext = applicationDbContext.Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToList();
+                    ViewData["Filter"] = filter;
+                    ViewData["Search"] = search;
+                }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.DoctorShifts.Count();
+                    paging.TotalItems = string.IsNullOrWhiteSpace(search) ? _context.DoctorShifts.Count() : count;
                 #endregion
             #endregion
+
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
 
             return View(new DoctorShiftsViewModel { DoctorShifts = applicationDbContext, Pagination = paging });
         }
@@ -100,29 +108,81 @@ namespace HospitalScheduling.Controllers
         // Post: DoctorShifts
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string search, int page = 1)
-        {
+        public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1,int lazy=1)
+        {            
+            #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
+                var sh = _context.Shift;
+                var list = new List<Shift>();
+                await sh.ForEachAsync(s => {
+                    if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours <= 0 && s.StartDate.AddHours(6).Year <= DateTime.Now.Year && s.StartDate.AddHours(6).Month <= DateTime.Now.Month) {
+                        s.Active = false;
+                        s.Ended = true;
+                        list.Add(s);
+                    } else if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours > 0 && s.StartDate.AddHours(6).Year == DateTime.Now.Year && s.StartDate.AddHours(6).Month == DateTime.Now.Month) {
+                        s.Active = true;
+                        s.Ended = false;
+                        list.Add(s);
+                    } });
+                _context.Shift.UpdateRange(list);
+                await _context.SaveChangesAsync();
+            #endregion
+
             #region Search, Sort & Pagination Related Region
+                int count = 0;
                 #region Variable to obtain doctorshifts including thier specialities that skips 5 * number of items per page
-                    var applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Skip(paging.PageSize * (page - 1))
+                    var applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Shift.Active && !ds.Shift.Ended && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                    if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
+                        applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order).Where(ds => ds.Shift.Active && !ds.Shift.Ended && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
+                                .Take(paging.PageSize).ToListAsync();
+                    else if (!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                        applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order).Where(ds => ds.Shift.Active && !ds.Shift.Ended && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).Skip(paging.PageSize * (page - 1))
                                 .Take(paging.PageSize).ToListAsync();
                 #endregion
 
                 #region If searching gets same list as the one above and filters by fields after ds. and then obtains the pages 5 items if search contains more than 5 items
-                    if (!string.IsNullOrEmpty(search))
+                if (!string.IsNullOrEmpty(search))
+                {
+                    switch (filter)
                     {
-                        applicationDbContext = (await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).Where(ds => ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)).Skip(paging.PageSize * (page - 1))
-                                .Take(paging.PageSize).ToListAsync());
+                        default:
+                        case "All":
+                            if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order).Where(ds => (ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            else
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order).Where(ds => (ds.Doctor.Name.Contains(search) || ds.Shift.Name.Contains(search)) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            break;
+                        case "Name":
+                            if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order).Where(ds => ds.Doctor.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            else
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order).Where(ds => ds.Doctor.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            break;
+                        case "Shift":
+                            if(!string.IsNullOrEmpty(asc) && asc.Equals("Desc"))
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderByDescending(ds => order).Where(ds => ds.Shift.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                            else
+                                applicationDbContext = await _context.DoctorShifts.Include(d => d.Doctor).Include(d => d.Shift).OrderBy(ds => order).Where(ds => ds.Shift.Name.Contains(search) && ds.Shift.StartDate.Year == DateTime.Now.Year && ds.Shift.StartDate.Month == DateTime.Now.Month).ToListAsync();
+                        break;
                     }
+
+                    count = applicationDbContext.Count();
+                    applicationDbContext = applicationDbContext.Skip(paging.PageSize * (page - 1))
+                            .Take(paging.PageSize).ToList();
+                    ViewData["Filter"] = filter;
+                    ViewData["Search"] = search;
+                }
                 #endregion
 
                 #region Pagination Data initialized
                     paging.CurrentPage = page;
-                    paging.TotalItems = _context.DoctorShifts.Count();
-            #endregion
+                    paging.TotalItems = string.IsNullOrWhiteSpace(search) ? _context.DoctorShifts.Count() : count;
+                #endregion
             #endregion
 
-            ViewData["Search"] = search;
+            ViewData["Order"] = string.IsNullOrEmpty(order) ? ViewData["Order"] : order;
+            ViewData["Asc"] = !string.IsNullOrEmpty(asc) ? asc.Equals("Asc") ? "Asc" : "Desc" : "Asc";
+
             return View(new DoctorShiftsViewModel { DoctorShifts = applicationDbContext, Pagination = paging });
         }
 
@@ -150,7 +210,7 @@ namespace HospitalScheduling.Controllers
         public IActionResult Create()
         {
             ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Name");
-            ViewData["ShiftID"] = new SelectList(_context.Shift, "ShiftID", "Name");
+            ViewData["ShiftID"] = new SelectList(_context.Shift.Where(s => (s.Active && !s.Ended || !s.Active && !s.Ended) && s.StartDate.Year==DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month).OrderBy(s=>s.StartDate), "ShiftID", "Name");
             return View();
         }
 
@@ -186,7 +246,7 @@ namespace HospitalScheduling.Controllers
                 return NotFound();
             }
             ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Name", doctorShifts.DoctorID);
-            ViewData["ShiftID"] = new SelectList(_context.Shift, "ShiftID", "Name", doctorShifts.ShiftID);
+            ViewData["ShiftID"] = new SelectList(_context.Shift.Where(s => s.Active && !s.Ended || !s.Active && !s.Ended), "ShiftID", "Name", doctorShifts.ShiftID);
             return View(doctorShifts);
         }
 

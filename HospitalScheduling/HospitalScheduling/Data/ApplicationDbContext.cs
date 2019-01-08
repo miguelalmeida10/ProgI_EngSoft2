@@ -20,8 +20,7 @@ namespace HospitalScheduling.Data
             builder.Entity<Doctor>()
                     .HasOne(d => d.Speciality)
                     .WithMany(s => s.Doctors)
-                    .HasForeignKey(d => d.SpecialityID)
-                    .HasConstraintName("FK_SpecialityID");
+                    .HasForeignKey(d => d.SpecialityID);
             #endregion
 
             #region N:M
@@ -44,6 +43,18 @@ namespace HospitalScheduling.Data
                     .HasOne(ds => ds.Shift)
                     .WithMany(d => (d.PreviousDoctors))
                     .HasForeignKey(ds => ds.ShiftID);
+
+            builder.Entity<DoctorSpecialities>()
+                    .HasOne(ds => ds.Doctor)
+                    .WithMany(d => (d.PastSpecialities))
+                    .HasForeignKey(ds => ds.DoctorID)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
+
+            builder.Entity<DoctorSpecialities>()
+                    .HasOne(ds => ds.Speciality)
+                    .WithMany(d => (d.PreviousDoctors))
+                    .HasForeignKey(ds => ds.SpecialityID)
+                    .OnDelete(DeleteBehavior.ClientSetNull);
             #endregion
 
             base.OnModelCreating(builder);
@@ -62,6 +73,8 @@ namespace HospitalScheduling.Data
         public DbSet<HospitalScheduling.Models.DoctorShifts> DoctorShifts { get; set; }
 
         public DbSet<HospitalScheduling.Models.PastShifts> PastShifts { get; set; }
+
+        public DbSet<HospitalScheduling.Models.DoctorSpecialities> DoctorSpecialities { get; set; }
 
     }
 }

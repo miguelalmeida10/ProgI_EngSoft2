@@ -13,9 +13,12 @@ namespace HospitalScheduling.Models
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int SpecialityID { get; set; }
 
-        [Required]
+        [Required(AllowEmptyStrings = false, ErrorMessage = "Please enter the speciality name")]
         public string Name { get; set; }
 
         public IEnumerable<Doctor> Doctors { get; set; }
+
+        [Display(Name = "Previous Doctors of the Speciality")]
+        public IEnumerable<DoctorSpecialities> PreviousDoctors { get; set; }
     }
 }

@@ -1,5 +1,4 @@
-﻿using HospitalScheduling.ModelAttributes;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
@@ -7,22 +6,26 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace HospitalScheduling.Models
+
 {
-    public class DoctorShifts
+    public class DoctorSpecialities
     {
         [Key]
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
-        public int DoctorShiftID { get; set; }
+        public int DoctorSpecialityID { get; set; }
 
         [ForeignKey("FK_DoctorID")]
         public int DoctorID { get; set; }
-
-        [ValidShift]
+        
         public Doctor Doctor { get; set; }
 
-        [ForeignKey("FK_ShiftID")]
-        public int ShiftID { get; set; }
+        [ForeignKey("FK_SpecialityID")]
+        public int SpecialityID { get; set; }
 
-        public Shift Shift { get; set; }
+        public Speciality Speciality { get; set; }
+
+        public DateTime Date { get; set; }
+
+        public string Type { get; set; }
     }
 }

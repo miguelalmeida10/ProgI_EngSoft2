@@ -11,8 +11,8 @@
     <div class="container" style="height:200px">
         <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
             <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
-                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Nurses - @ViewData["Title"]</span></p>
-                <h1 class="mb-3 bread">Nurses - @ViewData["Title"]</h1>
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
             </div>
         </div>
     </div>
@@ -27,7 +27,7 @@
                 <input type="hidden" asp-for="NurseID" />
                 <table class="table-borderless">
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Name" class="control-label" style="margin-top:10px">
                             </label>
                             <label style="margin-top:10px">: </label>
@@ -40,7 +40,33 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="NurseNumber" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td>
+                            <input asp-for="NurseNumber" class="form-control" placeholder="Insert a nurse number" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td style="min-width:30em;text-align:justify">
+                            <span asp-validation-for="NurseNumber" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
+                            <label asp-for="CC" class="control-label" style="margin-top:10px">
+                            </label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td>
+                            <input asp-for="CC" class="form-control" placeholder="Insert a cc" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td style="min-width:30em;text-align:justify">
+                            <span asp-validation-for="CC" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Email" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
@@ -52,7 +78,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Phone" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
@@ -64,7 +90,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Sons" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
@@ -76,7 +102,7 @@
                         </td>
                     </tr>
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Birthday" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
@@ -88,7 +114,7 @@
                         </td>
                     </tr>
                     <tr id="displaysons">
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="BirthdaySon" class="control-label" style="margin-top:10px">
                             </label> <label style="margin-top:10px">: </label>
                         </td>
@@ -101,7 +127,7 @@
                     </tr>
 
                     <tr>
-                        <td style="min-width:7em;text-align:justify">
+                        <td style="min-width:8em;text-align:justify">
                             <label asp-for="Address" class="control-label" style="margin-top:10px">
                             </label><label style="margin-top:10px">: </label>
                         </td>
