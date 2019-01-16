@@ -70,8 +70,9 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1)
         {
+            order = (string.IsNullOrEmpty(order)) ? "" : order;
             #region Search, Sort & Pagination Related Region
-                int count = 0;
+            int count = 0;
                 #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
                     var holi = await _context.HollidayForm.Skip(paging.PageSize * (page - 1))
                                 .Take(paging.PageSize).ToListAsync();

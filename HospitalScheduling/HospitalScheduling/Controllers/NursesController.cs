@@ -105,6 +105,7 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(string search, string filter, string order ="", string asc = "", int page = 1)
         {
+             order = (string.IsNullOrEmpty(order)) ? "" : order;
              #region Search, Sort & Pagination Related Region
                 int count = 0;
                 var nurselist = await _context.Nurse.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))

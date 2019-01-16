@@ -5,6 +5,16 @@
     ViewData["Active"] = "HolidayForms";
 }
 
+<script>
+    function onLoadModal() {
+        $("#wip").modal({ closable: false }).modal("show");
+    }
+
+    function showWIPModal() {
+        $("#wip").modal({ closable: false }).modal("show");
+    }
+</script>
+
 <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
     <div class="overlay"></div>
     <div class="container" style="height:200px">
@@ -129,7 +139,7 @@
                     }
                 }
             </select>
-            <input type="search" id="searchbox" autofocus oninput="this.form.submit();" onfocus="this.value = '@(search)'" onchange="this.form.submit()" name="search" style="position:absolute;right:0; margin-right:50px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;outline:none !important;border-radius: 20px;background-color:transparent;" />
+            <input type="search" id="searchbox" autofocus onshow="showWIPModal()" oninput="showWIPModal();" onfocus="showWIPModal()" onchange="showWIPModal()" name="search" style="position:absolute;right:0; margin-right:50px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;outline:none !important;border-radius: 20px;background-color:transparent;" />
             <div style="display:none">
                 @ViewData["Search"] = search;
                 @ViewData["Filter"] = filter;
@@ -141,7 +151,17 @@
     </div>
 </form>
 <br />
-<center><h1>Work in progress! For never</h1></center>
+<div id="wip" class="modal" data-toggle="modal" data-backdrop="static" data-keyboard="false" tabindex="-1" role="dialog" onsubmit='showWIPModal()'>
+    <div class="modal-dialog"  role="document" style="background-color:white" >
+        <div class="modal-content" style="background-color:white">
+            <div class="modal-header"><h1 style="color:red;"><b>Warning</b></h1></div>
+            <div class="modal-body">
+                <h3>The page you are trying to access is in progress, possibly to be deprecated due to insufficient manpower to finish on time!</h3>
+            </div>
+            <div class="modal-footer"><a class="btn btn-info" asp-action="Index" asp-controller="Home">Back to Home</a></div>
+        </div>
+    </div>
+</div>
 <table class="table" style="margin-left:15px;max-width:98.5% !important;">
     <thead>
         <tr>

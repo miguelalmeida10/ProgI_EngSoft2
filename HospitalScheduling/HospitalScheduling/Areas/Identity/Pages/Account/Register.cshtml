@@ -20,7 +20,7 @@
     <br />
     <div>
         <div class="col-md-4">
-            <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+            <form enctype="multipart/form-data" asp-route-returnUrl="@Model.ReturnUrl" method="post">
                 <hr />
                 <div class="form-group">
                     <label asp-for="Input.Username"></label>
@@ -41,6 +41,16 @@
                     <label asp-for="Input.ConfirmPassword"></label>
                     <input asp-for="Input.ConfirmPassword" class="form-control" />
                     <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.Picture"></label>
+                    <input asp-for="Input.Picture" name="file" class="form-control" />
+                    <span asp-validation-for="Input.Picture" class="text-danger"></span>
+                </div>
+                <div class="form-group">
+                    <label asp-for="Input.UserType"></label>
+                    @Html.DropDownListFor(m=>m.Input.UserType, new SelectList(new List<string>() { "Doctor", "Nurse"}), new { @class = "form-control" })
+                    <span asp-validation-for="Input.UserType" class="text-danger"></span>
                 </div>
                 <div asp-validation-summary="ModelOnly" class="text-danger"></div>
                 <button type="submit" class="btn btn-primary">Register</button>

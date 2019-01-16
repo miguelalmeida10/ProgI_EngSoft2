@@ -99,6 +99,7 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(string filter, string search, int id = 0, string order = "", string asc = "", int page = 1)
         {
+            order = (string.IsNullOrEmpty(order)) ? "" : order;
             #region Search, Sort & Pagination Related Region
                 int count = 0;
                 var applicationDbContext = await _context.DoctorSpecialities.Include(d => d.Speciality).Include(d => d.Doctor).Include(d => d.Doctor).OrderBy(d => order.Equals("DoctorsName") ? d.Doctor.Name : order.Equals("SpecialitiesName") ? d.Speciality.Name : order.Equals("Date") ? d.Date.ToString() : order.Equals("Type") ? d.Type : d.Doctor.Name).Skip(paging.PageSize * (page - 1))
@@ -171,7 +172,7 @@ namespace HospitalScheduling.Controllers
                 .Include(d => d.Doctor)
                 .Include(d => d.Speciality).Include(d => d.Doctor).ToListAsync();
 
-            if (doctorsSpeciality == null)
+            if (doctorsSpeciality == null || doctorsSpeciality.Where(doc => doc.DoctorID == id).Count() == 0)
             {
                 return RedirectToAction("NewNotFound");
             }
@@ -249,7 +250,7 @@ namespace HospitalScheduling.Controllers
                 .Include(d => d.Doctor)
                 .Include(d => d.Speciality).Include(d => d.Doctor).ToListAsync();
                
-            if (doctorsSpeciality == null)
+            if (doctorsSpeciality == null || doctorsSpeciality.Where(doc=> doc.DoctorID==id).Count() == 0 )
             {
                 return RedirectToAction("NewNotFound");
             }

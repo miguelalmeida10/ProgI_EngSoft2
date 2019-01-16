@@ -24,23 +24,86 @@ namespace HospitalScheduling.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Adds shifts for every day of the current year if not already populated with this years shifts or at all
+        /// </summary>
+        public void GenerateShifts()
+        {
+            Task newShifts = Task.Run(() =>
+            {
+                if (_context.Shift.Count() == 0 || _context.Shift.LastOrDefault().StartDate.Year < DateTime.Now.Year)
+                {
+                    List<Shift> shiftsOfYear = new List<Shift>();
+                    for (int i = DateTime.Now.Month; i <= 12; i++)
+                    {
+                        int maxDias = (DateTime.IsLeapYear(DateTime.Now.Year) && i == 2) ? 29 : 28;
+                        int maxDiasMes = 0;
+
+                        switch (i)
+                        {
+                            case 4:
+                            case 6:
+                            case 9:
+                            case 11:
+                                maxDiasMes = 30;
+                                break;
+                            case 1:
+                            case 3:
+                            case 5:
+                            case 7:
+                            case 8:
+                            case 10:
+                            case 12:
+                                maxDiasMes = 31;
+                                break;
+                        };
+
+                        maxDias = (!DateTime.IsLeapYear(DateTime.Now.Year) && i == 2) ? 28 : maxDiasMes;
+
+                        for (int j = DateTime.Now.Day; j <= maxDias; j++)
+                        {
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 8, 0, 0).ToLongDateString() + " - Manha", StartDate = new DateTime(DateTime.Now.Year, i, j, 8, 0, 0), Active = (j == DateTime.Now.Day ? true : false), Ended = false });
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 8, 0, 0).ToLongDateString() + " - Tarde", StartDate = new DateTime(DateTime.Now.Year, i, j, 16, 0, 0), Active = (j == DateTime.Now.Day ? true : false), Ended = false });
+                            shiftsOfYear.Add(new Shift { Name = new DateTime(DateTime.Now.Year, i, j, 8, 0, 0).ToLongDateString() + " - Noite", StartDate = new DateTime(DateTime.Now.Year, i, j, 23, 59, 59), Active = (j == DateTime.Now.Day ? true : false), Ended = false });
+                        }
+                    }
+                    _context.Shift.AddRange(shiftsOfYear);
+                }
+            });
+
+            newShifts.Wait();
+
+            _context.SaveChanges();
+        }
+
         // GET: Shifts
         // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
         public async Task<IActionResult> Index(string search = "", string filter = "", string order = "", string asc = "", int page = 1, int lazy = 1)
         {
+            GenerateShifts();
             #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
                 var sh = _context.Shift;
                 var list = new List<Shift>();
                 await sh.ForEachAsync(s => {
-                    if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours <= 0 && s.StartDate.AddHours(6).Year <= DateTime.Now.Year && s.StartDate.AddHours(6).Month <= DateTime.Now.Month) {
+                    if (s.StartDate.Subtract(DateTime.Now).Hours < 0 && s.StartDate.Year <= DateTime.Now.Year && s.StartDate.Month <= DateTime.Now.Month)
+                    {
                         s.Active = false;
                         s.Ended = true;
                         list.Add(s);
-                    } else if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours > 0 && s.StartDate.AddHours(6).Year == DateTime.Now.Year && s.StartDate.AddHours(6).Month == DateTime.Now.Month) {
+                    }
+                    else if (s.StartDate.Subtract(DateTime.Now).Hours >= 0 && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month)
+                    {
                         s.Active = true;
                         s.Ended = false;
                         list.Add(s);
-                    } });
+                    }
+                    else
+                    {
+                        s.Active = false;
+                        s.Ended = false;
+                        list.Add(s);
+                    }
+                });
                 _context.Shift.UpdateRange(list);
                 await _context.SaveChangesAsync();
             #endregion
@@ -111,19 +174,30 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1)
         {
+            order = (string.IsNullOrEmpty(order)) ? "" : order;            
             #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
                 var sh = _context.Shift;
                 var list = new List<Shift>();
                 await sh.ForEachAsync(s => {
-                    if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours <= 0 && s.StartDate.AddHours(6).Year <= DateTime.Now.Year && s.StartDate.AddHours(6).Month <= DateTime.Now.Month) {
+                    if (s.StartDate.Subtract(DateTime.Now).Hours < 0 && s.StartDate.Year <= DateTime.Now.Year && s.StartDate.Month <= DateTime.Now.Month)
+                    {
                         s.Active = false;
                         s.Ended = true;
                         list.Add(s);
-                    } else if (s.StartDate.AddHours(6).Subtract(DateTime.Now).Hours > 0 && s.StartDate.AddHours(6).Year == DateTime.Now.Year && s.StartDate.AddHours(6).Month == DateTime.Now.Month) {
+                    }
+                    else if (s.StartDate.Subtract(DateTime.Now).Hours >= 0 && s.StartDate.Year == DateTime.Now.Year && s.StartDate.Month == DateTime.Now.Month)
+                    {
                         s.Active = true;
                         s.Ended = false;
                         list.Add(s);
-                    } });
+                    }
+                    else
+                    {
+                        s.Active = false;
+                        s.Ended = false;
+                        list.Add(s);
+                    }
+                });
                 _context.Shift.UpdateRange(list);
                 await _context.SaveChangesAsync();
             #endregion

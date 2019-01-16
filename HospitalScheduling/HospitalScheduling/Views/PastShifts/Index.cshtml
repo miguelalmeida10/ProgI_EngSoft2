@@ -19,7 +19,7 @@
 <br />
 <form id="searchform" asp-action="Index">
     <div style="min-width:100%">
-        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
+        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px;visibility:hidden">Create New</a>
 
         @{
             string search = "", filter = "", order = "", asc = "";
@@ -116,44 +116,72 @@
                 @ViewData["Order"] = order;
             </div>
             <input type="hidden" name="asc" value="@(ViewData["Asc"])" />
+            <input type="hidden" name="order" value="@(ViewData["Order"])" />
+            <input type="hidden" name="order" value="@(ViewData["filter"])" />
         }
         <input type="submit" class="icon-search fa-7x" value="&#xf002;" style="font-family: FontAwesome;height:35px;width:35px; position:absolute;right:0;background-color:transparent;margin-right:5px;margin-top:1px; border: 2px solid #167ce9;font-size: 1.2em;text-align: center;border-radius: 20px;outline:none !important" />
     </div>
 </form>
 <br />
-<table class="table">
+<table class="table" style="margin-left:15px;max-width:98.5% !important;">
     <thead>
         <tr>
             <th>
-                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor) })
+                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor), @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+                &nbsp;<i style="color:black" class="
+                         @if (ViewData["Order"] != null && ViewData["Order"].Equals(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Doctor))) {
+                             if (ViewData["Asc"].Equals("Asc")) {
+                                  @:fas icon-sort-asc
+                             } else {
+                                 @:fas icon-sort-desc
+                             }
+                         } else { @:fas icon-sort
+                         }"></i>
             </th>
             <th>
-                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift) })
+                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift), @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+                &nbsp;<i style="color:black" class="
+                         @if (ViewData["Order"] != null && ViewData["Order"].Equals(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().Shift))) {
+                             if (ViewData["Asc"].Equals("Asc")) {
+                                 @:fas icon-sort-asc
+                             } else {
+                                 @:fas icon-sort-desc
+                             }
+                         } else {
+                                 @:fas icon-sort
+                         }"></i>
             </th>
             <th>
-                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate) })
+                @Html.ActionLink(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate), "Index", "PastShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate), @asc = ViewData["Asc"].Equals("Asc") ? "Asc" : "Desc" })
+                &nbsp;<i style="color:black" class="
+                         @if (ViewData["Order"] != null && ViewData["Order"].Equals(Html.DisplayNameFor(model => model.PastShifts.FirstOrDefault().ShiftEndDate))) {
+                             if (ViewData["Asc"].Equals("Asc")) {
+                                 @:fas icon-sort-asc
+                             } else {
+                                 @:fas icon-sort-desc
+                             }
+                         } else {
+                             @:fas icon-sort
+                         }"></i>
             </th>
             <th></th>
         </tr>
     </thead>
-    }
     <tbody>
         @foreach (var item in Model.PastShifts)
         {
             <tr>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Doctor.Phone)
+                    @Html.DisplayFor(modelItem => item.Doctor.Name)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.Shift.ShiftID)
+                    @Html.DisplayFor(modelItem => item.Shift.Name)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.ShiftEndDate)
                 </td>
                 <td>
-                    <a asp-action="Edit" asp-route-id="@item.HistoryID">Edit</a> |
-                    <a asp-action="Details" asp-route-id="@item.HistoryID">Details</a> |
-                    <a asp-action="Delete" asp-route-id="@item.HistoryID">Delete</a>
+                    <a asp-action="Details" asp-route-id="@item.HistoryID">Details</a>
                 </td>
             </tr>
         }
@@ -234,3 +262,6 @@
         }
     }
 </div>
+<center>
+    <a asp-action="Index" asp-controller="Shifts" style="margin:20px" class="btn btn-info">Back to List</a>
+</center>

@@ -1,0 +1,24 @@
+﻿@model HospitalScheduling.Models.ViewModels.ShiftsViewModel
+@{
+    ViewData["Title"] = "List";
+    ViewData["Active"] = "DoctorShifts";
+}
+
+<div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:240px">
+    <div class="overlay"></div>
+    <div class="container" style="height:200px">
+        <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+            <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>Automatically Assigned Shifts</span></p>
+                <h1 class="mb-3 bread">Automatically Assigned Shifts</h1>
+            </div>
+        </div>
+    </div>
+</div>
+<br />
+@{
+    await Html.RenderPartialAsync("_CalendarPartial", Model);
+}
+<center>
+    <a asp-action="Index" asp-controller="Shifts" style="margin:20px" class="btn btn-info">Back to List</a>
+</center>

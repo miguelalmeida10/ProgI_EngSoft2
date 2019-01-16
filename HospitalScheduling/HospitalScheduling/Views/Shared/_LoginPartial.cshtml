@@ -5,10 +5,10 @@
 
 @if (SignInManager.IsSignedIn(User))
 {
-    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })" method="post" id="logoutForm" class="navbar-right">
+    <form asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home")" method="post" id="logoutForm" class="navbar-right">
         <ul class="nav navbar-nav navbar-right">
             <li style="margin-left:5px;margin-top:-35px">
-                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><img class="circle text-circle" style=" background-position: center;background-size: 100%;width: 50px;height: 50px;border: solid 2px #167ce9;background-image:url('/images/@(UserManager.GetUserName(User).ToString().ToString().Split("@")[0])_profile.jpg')" /></a>
+                <a asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage"><img class="circle text-circle" style=" background-position: center;background-size: 100%;width: 50px;height: 50px;border: solid 2px #167ce9;background-image:url('/images/@(UserManager.GetUserName(User)=="HospitalAdmin"?"default":(UserManager.GetUserName(User).ToString().ToString().Split("@")[0]))_profile.'+@(UserManager.GetUserName(User)=="HospitalAdmin"?".jpg":System.IO.Directory.GetFiles("./wwwroot/images/"+UserManager.GetUserName(User).ToString().Split("@")[0]+".*")[0].Split(".")[1])" /></a>
                 <button type="submit" class="btn btn-dark" style="padding:3px;font-size:15px;background-color:transparent;color:#167ce9;margin-left:-58px;margin-top:90px;border:1px #167ce9 solid">Logout</button>
             </li>
         </ul>

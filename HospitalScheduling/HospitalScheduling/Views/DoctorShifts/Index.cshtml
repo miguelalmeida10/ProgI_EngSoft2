@@ -19,7 +19,7 @@
 
 <form id="searchform" asp-action="Index">
     <div style="min-width:100%">
-        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
+        <a asp-action="Create" class="btn btn-primary" style="margin-left:15px;visibility:hidden">Create New</a>
 
         @{
             string search = "", filter = "", order = "", asc = "";
@@ -129,7 +129,7 @@
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(model => model.DoctorShifts.FirstOrDefault().Doctor.Name), "Index", "DoctorShifts", new { @page = Model.Pagination.CurrentPage, @filter = ViewData["Filter"], @search = ViewData["Search"], @order = "Doctor.Name", @asc = ViewData["Asc"].Equals("Asc") ? "Desc" : "Asc" })
                     &nbsp;<i style="color:black" class="
-                         @if (ViewData[" Order"] !=null && ViewData["Order"].Equals("Doctor.Name")) {
+                         @if (ViewData["Order"] !=null && ViewData["Order"].Equals("Doctor.Name")) {
                              if (ViewData["Asc"].Equals("Asc")) {
                              @:fas icon-sort-asc
                              } else {
@@ -249,3 +249,7 @@
         }
     }
 </div>
+<center>
+    <a asp-action="AutoAssign" style="margin:20px" class="btn btn-info">Back to Calendar</a>
+    <a asp-action="Index" asp-controller="Shifts" style="margin:20px" class="btn btn-info">Back to List</a>
+</center>

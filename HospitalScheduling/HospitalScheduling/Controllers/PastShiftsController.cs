@@ -26,7 +26,19 @@ namespace HospitalScheduling.Models
         // GET: PastShifts
         // int lazy = 1 so i dont have to rename Indexes Get or Indexes Post
         public async Task<IActionResult> Index(string search = "", string filter = "", string order = "", string asc = "", int page = 1, int lazy = 1)
-        {
+        {            
+            #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
+                var sh = _context.DoctorShifts.Include(d => d.Shift).Include(d => d.Doctor);
+                var list = new List<PastShifts>();
+                await sh.ForEachAsync(s => {
+                    if (s.Shift.Ended && _context.PastShifts.Where(ps=> ps.Doctor == s.Doctor && ps.Shift == s.Shift && ps.ShiftEndDate == s.Shift.StartDate && ps.ShiftID == s.ShiftID && ps.DoctorID == s.DoctorID).FirstOrDefault() == null){
+                        list.Add(new PastShifts() { Shift = s.Shift, Doctor = s.Doctor, DoctorID = s.DoctorID, ShiftEndDate = s.Shift.StartDate, ShiftID = s.ShiftID });
+                    }
+                });
+                _context.PastShifts.UpdateRange(list);
+                await _context.SaveChangesAsync();
+            #endregion
+
             #region Search, Sort & Pagination Related Region
                 int count = 0;
                 #region Variable to obtain past shifts including thier specialities that skips 5 * number of items per page
@@ -91,6 +103,18 @@ namespace HospitalScheduling.Models
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(string search, string filter, string order = "", string asc = "", int page = 1)
         {
+            order = (string.IsNullOrEmpty(order)) ? "" : order;            
+            #region Deactivate and Remove from list of old shifts from index and activate new ones if its a new day
+                var sh = _context.DoctorShifts.Include(d => d.Shift).Include(d => d.Doctor);
+                var list = new List<PastShifts>();
+                await sh.ForEachAsync(s => {
+                    if (s.Shift.Ended && _context.PastShifts.Where(ps=> ps.Doctor == s.Doctor && ps.Shift == s.Shift && ps.ShiftEndDate == s.Shift.StartDate && ps.ShiftID == s.ShiftID && ps.DoctorID == s.DoctorID).FirstOrDefault() == null){
+                        list.Add(new PastShifts() { Shift = s.Shift, Doctor = s.Doctor, DoctorID = s.DoctorID, ShiftEndDate = s.Shift.StartDate, ShiftID = s.ShiftID });
+                    }
+                });
+                _context.PastShifts.UpdateRange(list);
+                await _context.SaveChangesAsync();
+            #endregion
             #region Search, Sort & Pagination Related Region
                 int count = 0;
                 #region Variable to obtain past shifts including thier specialities that skips 5 * number of items per page
