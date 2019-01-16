@@ -21,6 +21,9 @@
 <form id="searchform" asp-action="Index">
     <div style="min-width:100%">
         <a asp-action="Create" class="btn btn-primary" style="margin-left:15px">Create New</a>
+        <a asp-action="AutoAssign" asp-controller="DoctorShifts" asp-all-route-data='@{new Dictionary<string, string>() { { "month", @DateTime.Now.Month.ToString() } }}' class="btn btn-primary" style="margin-left:15px">Automatically Assign Shifts</a>
+        <a asp-action="Index" asp-controller="DoctorShifts" class="btn btn-primary" style="margin-left:15px">List of Assigned Shifts</a>
+        <a asp-action="Index" asp-controller="PastShifts" class="btn btn-primary" style="margin-left:15px">List of Past Shifts</a>
 
         @{
             string search = "", filter = "", order = "", asc = "";
@@ -190,14 +193,14 @@
                     </td>
                     <td>
                         @{
-                            var milis = item.StartDate.AddHours(6).Subtract(DateTime.Now);
+                            var milis = item.StartDate.AddHours(8).Subtract(DateTime.Now);
                             var date = (milis.Ticks < 0) ? new DateTime() : new DateTime(milis.Ticks);
                             @date.ToLongTimeString()
                         }
                     </td>
                     <td>
                         @{
-                            DateTime ndate = new DateTime(item.StartDate.AddHours(6).Ticks);
+                            DateTime ndate = new DateTime(item.StartDate.AddHours(8).Ticks);
                             @(ndate.ToShortDateString() + " " + ndate.ToLongTimeString());
                         }
                     </td>

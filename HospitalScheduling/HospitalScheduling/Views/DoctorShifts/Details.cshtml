@@ -49,13 +49,13 @@
                 <td style="min-width:8em;text-align:justify">
                     <b>Shift ends in: </b>
                 </td>
-                <td>@(new DateTime(Model.Shift.StartDate.AddHours(6).Subtract(DateTime.Now).Ticks).ToLongTimeString())</td>
+                <td>@(new DateTime(Model.Shift.StartDate.AddHours(8).Subtract(DateTime.Now).Ticks).ToLongTimeString())</td>
             </tr>
             <tr>
                 <td style="min-width:8em;text-align:justify">
                     <b>End Date: </b>
                 </td>
-                <td>@Model.Shift.StartDate.AddHours(6)</td>
+                <td>@Model.Shift.StartDate.AddHours(8)</td>
             </tr>
         </table>
     </div>

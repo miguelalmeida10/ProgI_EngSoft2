@@ -143,7 +143,14 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Update="Views\DoctorShifts\AutoAssign.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
     <Content Update="Views\DoctorSpecialities\NotFound.cshtml">
+      <Pack>$(IncludeRazorContentInPack)</Pack>
+    </Content>
+    <Content Update="Views\PastShifts\Details.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
       <Pack>$(IncludeRazorContentInPack)</Pack>
     </Content>
     <Content Update="Views\Shared\_DeletePartial.cshtml">

@@ -316,13 +316,13 @@ namespace HospitalScheduling.Migrations
                         column: x => x.DoctorID,
                         principalTable: "Doctor",
                         principalColumn: "DoctorID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                     table.ForeignKey(
                         name: "FK_DoctorSpecialities_Speciality_SpecialityID",
                         column: x => x.SpecialityID,
                         principalTable: "Speciality",
                         principalColumn: "SpecialityID",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Restrict);
                 });
 
             migrationBuilder.CreateTable(

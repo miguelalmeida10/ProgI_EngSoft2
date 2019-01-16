@@ -34,6 +34,7 @@ namespace HospitalScheduling.Models
         [RegularExpression(@"(9[1236]|2\d)\d{7}")]
         public string Phone { get; set; }
 
+
         //birthday
         [DateGreaterEqualThan(Date = "18 years", ErrorMessage = "Can't be younger than 18 years")]
         [DateLesserEqualThan(Date = "65 years", ErrorMessage = "Can't be older than 65 years")]
@@ -48,7 +49,7 @@ namespace HospitalScheduling.Models
 
         public bool DoesNightShifts { get; set; }
 
-        public DateTime LastWorkDay { get; set; }
+        public DateTime LastWorkDay { get; set; } = DateTime.Now;
 
         [Display(Name="Address")]
         public string Address { get; set; }

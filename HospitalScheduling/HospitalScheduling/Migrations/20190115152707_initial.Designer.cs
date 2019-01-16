@@ -10,7 +10,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HospitalScheduling.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20190102231306_initial")]
+    [Migration("20190115152707_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

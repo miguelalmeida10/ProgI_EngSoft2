@@ -1,0 +1,41 @@
+﻿@model HospitalScheduling.Models.ViewModels.ShiftsViewModel;
+
+<center>
+    <table class="table table-responsive" style="display:table-caption">
+        <thead>
+        <th>@(Model.Shifts.FirstOrDefault().StartDate.ToString("MMMM").Remove(1).ToUpper().Insert(1, Model.Shifts.FirstOrDefault().StartDate.ToString("MMMM").Substring(1))) </th>
+        </thead>
+        <tbody>
+            <tr>
+                <td style="padding-left:30px;padding-right:30px;">S</td>
+                <td style="padding-left:30px;padding-right:30px;">T</td>
+                <td style="padding-left:30px;padding-right:30px;">Q</td>
+                <td style="padding-left:30px;padding-right:30px;">Q</td>
+                <td style="padding-left:30px;padding-right:30px;">S</td>
+                <td style="padding-left:30px;padding-right:30px;">S</td>
+                <td style="padding-left:30px;padding-right:30px;">D</td>
+            </tr>
+            @{
+            for (int j = 1; j < 36; j++)
+            {
+                if (j == 8 || j == 15 || j == 22 || j == 29)
+                {
+                        @:<tr></tr>
+                    }
+
+                    if (Model.Shifts.Where(s => s.StartDate.Day == j).Count() > 0)
+                    {
+                        @:
+                    <td style="padding-left:30px;">@(Html.ActionLink("" + j, "Index", "DoctorShifts", new { @order = "Shift", @search = Model.Shifts.Where(s=>s.StartDate.Day==j).FirstOrDefault().Name.Split("-")[0].TrimEnd() }))</td>
+                }
+                else
+                {
+                    @:<td style="padding-left:30px;">@(j == 35 ? 4 : j == 34 ? 3 : j == 33 ? 2 : j == 32 ? 1 : j)</td>
+                }
+            }
+            }
+            <tr></tr>
+            </th>
+        </tbody>
+    </table>
+</center>

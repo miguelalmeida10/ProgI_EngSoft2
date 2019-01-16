@@ -103,11 +103,13 @@ namespace HospitalScheduling.Controllers
         // Post: Doctors
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Index(string filter, string search, string order = "", string asc = "", int page = 1)
+        public async Task<IActionResult> Index(string filter, string search, string order, string asc = "", int page = 1)
         {
+            order = (string.IsNullOrEmpty(order)) ? "" : order;
             #region Search, Sort & Pagination Related Region
                 int count = 0;
-                var docslist = await _context.Doctor.Include(d => d.Speciality).OrderBy(d => order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
+                var docslist = await _context.Doctor.Include(d => d.Speciality).OrderBy(d => 
+                order.Equals("Name") ? d.Name : order.Equals("Phone") ? d.Phone : order.Equals("Email") ? d.Email : order.Equals("Speciality") ? d.Speciality.Name : d.Name).Skip(paging.PageSize * (page - 1))
                     .Take(paging.PageSize).ToListAsync();
                 #region Variable to obtain doctors including thier specialities that skips 5 * number of items per page
                     if (!string.IsNullOrEmpty(asc) && asc.Equals("Asc"))
@@ -187,6 +189,7 @@ namespace HospitalScheduling.Controllers
 
             var doctor = await _context.Doctor.Include(d => d.Speciality)
                 .FirstOrDefaultAsync(m => m.DoctorID == id);
+
             if (doctor == null)
             {
                 return NotFound();
@@ -245,7 +248,7 @@ namespace HospitalScheduling.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,WeeklyHours,WorkingDays,DoesNightShifts,LastWorkDay,Address,SpecialityID,Speciality")] Doctor doctor)
+        public async Task<IActionResult> Edit(int id, [Bind("DoctorID,DoctorNumber,Name,Email,CC,Phone,Birthday,WeeklyHours,WorkingDays,DoesNightShifts,LastWorkDay,Address,SpecialityID,Speciality,PastSpecialities")] Doctor doctor)
         {
             if (id != doctor.DoctorID)
             {
@@ -259,7 +262,11 @@ namespace HospitalScheduling.Controllers
                     doctor.Speciality = _context.Speciality.Where(s => s.SpecialityID == doctor.Speciality.SpecialityID).FirstOrDefault();
                     doctor.SpecialityID = doctor.Speciality.SpecialityID;
                     _context.Update(doctor);
-                    _context.DoctorSpecialities.Add(new DoctorSpecialities() { Doctor = doctor, DoctorID = doctor.DoctorID, Speciality = doctor.Speciality, SpecialityID = doctor.SpecialityID, Date = DateTime.Now, Type = "Edit" });
+
+                    if (_context.DoctorSpecialities.Where(d => doctor.DoctorID == id).LastOrDefault() == null || _context.DoctorSpecialities.Where(d=> doctor.DoctorID == id).LastOrDefault().SpecialityID != doctor.SpecialityID) { 
+                        _context.DoctorSpecialities.Add(new DoctorSpecialities() { Doctor = doctor, DoctorID = doctor.DoctorID, Speciality = doctor.Speciality, SpecialityID = doctor.SpecialityID, Date = DateTime.Now, Type = "Edit" });
+                    }
+
                     await _context.SaveChangesAsync();
                 }
                 catch (DbUpdateConcurrencyException)
@@ -322,7 +329,9 @@ namespace HospitalScheduling.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
         {
-            var doctor = await _context.Doctor.Include(d => d.Speciality).Where(d => d.DoctorID == id).FirstOrDefaultAsync();
+            var doctor = await _context.Doctor.Include(d => d.Speciality).Include(d => d.PastSpecialities).Where(d => d.DoctorID == id).FirstOrDefaultAsync();
+            var docspecialities = await _context.DoctorSpecialities.Where(ds => ds.DoctorID == id).ToListAsync();
+            _context.DoctorSpecialities.RemoveRange(docspecialities);
             _context.Doctor.Remove(doctor);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
