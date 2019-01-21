@@ -5,9 +5,9 @@ using System.Threading.Tasks;
 
 namespace HospitalScheduling.Models.ViewModels
 {
-    public class HollidayFormViewModel
+    public class VacationsViewModel
     {
-        public IEnumerable<HollidayForm> HollidayForms { get; set; }
+        public IEnumerable<Vacations> Vacations { get; set; }
         public PagingViewModel Pagination { get; set; }
     }
 }

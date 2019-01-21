@@ -197,7 +197,7 @@ namespace HospitalScheduling.Models
         // GET: PastShifts/Create
         public IActionResult Create()
         {
-            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Phone");
+            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Name");
             ViewData["ShiftID"] = new SelectList(_context.Shift, "ShiftID", "ShiftID");
             return View();
         }
@@ -215,7 +215,7 @@ namespace HospitalScheduling.Models
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Phone", pastShifts.DoctorID);
+            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Name", pastShifts.DoctorID);
             ViewData["ShiftID"] = new SelectList(_context.Shift, "ShiftID", "ShiftID", pastShifts.ShiftID);
             return View(pastShifts);
         }
@@ -233,7 +233,7 @@ namespace HospitalScheduling.Models
             {
                 return NotFound();
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Phone", pastShifts.DoctorID);
+            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Name", pastShifts.DoctorID);
             ViewData["ShiftID"] = new SelectList(_context.Shift, "ShiftID", "ShiftID", pastShifts.ShiftID);
             return View(pastShifts);
         }
@@ -270,7 +270,7 @@ namespace HospitalScheduling.Models
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Phone", pastShifts.DoctorID);
+            ViewData["DoctorID"] = new SelectList(_context.Doctor, "DoctorID", "Name", pastShifts.DoctorID);
             ViewData["ShiftID"] = new SelectList(_context.Shift, "ShiftID", "ShiftID", pastShifts.ShiftID);
             return View(pastShifts);
         }

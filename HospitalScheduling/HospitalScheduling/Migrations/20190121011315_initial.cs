@@ -48,37 +48,6 @@ namespace HospitalScheduling.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "HollidayForm",
-                columns: table => new
-                {
-                    VacationID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    DateStart = table.Column<string>(maxLength: 50, nullable: false),
-                    DateEnd = table.Column<string>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_HollidayForm", x => x.VacationID);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "RuleModel",
-                columns: table => new
-                {
-                    ValidationID = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(maxLength: 50, nullable: false),
-                    category = table.Column<string>(nullable: false),
-                    age = table.Column<int>(nullable: false),
-                    begin = table.Column<DateTime>(nullable: false),
-                    end = table.Column<DateTime>(nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_RuleModel", x => x.ValidationID);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Shift",
                 columns: table => new
                 {
@@ -153,8 +122,8 @@ namespace HospitalScheduling.Migrations
                 name: "AspNetUserLogins",
                 columns: table => new
                 {
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    ProviderKey = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    ProviderKey = table.Column<string>(nullable: false),
                     ProviderDisplayName = table.Column<string>(nullable: true),
                     UserId = table.Column<string>(nullable: false)
                 },
@@ -198,8 +167,8 @@ namespace HospitalScheduling.Migrations
                 columns: table => new
                 {
                     UserId = table.Column<string>(nullable: false),
-                    LoginProvider = table.Column<string>(maxLength: 128, nullable: false),
-                    Name = table.Column<string>(maxLength: 128, nullable: false),
+                    LoginProvider = table.Column<string>(nullable: false),
+                    Name = table.Column<string>(nullable: false),
                     Value = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
@@ -227,6 +196,7 @@ namespace HospitalScheduling.Migrations
                     Birthday = table.Column<DateTime>(nullable: false),
                     WeeklyHours = table.Column<int>(nullable: false),
                     WorkingDays = table.Column<int>(nullable: false),
+                    VacationDays = table.Column<int>(nullable: false),
                     DoesNightShifts = table.Column<bool>(nullable: false),
                     LastWorkDay = table.Column<DateTime>(nullable: false),
                     Address = table.Column<string>(nullable: true),
@@ -352,6 +322,27 @@ namespace HospitalScheduling.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Vacations",
+                columns: table => new
+                {
+                    VacationID = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    StartDate = table.Column<string>(maxLength: 10, nullable: false),
+                    EndDate = table.Column<string>(maxLength: 10, nullable: false),
+                    DoctorID = table.Column<int>(nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Vacations", x => x.VacationID);
+                    table.ForeignKey(
+                        name: "FK_Vacations_Doctor_DoctorID",
+                        column: x => x.DoctorID,
+                        principalTable: "Doctor",
+                        principalColumn: "DoctorID",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_AspNetRoleClaims_RoleId",
                 table: "AspNetRoleClaims",
@@ -430,6 +421,12 @@ namespace HospitalScheduling.Migrations
                 name: "IX_PastShifts_ShiftID",
                 table: "PastShifts",
                 column: "ShiftID");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Vacations_DoctorID",
+                table: "Vacations",
+                column: "DoctorID",
+                unique: true);
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)
@@ -456,16 +453,13 @@ namespace HospitalScheduling.Migrations
                 name: "DoctorSpecialities");
 
             migrationBuilder.DropTable(
-                name: "HollidayForm");
-
-            migrationBuilder.DropTable(
                 name: "Nurse");
 
             migrationBuilder.DropTable(
                 name: "PastShifts");
 
             migrationBuilder.DropTable(
-                name: "RuleModel");
+                name: "Vacations");
 
             migrationBuilder.DropTable(
                 name: "AspNetRoles");
@@ -474,10 +468,10 @@ namespace HospitalScheduling.Migrations
                 name: "AspNetUsers");
 
             migrationBuilder.DropTable(
-                name: "Doctor");
+                name: "Shift");
 
             migrationBuilder.DropTable(
-                name: "Shift");
+                name: "Doctor");
 
             migrationBuilder.DropTable(
                 name: "Speciality");

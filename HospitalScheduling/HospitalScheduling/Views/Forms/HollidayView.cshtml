@@ -1,7 +1,7 @@
-﻿@model HollidayForm
+﻿@model Vacations
 
 @{
-    ViewData["Title"] = "HollidayView";
+    ViewData["Title"] = "VacationRegistration";
 }
 
 <h2>Vacation Registiration</h2>
@@ -11,12 +11,12 @@
     <div asp-validation-summary="All" class="text-danger"></div>
 
     <div class="form-group">
-        <label asp-for="DateStart">Starting date of vacation:</label>
-        <input asp-for="DateStart" class="form-control" placeholder="Please, enter the starting date of your vacation" />
+        <label asp-for="StartDate">Starting date of vacation:</label>
+        <input asp-for="StartDate" class="form-control" placeholder="Please, enter the starting date of your vacations" />
     </div>
     <div class="form-group">
-        <label asp-for="DateEnd">Ending date of vacation:</label>
-        <input asp-for="DateEnd" class="form-control" placeholder="Please, enter the ending date of your vacation" />
+        <label asp-for="EndDate">Ending date of vacation:</label>
+        <input asp-for="EndDate" class="form-control" placeholder="Please, enter the ending date of your vacations" />
     </div>
 
     <button type="submit" class="btn btn-primary">Submit</button>

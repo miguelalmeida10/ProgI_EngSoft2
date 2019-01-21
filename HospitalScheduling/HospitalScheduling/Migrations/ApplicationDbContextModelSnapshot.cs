@@ -50,6 +50,8 @@ namespace HospitalScheduling.Migrations
 
                     b.Property<int>("SpecialityID");
 
+                    b.Property<int>("VacationDays");
+
                     b.Property<int>("WeeklyHours");
 
                     b.Property<int>("WorkingDays");
@@ -101,24 +103,6 @@ namespace HospitalScheduling.Migrations
                     b.HasIndex("SpecialityID");
 
                     b.ToTable("DoctorSpecialities");
-                });
-
-            modelBuilder.Entity("HospitalScheduling.Models.HollidayForm", b =>
-                {
-                    b.Property<int>("VacationID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("DateEnd")
-                        .IsRequired();
-
-                    b.Property<string>("DateStart")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.HasKey("VacationID");
-
-                    b.ToTable("HollidayForm");
                 });
 
             modelBuilder.Entity("HospitalScheduling.Models.Nurse", b =>
@@ -182,30 +166,6 @@ namespace HospitalScheduling.Migrations
                     b.ToTable("PastShifts");
                 });
 
-            modelBuilder.Entity("HospitalScheduling.Models.RuleModel", b =>
-                {
-                    b.Property<int>("ValidationID")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50);
-
-                    b.Property<int>("age");
-
-                    b.Property<DateTime>("begin");
-
-                    b.Property<string>("category")
-                        .IsRequired();
-
-                    b.Property<DateTime>("end");
-
-                    b.HasKey("ValidationID");
-
-                    b.ToTable("RuleModel");
-                });
-
             modelBuilder.Entity("HospitalScheduling.Models.Shift", b =>
                 {
                     b.Property<int>("ShiftID")
@@ -238,6 +198,30 @@ namespace HospitalScheduling.Migrations
                     b.HasKey("SpecialityID");
 
                     b.ToTable("Speciality");
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.Vacations", b =>
+                {
+                    b.Property<int>("VacationID")
+                        .ValueGeneratedOnAdd()
+                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<int>("DoctorID");
+
+                    b.Property<string>("EndDate")
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    b.Property<string>("StartDate")
+                        .IsRequired()
+                        .HasMaxLength(10);
+
+                    b.HasKey("VacationID");
+
+                    b.HasIndex("DoctorID")
+                        .IsUnique();
+
+                    b.ToTable("Vacations");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -357,11 +341,9 @@ namespace HospitalScheduling.Migrations
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityUserLogin<string>", b =>
                 {
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("ProviderKey")
-                        .HasMaxLength(128);
+                    b.Property<string>("ProviderKey");
 
                     b.Property<string>("ProviderDisplayName");
 
@@ -392,11 +374,9 @@ namespace HospitalScheduling.Migrations
                 {
                     b.Property<string>("UserId");
 
-                    b.Property<string>("LoginProvider")
-                        .HasMaxLength(128);
+                    b.Property<string>("LoginProvider");
 
-                    b.Property<string>("Name")
-                        .HasMaxLength(128);
+                    b.Property<string>("Name");
 
                     b.Property<string>("Value");
 
@@ -455,6 +435,14 @@ namespace HospitalScheduling.Migrations
                     b.HasOne("HospitalScheduling.Models.Shift", "Shift")
                         .WithMany("PreviousDoctors")
                         .HasForeignKey("ShiftID")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("HospitalScheduling.Models.Vacations", b =>
+                {
+                    b.HasOne("HospitalScheduling.Models.Doctor", "Doctor")
+                        .WithOne("Vacations")
+                        .HasForeignKey("HospitalScheduling.Models.Vacations", "DoctorID")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

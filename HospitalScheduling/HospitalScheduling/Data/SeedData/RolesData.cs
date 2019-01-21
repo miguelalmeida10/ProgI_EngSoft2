@@ -38,7 +38,6 @@ namespace HospitalScheduling.Data
                         var admin = new IdentityUser() { UserName = "HospitalAdmin", Email = "HospitalAdmin@mail.com", EmailConfirmed = true };
 
                         Task create = userManager.CreateAsync(admin, "HAdmin");
-                        create.Start();
                         create.Wait();
                         if (dbContext.Users.Where(u => u.UserName == "HospitalAdmin").FirstOrDefault() != null)
                         {

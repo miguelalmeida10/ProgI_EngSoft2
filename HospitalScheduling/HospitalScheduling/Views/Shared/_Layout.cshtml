@@ -79,8 +79,8 @@
                         <a asp-area="" asp-controller="Shifts" asp-action="Index" class="nav-link">Shifts</a>
                     </li>
 
-                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("HolidayForms")) ? "nav-item active".ToString() : "nav-item".ToString())">
-                        <a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="nav-link">Holiday Form</a>
+                    <li class="@((ViewData["Active"]!=null && ViewData["Active"].Equals("Vacations")) ? "nav-item active".ToString() : "nav-item".ToString())">
+                        <a asp-area="" asp-controller="Vacations" asp-action="Index" class="nav-link">Vacations</a>
                     </li>
                     <partial name="_LoginPartial" />
                 </ul>
@@ -121,7 +121,7 @@
                             <ul class="list-unstyled" style="margin-top:60px;">
                                 <li><a asp-area="" asp-controller="Shifts" asp-action="Index" class="py-2 d-block">Shifts</a></li>
                                 <li><a asp-area="" asp-controller="DoctorShifts" asp-action="Index" class="py-2 d-block">Assigned Shifts</a></li>
-                                <li><a asp-area="" asp-controller="HollidayForms" asp-action="Index" class="py-2 d-block">Holiday Form</a></li>
+                                <li><a asp-area="" asp-controller="Vacations" asp-action="Index" class="py-2 d-block">Vacations</a></li>
                             </ul>
                         </div>
                     </div>

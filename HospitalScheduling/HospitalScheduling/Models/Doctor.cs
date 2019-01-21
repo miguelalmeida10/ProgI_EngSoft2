@@ -47,17 +47,21 @@ namespace HospitalScheduling.Models
 
         public int WorkingDays { get; set; }
 
+        public int VacationDays { get; set; }
+
         public bool DoesNightShifts { get; set; }
 
         public DateTime LastWorkDay { get; set; } = DateTime.Now;
 
         [Display(Name="Address")]
         public string Address { get; set; }
-        
+
         [ForeignKey("FK_SpecialityID")]
         public int SpecialityID { get; set; }
 
         public Speciality Speciality { get; set; }
+
+        public Vacations Vacations { get; set; }
 
         [Display(Name = "Shifts of the doctor")]
         public IEnumerable<DoctorShifts> Shifts { get; set; }

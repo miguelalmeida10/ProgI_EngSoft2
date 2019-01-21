@@ -11,7 +11,7 @@ namespace HospitalScheduling.Data
 {
     public static class SeedData
     {
-        public static async void PopulateAsync(IServiceProvider applicationServices)
+        public static void PopulateAsync(IServiceProvider applicationServices)
         {
             using (var serviceScope = applicationServices.CreateScope())
             {
@@ -31,10 +31,72 @@ namespace HospitalScheduling.Data
                 if (!db.Doctor.Any())
                 {
                     EnsureDoctorsPopulated(db);
+                    AddVacationDays(db);
+                }
+
+                if (!db.Vacations.Any())
+                {
+                    EnsureVacationsPopulated(db);
                 }
 
                 EnsureShiftPopulated(db);
             }
+        }
+
+        private static void EnsureVacationsPopulated(ApplicationDbContext db)
+        {
+            // Adding 12 vacations for 12 doctors starting on random dates and ending on random dates
+            db.Vacations.AddRange(
+                new Vacations { DoctorID = 1, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 2, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 3, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 4, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 5, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 6, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 7, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 8, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 9, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 10, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 11, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) },
+                new Vacations { DoctorID = 12, StartDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20), EndDate = new Random().Next(1, 31) + "/" + new Random().Next(1, 12) + "/" + new Random().Next(19, 20) }
+            );
+
+            db.SaveChanges();
+        }
+
+        private static void AddVacationDays(ApplicationDbContext db)
+        {
+            List<Doctor> ListOfDoctorsToBeUpdated = new List<Doctor>();
+            foreach (Doctor doctor in db.Doctor)
+            {
+                var age = DateTime.Now.Year - doctor.Birthday.Year;
+
+                // Until doctors reach 39 years old, they get 25 days of vacations
+                if (age<39)
+                {
+                    doctor.VacationDays = 25;
+                }
+
+                // Until doctors reach 49 years old, they get 26 days of vacations
+                if (age >= 39 && age < 49)
+                {
+                    doctor.VacationDays = 26;
+                }
+
+                // Until doctors reach 59 years old, they get 27 days of vacations
+                if (age >= 49 && age < 59)
+                {
+                    doctor.VacationDays = 27;
+                }
+
+                // Doctors older than 59 years old, get 28 days of vacations
+                if (age >= 59)
+                {
+                    doctor.VacationDays = 28;
+                }
+            }
+            db.Doctor.UpdateRange(ListOfDoctorsToBeUpdated);
+            db.SaveChanges();
         }
 
         public static async Task EnsureRolesPopulatedAsync(ApplicationDbContext dbContext, IServiceProvider serviceProvider)
@@ -108,7 +170,7 @@ namespace HospitalScheduling.Data
             db.Nurse.AddRange(
                 new Nurse { CC = "10205101", NurseNumber = "10205101", Name = "Diogo Miguel Afonso Sa", Email = "diogo@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "11018610", NurseNumber = "11018610", Name = "Miguel Diogo João", Email = "miguel@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
-                new Nurse { CC = "10201240", NurseNumber = "10201240", Name = "Maria Afonso Castro", Email = "maria@email.com", Phone = "912345678", Sons = false, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
+                new Nurse { CC = "10201240", NurseNumber = "10201240", Name = "Maria Afonso Castro", Email = "maria@email.com", Phone = "912345678", Sons = false, Birthday = DateTime.Parse("11/11/1964"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "10212410", NurseNumber = "10212410", Name = "Ana Inês Silva Castro", Email = "ana@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "12312547", NurseNumber = "12312547", Name = "João Pedro Dinis", Email = "joao@email.com", Phone = "912345678", Sons = false, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },
                 new Nurse { CC = "10212770", NurseNumber = "10212770", Name = "Pedro Noel Santos Lopes", Email = "pedro@email.com", Phone = "912345678", Sons = true, Birthday = DateTime.Parse("11/11/1995"), BirthdaySon = DateTime.Parse("11/11/1995"), Address = "Rua do Volta a tras", SpecialityID = new Random().Next(1, db.Speciality.Count() + 1) },

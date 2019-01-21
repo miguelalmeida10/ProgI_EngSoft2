@@ -1,0 +1,70 @@
+﻿@model HospitalScheduling.Models.Vacations
+
+@{
+    ViewData["Title"] = "Delete";
+    ViewData["Active"] = "Vacations";
+}
+
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewData["Active"] - Edit</title>
+</head>
+<body>
+    <div class="hero-wrap" style="background-image: url('images/bg_6.jpg'); background-attachment:fixed;height:200px">
+        <div class="overlay"></div>
+        <div class="container" style="height:200px">
+            <div class="row no-gutters slider-text align-items-center justify-content-center" style="height:200px" data-scrollax-parent="true">
+                <div class="col-md-8 ftco-animate text-center fadeInUp ftco-animated">
+                    <p class="breadcrumbs"><span class="mr-2"><a asp-action="Index" asp-controller="Home">Home</a></span> <span>@ViewData["Active"] - @ViewData["Title"]</span></p>
+                    <h1 class="mb-3 bread">@ViewData["Active"] - @ViewData["Title"]</h1>
+                </div>
+            </div>
+        </div>
+    </div>
+    <br />
+    <center>
+        <div>
+            <h3>Are you sure you want to delete this?</h3>
+            <hr />
+            <div>
+                <dl class="dl-horizontal">
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Doctor.Name)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Doctor.Name)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.StartDate)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.StartDate)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.EndDate)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.EndDate)
+                    </dd>
+                    <dt>
+                        @Html.DisplayNameFor(model => model.Doctor.VacationDays)
+                    </dt>
+                    <dd>
+                        @Html.DisplayFor(model => model.Doctor.VacationDays)
+                    </dd>
+                </dl>
+                <form>
+                    <input type="hidden" asp-for="VacationID" />
+                    <input type="hidden" asp-for="DoctorID" />
+                    <a asp-action="Edit" class="btn btn-success">Edit</a>
+                    <a asp-action="Index" class="btn btn-info">Back to List</a>
+                </form>
+                <br />
+            </div>
+        </div>
+    </center>
+</body>
+</html>

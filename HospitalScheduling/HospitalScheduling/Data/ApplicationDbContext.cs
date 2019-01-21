@@ -62,11 +62,9 @@ namespace HospitalScheduling.Data
 
         public DbSet<HospitalScheduling.Models.Doctor> Doctor { get; set; }
         public DbSet<HospitalScheduling.Models.Nurse> Nurse { get; set; }
-        public DbSet<HospitalScheduling.Models.HollidayForm> HollidayForm { get; set; }
+        public DbSet<HospitalScheduling.Models.Vacations> Vacations { get; set; }
 
         public DbSet<HospitalScheduling.Models.Speciality> Speciality  { get; set; }
-
-        public DbSet<HospitalScheduling.Models.RuleModel> RuleModel { get; set; }
 
         public DbSet<HospitalScheduling.Models.Shift> Shift { get; set; }
 

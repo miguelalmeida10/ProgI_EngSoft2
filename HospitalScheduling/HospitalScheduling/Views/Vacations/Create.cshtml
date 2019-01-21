@@ -1,8 +1,8 @@
-﻿@model HospitalScheduling.Models.HollidayForm
+﻿@model HospitalScheduling.Models.Vacations
 
 @{
     ViewData["Title"] = "Create";
-    ViewData["Active"] = "HolidayForms";
+    ViewData["Active"] = "Vacations";
 }
 
 
@@ -27,26 +27,38 @@
                 <table>
                     <tr>
                         <td style="min-width:6em;text-align:justify">
-                            <label asp-for="DateStart" class="control-label" style="margin-top:10px"></label>
+                            <label asp-for="DoctorID" class="control-label" style="margin-top:10px"></label>
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="DateStart" class="form-control" style="text-align:justify;width:30em;" />
+                            <select asp-for="DoctorID" class="form-control" asp-items="ViewBag.DoctorID" style="text-align:justify;width:30em;"></select>
                         </td>
                         <td>
-                            <span asp-validation-for="DateStart" class="text-danger"></span>
+                            <span asp-validation-for="DoctorID" class="text-danger"></span>
                         </td>
                     </tr>
                     <tr>
                         <td style="min-width:6em;text-align:justify">
-                            <label asp-for="DateEnd" class="control-label" style="margin-top:10px"></label>
+                            <label asp-for="StartDate" class="control-label" style="margin-top:10px"></label>
                             <label style="margin-top:10px">: </label>
                         </td>
                         <td>
-                            <input asp-for="DateEnd" class="form-control" style="text-align:justify;width:30em;" />
+                            <input asp-for="StartDate" class="form-control" style="text-align:justify;width:30em;" />
                         </td>
                         <td>
-                            <span asp-validation-for="DateEnd" class="text-danger"></span>
+                            <span asp-validation-for="StartDate" class="text-danger"></span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="min-width:6em;text-align:justify">
+                            <label asp-for="EndDate" class="control-label" style="margin-top:10px"></label>
+                            <label style="margin-top:10px">: </label>
+                        </td>
+                        <td>
+                            <input asp-for="EndDate" class="form-control" style="text-align:justify;width:30em;" />
+                        </td>
+                        <td>
+                            <span asp-validation-for="EndDate" class="text-danger"></span>
                         </td>
                     </tr>
                 </table>
